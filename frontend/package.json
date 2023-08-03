@@ -11,6 +11,23 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/node": "^18.17.1",
-    "nuxt": "^3.6.5"
+    "autoprefixer": "^10.4.14",
+    "nuxt": "^3.6.5",
+    "nuxt-tsconfig-relative-paths": "^1.0.6",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.4.11",
+    "axios": "^1.4.0",
+    "lodash": "^4.17.21",
+    "path-to-regexp": "^6.2.1",
+    "pinia": "^2.1.6",
+    "vee-validate": "^4.11.1",
+    "vue-draggable-plus": "^0.2.4",
+    "yup": "^1.2.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
