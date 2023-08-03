@@ -38,7 +38,7 @@ services:
         depends_on:
             - mysql
             # - backend
-            - nuxt_entry
+            - frontend
     phpmyadmin:
         image: phpmyadmin
         restart: always
