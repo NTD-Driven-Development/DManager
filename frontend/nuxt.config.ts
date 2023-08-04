@@ -4,6 +4,13 @@ export default defineNuxtConfig({
 	typescript: {
         strict: true,
     },
+	vite: {
+        server: {
+            hmr: {
+                port: 11111,
+            },
+        }
+    },
 	css: ['~/assets/css/main.css'],
 	postcss: {
 		plugins: {

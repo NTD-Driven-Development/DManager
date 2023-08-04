@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<NuxtLayout name="">
+		<NuxtLayout>
 			<NuxtPage/>
 		</NuxtLayout>
 	</div>
@@ -9,8 +9,7 @@
 <script setup lang="ts">
 	const layout = ref();
 
-	watch(() => toRef(useRoute(), 'params'), (n) => {
-		console.log(n);
-		
-	}, { immediate: true });
+	watch(() => toRef(useRoute().path), (n) => {
+		//
+	}, { immediate: true, deep: true });
 </script>

@@ -3,7 +3,7 @@ import { useAuthStore } from '~/stores/auth';
 
 export default defineNuxtPlugin(() => {
     axios.interceptors.request.use((config) => {
-        config.baseURL = window.location.href;
+        config.baseURL = window.location.origin;
         config.headers.Authorization = useAuthStore().getAccessToken();
         config.headers['X-CSRF-TOKEN'] = useCookie('X-CSRF-TOKEN').value;
 

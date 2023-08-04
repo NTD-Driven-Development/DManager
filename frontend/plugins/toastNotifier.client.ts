@@ -1,9 +1,10 @@
 import { createApp } from 'vue';
-import Toast from '~/components/ToastNotifier.vue';
+import ToastNotifier from '~/components/ToastNotifier.vue';
+import { ToastNotifierKey } from '~/symbols';
 
 export default defineNuxtPlugin((nuxtApp): any => {
     const mountPoint = document.createElement('div');
     document.body.appendChild(mountPoint);
-    const toast = createApp(Toast).mount(mountPoint) as InstanceType<typeof Toast>;
-    nuxtApp.vueApp.provide('toastNotifier', toast);
+    const toast = createApp(ToastNotifier).mount(mountPoint) as InstanceType<typeof ToastNotifier>;
+    nuxtApp.vueApp.provide(ToastNotifierKey, toast);
 })
