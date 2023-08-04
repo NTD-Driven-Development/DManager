@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@types/lodash": "^4.14.196",
     "@types/node": "^18.17.1",
     "autoprefixer": "^10.4.14",
     "nuxt": "^3.6.5",
@@ -20,7 +21,6 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
-    "lodash": "^4.17.21",
     "path-to-regexp": "^6.2.1",
     "pinia": "^2.1.6",
     "vee-validate": "^4.11.1",
