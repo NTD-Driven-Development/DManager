@@ -13,6 +13,7 @@
                 <!-- 關閉 -->
                 <!-- <FAIcon :icon="['fas', 'xmark']" class="text-xl text-white cursor-pointer md:invisible"
                 @click="isMenuOpen = false"/> -->
+                <Icon icon="mdi:close" class="text-2xl text-white cursor-pointer md:invisible" @click="isMenuOpen = false"/>
             </div>
             <!-- <div class="flex h-24 min-w-[240px] p-4 transition-all ease-in-out duration-500 bg-primary-blue">
                 <NuxtLink to="/profile">
@@ -94,6 +95,7 @@
 <script setup lang="ts">
     import { ToastNotifierKey } from '~/symbols/index';
     import { useAuthStore } from '~/stores/auth';
+    import { Icon } from '@iconify/vue';
 
     const { path } = useRoute();
     const authStore = useAuthStore();
