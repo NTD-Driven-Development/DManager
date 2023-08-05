@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import ToastNotifier from '~/components/ToastNotifier.vue';
-import { ToastNotifierKey } from '~/symbols';
+import { ToastNotifierKey } from '~/src/symbols';
 
 export default defineNuxtPlugin((nuxtApp): any => {
     const mountPoint = document.createElement('div');

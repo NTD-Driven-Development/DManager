@@ -24,6 +24,7 @@
     "axios": "^1.4.0",
     "path-to-regexp": "^6.2.1",
     "pinia": "^2.1.6",
+    "swiper": "^10.1.0",
     "vee-validate": "^4.11.1",
     "vue-draggable-plus": "^0.2.4",
     "yup": "^1.2.0"

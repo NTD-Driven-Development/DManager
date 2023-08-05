@@ -1,15 +1,16 @@
 <template>
-	<div>
-		<NuxtLayout>
-			<NuxtPage/>
-		</NuxtLayout>
-	</div>
+	<NuxtLayout :name="layout">
+		<NuxtPage/>
+	</NuxtLayout>
 </template>
 
 <script setup lang="ts">
-	const layout = ref();
+	const toastNotifier = inject(ToastNotifierKey);
+	const layout = ref('default');
 
-	watch(() => toRef(useRoute().path), (n) => {
-		//
+	watch(() => useRoute().path, (n) => {
+		if (n.startsWith('/login')) {
+			layout.value = '';
+		}
 	}, { immediate: true, deep: true });
 </script>

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { User } from '~/core/model';
-import { UserRole } from '~/core/enum';
+import { User } from '~/src/model';
+import { UserRole } from '~/src/enum';
 import axios from "axios";
 import _ from 'lodash';
 
@@ -159,7 +159,6 @@ export const useAuthStore = defineStore('auth', () => {
 interface LoginFormData {
     email: string,
     password: string,
-    random_key: string,
 }
 
 interface ForgetFormData {
