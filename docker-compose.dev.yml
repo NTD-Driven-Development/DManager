@@ -37,7 +37,7 @@ services:
             - server
         depends_on:
             - mysql
-            # - backend
+            - backend
             - frontend
     phpmyadmin:
         image: phpmyadmin
@@ -51,24 +51,24 @@ services:
             - server
         depends_on:
             - mysql
-    # backend:
-    #     image: node:latest
+    backend:
+        image: node:latest
 
-    #     working_dir: /var/www
+        working_dir: /var/www
 
-    #     command: bash -c "
-    #         npm install &&
-    #         npm run migrate &&
-    #         npm run start"
+        command: bash -c "
+            npm install &&
+            npm run migrate &&
+            npm run dev"
 
-    #     restart: always
+        restart: always
 
-    #     networks:
-    #         - server
-    #     volumes:
-    #         - ./backend:/var/www/
-    #     depends_on:
-    #         - mysql
+        networks:
+            - server
+        volumes:
+            - ./backend:/var/www/
+        depends_on:
+            - mysql
     frontend:
         image: node:latest
 
