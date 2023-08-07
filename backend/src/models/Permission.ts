@@ -15,7 +15,7 @@ interface PermissionAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class Permission extends Model<PermissionAttributes> implements PermissionAttributes {
-        id?: number
+        id!: number
         description!: string
         method!:string
         path!: string

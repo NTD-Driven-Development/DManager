@@ -16,7 +16,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         extends Model<UserRoleAttributes>
         implements UserRoleAttributes
     {
-        id?: number
+        id!: number
         user_id!: number
         role_id!: number
         created_at!: Date

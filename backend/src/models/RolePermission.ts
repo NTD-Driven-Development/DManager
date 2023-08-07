@@ -17,7 +17,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         extends Model<RolePermissionAttributes>
         implements RolePermissionAttributes
     {
-        id?: number
+        id!: number
         role_id!: number
         permission_id!: number
         is_active!: boolean

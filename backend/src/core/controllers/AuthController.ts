@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import AuthService from "../services/AuthService"
 import HttpResponse from "../../utils/httpResponse"
 import RequestUser from "../viewModels/auth/RequestUser"
+import UserModel from "../../models/User"
 import db from "../../models"
 
 export default new (class AuthController {
@@ -9,7 +10,7 @@ export default new (class AuthController {
         try {
             // set transaction
             await db.sequelize.transaction(async (t: any) => {
-                const user = req.user as RequestUser
+                const user = req.user as UserModel
                 const data = await AuthService.login(user, req, res)
                 const response: HttpResponse = HttpResponse.success(data)
                 return res.status(response.statusCode).json(response)

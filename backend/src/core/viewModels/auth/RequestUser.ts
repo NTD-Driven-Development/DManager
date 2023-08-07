@@ -1,17 +1,16 @@
 import UserModel from "../../../models/User"
 
 interface Role {
-    id?: number
+    id: number
     name: string
 }
 interface Permission {
-    id?: number
+    id: number
     path: string
     method: string
 }
 export default interface RequestUser {
-    id?: number
-    account? : string
+    id: number
     name: string
     is_admin: boolean
     is_active: boolean

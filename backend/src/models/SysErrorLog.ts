@@ -21,7 +21,7 @@ interface SysErrorLogAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class SysErrorLog extends Model<SysErrorLogAttributes> implements SysErrorLogAttributes {
-        id?: number
+        id!: number
         clientip!: string
         serverip!: string
         url!: string

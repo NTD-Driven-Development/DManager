@@ -15,7 +15,7 @@ interface SysLoginLogAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class SysLoginLog extends Model<SysLoginLogAttributes> implements SysLoginLogAttributes {
-        id?: number
+        id!: number
         type!: string
         clientip!: string
         serverip!: string

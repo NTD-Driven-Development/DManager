@@ -15,7 +15,7 @@ interface RoleAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class Role extends Model<RoleAttributes> implements RoleAttributes {
-        id?: number
+        id!: number
         name!: string
         is_active!: boolean
         created_at!: Date

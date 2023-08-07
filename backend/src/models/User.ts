@@ -18,7 +18,7 @@ interface UserAttributes {
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class User extends Model<UserAttributes> implements UserAttributes {
-        id?: number
+        id!: number
         name!: string
         account!: string
         password!: string

@@ -20,19 +20,19 @@ export default new (class AuthService {
     ): Promise<RequestUser> {
         const user = await AuthDao.getUserAuthInfoByAccount(account)
         const roles = _.map(user?.roles, (role) => {
-            return { id: role.id, name: role.name }
+            return { id: role.id as number, name: role.name }
         })
         const permissions = _.map(user?.roles, (role) => {
             return _.map(role.permissions, (permission) => {
                 return {
-                    id: permission.id,
+                    id: permission.id as number,
                     path: permission.path,
                     method: permission.method,
                 }
             })
         })
         const requestUser: RequestUser = {
-            id: user.id,
+            id: user.id as number,
             name: user.name,
             is_admin: user.is_admin,
             is_active: user.is_active,
@@ -47,19 +47,19 @@ export default new (class AuthService {
     ): Promise<RequestUser> {
         const user = await AuthDao.getUserAuthInfoById(id)
         const roles = _.map(user?.roles, (role) => {
-            return { id: role.id, name: role.name }
+            return { id: role.id as number, name: role.name }
         })
         const permissions = _.map(user?.roles, (role) => {
             return _.map(role.permissions, (permission) => {
                 return {
-                    id: permission.id,
+                    id: permission.id as number,
                     path: permission.path,
                     method: permission.method,
                 }
             })
         })
         const requestUser: RequestUser = {
-            id: user.id,
+            id: user.id as number,
             name: user.name,
             is_admin: user.is_admin,
             is_active: user.is_active,
@@ -132,7 +132,7 @@ export default new (class AuthService {
     }
 
     public async login(
-        user: RequestUser,
+        user: UserModel,
         req: Request,
         res: Response
     ): Promise<AuthResult> {
