@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { AnySchema } from "yup"
-import HttpException from "../exceptions/HttpException"
+import ValidationException from "../exceptions/ValidationException"
 
 export default (schema: AnySchema) =>
     async (req: Request, res: Response, next: NextFunction) => {
@@ -15,7 +15,7 @@ export default (schema: AnySchema) =>
             req.params = params
             return next()
         } catch (error: any) {
-            const err =  new HttpException(error.message, 400)
+            const err =  new ValidationException(error.message)
             next(err)
         }
     }

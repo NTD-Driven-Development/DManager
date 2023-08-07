@@ -1,5 +1,3 @@
-import { number } from "yup"
-
 declare namespace Dao {
     interface IDao {
         findOneById(id: string | number): Promise<any>

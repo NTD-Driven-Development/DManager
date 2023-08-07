@@ -1,3 +1,3 @@
 export default class ValidationException extends Error {
-    public readonly statusCode: number = 419
+    public readonly statusCode: number = 400
 }

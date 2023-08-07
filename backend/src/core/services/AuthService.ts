@@ -175,21 +175,23 @@ export default new (class AuthService {
             " "
         )[1] as string
         const refresh_token = req.cookies?.refresh_token as string
-
+        // if token is empty
         if (_.isEmpty(access_token) || _.isEmpty(refresh_token))
             throw new HttpException("請重新登入", 401)
+        // if jwttoken is invalid
         const decoded = await this.vertifyJWTToken(access_token)
-        if (typeof decoded === "string") {
+        if (typeof decoded === "string" && decoded === "驗證失敗") {
             throw new HttpException(decoded, 401)
         }
         const authLog = await LogDao.findSysAuthLogByRefreshtoken(refresh_token)
-        if (_.isEmpty(authLog) || decoded.id != authLog.user_id) {
+        // if refreshtoken is not found or expired
+        if (_.isEmpty(authLog)) {
             throw new HttpException("請重新登入", 401)
         }
 
-        const access_token_new = await this.signJwtById(decoded.id as number)
+        const access_token_new = await this.signJwtById(authLog.user_id as number)
         const refresh_token_new = await this.setRefreshToken(
-            decoded.id as number,
+            authLog.user_id as number,
             RefreshTokenType.刷新,
             req
         )
