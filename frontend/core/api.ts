@@ -35,7 +35,7 @@ export abstract class AxiosRequestable<T> extends Requestable<AxiosResponse<T>> 
     }
 }
 
-export abstract class ApiRequestable<T extends object, Q extends Queries = Queries> extends AxiosRequestable<ApiResponse<T>> {
+export abstract class ApiRequestable<T, Q extends Queries = Queries> extends AxiosRequestable<ApiResponse<T>> {
     protected _queries = ref<Q>({} as Q);
     queries = readonly(this._queries);
     options = _.cloneDeep(defaultOptions);
@@ -84,7 +84,7 @@ export abstract class ApiRequestable<T extends object, Q extends Queries = Queri
     }
 }
 
-export abstract class ApiCaller<T extends object, Q extends Queries = Queries, TInit = any> extends ApiRequestable<T, Q> {
+export abstract class ApiCaller<T = any, Q extends Queries = Queries> extends ApiRequestable<T, Q> {
     protected _data = ref<T>();
     data = shallowReadonly(this._data);
 
@@ -114,7 +114,7 @@ export abstract class ApiCaller<T extends object, Q extends Queries = Queries, T
     clear = () => this._data.value = undefined;
 }
 
-export abstract class ApiPaginator<T, Q extends PaginationQueries = PaginationQueries> 
+export abstract class ApiPaginator<T = any, Q extends PaginationQueries = PaginationQueries> 
 extends ApiRequestable<PaginationResponse<T>, Q> {
     protected _data = ref<T[]>();
     data = shallowReadonly(this._data);

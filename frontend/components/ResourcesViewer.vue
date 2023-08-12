@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
     import { Swiper, SwiperSlide } from 'swiper/vue';
-    import { Navigation } from 'swiper';
+    import { Navigation } from 'swiper/modules';
     import _ from 'lodash';
     import 'swiper/css';
     import 'swiper/css/navigation';

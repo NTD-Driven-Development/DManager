@@ -5,12 +5,14 @@
 </template>
 
 <script setup lang="ts">
-	const toastNotifier = inject(ToastNotifierKey);
 	const layout = ref('default');
 
 	watch(() => useRoute().path, (n) => {
 		if (n.startsWith('/login')) {
 			layout.value = '';
+		}
+		else {
+			layout.value = 'default';
 		}
 	}, { immediate: true, deep: true });
 </script>

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { InjectionKey } from 'nuxt/dist/app/compat/capi';
 import ToastNotifier from '~/components/ToastNotifier.vue';
 
 export const useUrl = (options?: UrlOptions): string => {
@@ -30,23 +29,6 @@ export const addComma = (n: number | string) => {
 
     return n?.toLocaleString();
 }
-
-// export const download = (resources: Base64Resource[]) => {
-//     function next(i: number) {
-//         if (i >= resources.length) return;
-//         var a = document.createElement('a');
-//         a.href = toBase64String(resources[i]);
-//         a.target = '_parent';
-//         if ('download' in a) {
-//             a.download = `${Date.now()}.${MIME.getExtension(resources[i].mediaType)}`;
-//         }
-//         (document.body || document.documentElement).appendChild(a);
-//         a.click && a.click();
-//         a.parentNode?.removeChild(a);
-//         setTimeout(() => next(i + 1), 500);
-//     }
-//     next(0);
-// }
 
 export const showParseError = (notifier: InstanceType<typeof ToastNotifier>, error: any) => {
     const messages = [];
@@ -142,8 +124,3 @@ interface UrlOptions {
     subDomain?: string,
     params?: string,
 }
-
-// export interface Base64Resource {
-//     mediaType: string,
-//     resourceContent: string,   
-// }
