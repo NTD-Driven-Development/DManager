@@ -8,7 +8,7 @@ export interface Updated {
     updater: any,
 }
 
-export interface Semester {
+export interface Project {
     id: number,
     name: string,
     remark?: string,
@@ -29,7 +29,7 @@ export interface Class {
     name: string,
 }
 
-export interface PointRecordRule {
+export interface PointRule {
     id: number,
     code: string,
     reason: string,
@@ -57,19 +57,19 @@ export interface User {
     is_admin: boolean,
 }
 
-export interface Contacter {
+export interface BoarderContacter {
     id: number,
     name: string,
     tel: string,
     remark?: string,
 }
 
-export interface PointRecord {
+export interface Point {
     id: number,
     remark?: string,
 }
 
-export interface TelCardRecord {
+export interface TelCard {
     id: number,
     remark?: string,
     contacted_at: string,

@@ -14,7 +14,7 @@
         initValue?: T,
         optionKey?: K,
         optionValue?: ((it: T) => string) | K;
-        options: readonly T[],
+        options?: readonly T[],
         name: string,
         placeholder?: string,
         disabled?: boolean,

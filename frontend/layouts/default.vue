@@ -28,14 +28,14 @@
                     </div>
                 </div>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
-                @click="navigateTo('/semesters'); isMenuOpen = false;">
-                    <div>學期管理</div>
+                @click="navigateTo('/projects'); isMenuOpen = false;">
+                    <div>項目管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
-                    v-show="$route.path.startsWith('/semesters')"></Icon>
+                    v-show="$route.path.startsWith('/projects')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
                 @click="navigateTo('/boarders'); isMenuOpen = false;">
-                    <div>住宿管理</div>
+                    <div>住宿生管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/boarders')"></Icon>
                 </button>
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <!-- PageContent -->
-            <main id="main" class="h-full md:ml-60 overflow-auto" :class="[pageContentColor]">
+            <main id="main" class="h-[calc(100%-48px)] md:ml-60 overflow-auto" :class="[pageContentColor]">
                 <slot />
             </main>
         </div>
