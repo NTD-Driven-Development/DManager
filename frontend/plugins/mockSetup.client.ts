@@ -16,6 +16,12 @@ export default defineNuxtPlugin(() => {
         items: [
             { id: 1, name: '110上學期', remark: '備註' },
             { id: 2, name: '110下學期' },
+            { id: 3, name: '110上學期', remark: '備註' },
+            { id: 4, name: '110下學期' },
+            { id: 5, name: '110上學期', remark: '備註' },
+            { id: 6, name: '110下學期' },
+            { id: 7, name: '110上學期', remark: '備註' },
+            { id: 8, name: '110下學期' },
         ],
     }));
 })

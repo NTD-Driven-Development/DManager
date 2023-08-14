@@ -25,11 +25,11 @@
     </div>
 </template>
 
-<script setup lang="ts" generic="T, Q extends PaginationQueries">
-    import { ApiPaginator, PaginationQueries } from '~/core/api';
+<script setup lang="ts">
+    import { ApiPaginator } from '~/core/api';
 
     interface Props {
-        apiPaginator?: ApiPaginator<T, Q>,
+        apiPaginator?: ApiPaginator,
     }
 
     defineProps<Props>();

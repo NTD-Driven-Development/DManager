@@ -6,4 +6,10 @@
     html {
         -webkit-tap-highlight-color: transparent;
     }
+    input, textarea {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
 }

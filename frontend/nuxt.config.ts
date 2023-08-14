@@ -12,6 +12,16 @@ export default defineNuxtConfig({
         }
     },
 	css: ['~/assets/css/main.css'],
+    components: [
+        {
+            path: '~/components',
+            pathPrefix: false,
+        },
+        {
+            path: '~/subPages',
+            pathPrefix: false,
+        },
+    ],
     imports: {
         dirs: [
             './src',
