@@ -1,17 +1,16 @@
 import axios, { AxiosResponse } from 'axios';
-import { ApiPaginator, ApiResponse, PaginationResponse } from '~/core/api';
-import _ from 'lodash';
+import { ApiCaller, ApiResponse } from '~/core/api';
 import * as Model from '~/src/model';
 
-const PREFIX = '/users';
+const PREFIX = '/share';
 
-export class SemesterPaginator extends ApiPaginator<User> {
+export class ProjectCaller extends ApiCaller<Project[]> {
     constructor() {
         super();
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<User>>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<Project[]>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -21,8 +20,8 @@ export class SemesterPaginator extends ApiPaginator<User> {
             });
         }
 
-        return axios.get(`${PREFIX}?${searchParams}`);
+        return axios.get(`${PREFIX}/projects?${searchParams}`);
     }
 }
 
-type User = Model.User
+type Project = Model.Project

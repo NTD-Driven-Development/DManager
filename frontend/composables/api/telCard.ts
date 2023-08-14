@@ -3,15 +3,15 @@ import { ApiPaginator, ApiResponse, PaginationResponse } from '~/core/api';
 import _ from 'lodash';
 import * as Model from '~/src/model';
 
-const PREFIX = '/users';
+const PREFIX = '/telCards';
 
-export class SemesterPaginator extends ApiPaginator<User> {
+export class ProjectPaginator extends ApiPaginator<TelCard> {
     constructor() {
         super();
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<User>>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<TelCard>>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -25,4 +25,4 @@ export class SemesterPaginator extends ApiPaginator<User> {
     }
 }
 
-type User = Model.User
+type TelCard = Model.TelCard
