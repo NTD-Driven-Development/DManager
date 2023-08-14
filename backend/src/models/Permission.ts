@@ -6,7 +6,7 @@ interface PermissionAttributes {
     description: string
     method:string
     path: string
-    is_active: boolean
+    is_actived: boolean
     created_at: Date
     created_by?: number
     updated_at?: Date
@@ -19,7 +19,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         description!: string
         method!:string
         path!: string
-        is_active!: boolean
+        is_actived!: boolean
         created_at!: Date
         created_by?: number
         updated_at?: Date
@@ -62,7 +62,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 comment: "Route Path",
             },
-            is_active: {
+            is_actived: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",

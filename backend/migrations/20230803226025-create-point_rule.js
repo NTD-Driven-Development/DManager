@@ -2,47 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('student', {
-            sid: {
-                type: Sequelize.STRING(25),
+        await queryInterface.createTable('point_rule', {
+            id: {
+                type: Sequelize.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 allowNull: false,
-                comment: "學號",
             },
-            name: {
+            code: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
-                comment: "姓名",
+                comment: "代號",
+            },
+            reason: {
+                type: Sequelize.STRING(50),
+                allowNull: false,
+                comment: "原因",
             },
             point: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "點數",
             },
-            phone: {
-                type: Sequelize.STRING(20),
-                allowNull: false,
-                comment: "電話",
-            },
-            user_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                comment: "使用者ID",
-            },
-            class_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                comment: "班級ID",
-            },
-            is_live: {
+            is_actived: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
-                comment: "是否為(住宿/非住宿)",
-            },
-            remark: {
-                type: Sequelize.STRING(255),
-                allowNull: true,
-                comment: "備註",
+                comment: "是否啟用",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -64,9 +49,19 @@ module.exports = {
                 allowNull: true,
                 comment: "更新者",
             },
+            deleted_at: {
+                type: Sequelize.DATE,
+                allowNull: true,
+                comment: "刪除時間",
+            },
+            deleted_by: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                comment: "刪除者",
+            },
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('student');
+        await queryInterface.dropTable('point_rule');
     }
 };

@@ -1,38 +1,33 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface StudentAttributes {
+interface BoarderContacterAttributes {
+    id?: number
     sid: string
     name: string
-    point: number
-    phone: string
-    user_id: number
-    class_id: number
-    is_live: boolean
+    tel: string
     remark?: string
     created_at: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
+    deleted_at?: Date
+    deleted_by?: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class Student
-        extends Model<StudentAttributes>
-        implements StudentAttributes
-    {
+    class BoarderContacter extends Model<BoarderContacterAttributes> implements BoarderContacterAttributes {
+        id!: number
         sid!: string
         name!: string
-        point!: number
-        phone!: string
-        user_id!: number
-        class_id!: number
-        is_live!: boolean
+        tel!: string
         remark?: string
         created_at!: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
+        deleted_at?: Date
+        deleted_by?: number
 
         /**
          * Helper method for defining associations.
@@ -43,46 +38,31 @@ module.exports = (sequelize: any, DataTypes: any) => {
             // define association here
         }
     }
-    Student.init(
+    BoarderContacter.init(
         {
-            sid: {
-                type: DataTypes.STRING(25),
+            id: {
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 allowNull: false,
-                comment: "學號",
+            },
+            sid: {
+                type: DataTypes.STRING(20),
+                allowNull: false,
+                comment: "住宿生學號",
             },
             name: {
+                type: DataTypes.STRING(10),
+                allowNull: false,
+                comment: "緊急聯絡人姓名",
+            },
+            tel: {
                 type: DataTypes.STRING(20),
                 allowNull: false,
-                comment: "姓名",
-            },
-            point: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "點數",
-            },
-            phone: {
-                type: DataTypes.STRING(20),
-                allowNull: false,
-                comment: "電話",
-            },
-            user_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "使用者ID",
-            },
-            class_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "班級ID",
-            },
-            is_live: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                comment: "是否為(住宿/非住宿)",
+                comment: "聯絡人電話",
             },
             remark: {
-                type: DataTypes.STRING(255),
+                type: DataTypes.STRING(200),
                 allowNull: true,
                 comment: "備註",
             },
@@ -106,13 +86,25 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: true,
                 comment: "更新者",
             },
+            deleted_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                comment: "刪除時間",
+            },
+            deleted_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "刪除者",
+            },
         },
         {
             sequelize,
-            modelName: "student",
+            modelName: "boarder_contacter",
+            timestamps: false,
+            freezeTableName: true,
         }
     )
-    return Student
+    return BoarderContacter
 }
 
-export default StudentAttributes
+export default BoarderContacterAttributes

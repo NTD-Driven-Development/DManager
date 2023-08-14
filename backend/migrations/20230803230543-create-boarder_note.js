@@ -2,22 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('role', {
+        await queryInterface.createTable('boarder_note', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
             },
-            name: {
+            sid: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+                comment: "住宿生學號",
+            },
+            title: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
-                comment: "角色名稱",
+                comment: "標題",
             },
-            is_actived: {
-                type: Sequelize.BOOLEAN,
+            description: {
+                type: Sequelize.STRING(500),
                 allowNull: false,
-                comment: "是否啟用",
+                comment: "描述",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -52,6 +57,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('role');
+        await queryInterface.dropTable('boarder_note');
     }
 };

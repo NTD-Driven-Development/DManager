@@ -128,7 +128,7 @@ class App implements IApp {
                 }
 
                 // set default timezone
-                moment.tz.setDefault("Asia/Taipei")
+                moment.tz.setDefault(process.env.NODE_TIMEZONE || "Asia/Taipei")
                 return next()
             }
         )

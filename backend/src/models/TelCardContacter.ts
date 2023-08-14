@@ -1,14 +1,9 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface UserAttributes {
+interface TelCardContacterAttributes {
     id?: number
-    sid: string
     name: string
-    email: string
-    password: string
-    is_admin: boolean
-    is_actived: boolean
     created_at: Date
     created_by?: number
     updated_at?: Date
@@ -18,14 +13,9 @@ interface UserAttributes {
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class User extends Model<UserAttributes> implements UserAttributes {
+    class TelCardContacter extends Model<TelCardContacterAttributes> implements TelCardContacterAttributes {
         id!: number
-        sid!: string
         name!: string
-        email!: string
-        password!: string
-        is_admin!: boolean
-        is_actived!: boolean
         created_at!: Date
         created_by?: number
         updated_at?: Date
@@ -40,14 +30,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
-            User.belongsToMany(models.role, {
-                through: "user_role",
-                foreignKey: "user_id",
-                as: "roles",
-            })
         }
     }
-    User.init(
+    TelCardContacter.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -55,35 +40,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            sid: {
-                type: DataTypes.STRING(20),
-                allowNull: false,
-                comment: "學號",
-            },
             name: {
-                type: DataTypes.STRING(20),
+                type: DataTypes.STRING(10),
                 allowNull: false,
-                comment: "姓名",
-            },
-            email: {
-                type: DataTypes.STRING(255),
-                allowNull: false,
-                comment: "帳號",
-            },
-            password: {
-                type: DataTypes.STRING(512),
-                allowNull: false,
-                comment: "密碼",
-            },
-            is_admin: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                comment: "是否為管理員",
-            },
-            is_actived: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                comment: "是否啟用",
+                comment: "聯絡人名稱",
             },
             created_at: {
                 type: DataTypes.DATE,
@@ -118,12 +78,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
         },
         {
             sequelize,
-            modelName: "user",
+            modelName: "tel_card_contacter",
             timestamps: false,
             freezeTableName: true,
         }
     )
-    return User
+    return TelCardContacter
 }
 
-export default UserAttributes
+export default TelCardContacterAttributes

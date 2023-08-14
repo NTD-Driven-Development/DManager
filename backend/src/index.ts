@@ -18,3 +18,5 @@ server.on("listening", function () {
 server.on("error", (error: any) => {
     console.log(`Dormiday Server error: ${error.message}`)
 })
+
+export default server

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('role', {
+        await queryInterface.createTable('project', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -12,12 +12,12 @@ module.exports = {
             name: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
-                comment: "角色名稱",
+                comment: "項目名稱",
             },
-            is_actived: {
-                type: Sequelize.BOOLEAN,
+            remark: {
+                type: Sequelize.STRING(500),
                 allowNull: false,
-                comment: "是否啟用",
+                comment: "備註",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -52,6 +52,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('role');
+        await queryInterface.dropTable('project');
     }
 };

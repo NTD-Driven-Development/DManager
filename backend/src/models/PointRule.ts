@@ -1,13 +1,11 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface UserAttributes {
+interface PointRuleAttributes {
     id?: number
-    sid: string
-    name: string
-    email: string
-    password: string
-    is_admin: boolean
+    code: string
+    reason: string
+    point: number
     is_actived: boolean
     created_at: Date
     created_by?: number
@@ -18,13 +16,11 @@ interface UserAttributes {
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class User extends Model<UserAttributes> implements UserAttributes {
+    class PointRule extends Model<PointRuleAttributes> implements PointRuleAttributes {
         id!: number
-        sid!: string
-        name!: string
-        email!: string
-        password!: string
-        is_admin!: boolean
+        code!: string
+        reason!: string
+        point!: number
         is_actived!: boolean
         created_at!: Date
         created_by?: number
@@ -40,14 +36,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
-            User.belongsToMany(models.role, {
-                through: "user_role",
-                foreignKey: "user_id",
-                as: "roles",
-            })
         }
     }
-    User.init(
+    PointRule.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -55,30 +46,20 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            sid: {
+            code: {
                 type: DataTypes.STRING(20),
                 allowNull: false,
-                comment: "學號",
+                comment: "代號",
             },
-            name: {
-                type: DataTypes.STRING(20),
+            reason: {
+                type: DataTypes.STRING(50),
                 allowNull: false,
-                comment: "姓名",
+                comment: "原因",
             },
-            email: {
-                type: DataTypes.STRING(255),
+            point: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "帳號",
-            },
-            password: {
-                type: DataTypes.STRING(512),
-                allowNull: false,
-                comment: "密碼",
-            },
-            is_admin: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                comment: "是否為管理員",
+                comment: "點數",
             },
             is_actived: {
                 type: DataTypes.BOOLEAN,
@@ -118,12 +99,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
         },
         {
             sequelize,
-            modelName: "user",
+            modelName: "point_rule",
             timestamps: false,
             freezeTableName: true,
         }
     )
-    return User
+    return PointRule
 }
 
-export default UserAttributes
+export default PointRuleAttributes

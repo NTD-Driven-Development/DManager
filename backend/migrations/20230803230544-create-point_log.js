@@ -2,27 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('role_permission', {
+        await queryInterface.createTable('point_log', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
             },
-            role_id: {
+            sid: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+                comment: "住宿生學號",
+            },
+            project_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "角色編號",
+                comment: "項目ID",
             },
-            permission_id: {
+            point_rule_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "權限編號",
+                comment: "點數規則ID",
             },
-            is_actived: {
-                type: Sequelize.BOOLEAN,
-                allowNull: false,
-                comment: "是否啟用",
+            remark: {
+                type: Sequelize.STRING(500),
+                allowNull: true,
+                comment: "備註",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -34,19 +39,9 @@ module.exports = {
                 allowNull: true,
                 comment: "建立者",
             },
-            updated_at: {
-                type: Sequelize.DATE,
-                allowNull: true,
-                comment: "更新時間",
-            },
-            updated_by: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                comment: "更新者",
-            },
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('role_permission');
+        await queryInterface.dropTable('point_log');
     }
 };

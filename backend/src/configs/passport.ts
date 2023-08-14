@@ -1,6 +1,6 @@
 export default {
     local: {
-        usernameField: 'account',
+        usernameField: 'email',
         passwordField: 'password',
     },
     jwt: {

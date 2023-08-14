@@ -13,7 +13,7 @@ export default interface RequestUser {
     id: number
     name: string
     is_admin: boolean
-    is_active: boolean
+    is_actived: boolean
     roles: Role[] 
     permissions: Permission[]
 }

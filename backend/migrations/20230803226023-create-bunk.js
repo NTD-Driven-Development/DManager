@@ -2,22 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('role', {
+        await queryInterface.createTable('bunk', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
             },
-            name: {
-                type: Sequelize.STRING(50),
+            floor: {
+                type: Sequelize.STRING(10),
                 allowNull: false,
-                comment: "角色名稱",
+                comment: "樓層",
             },
-            is_actived: {
-                type: Sequelize.BOOLEAN,
+            room_type: {
+                type: Sequelize.STRING(10),
                 allowNull: false,
-                comment: "是否啟用",
+                comment: "房型",
+            },
+            room_no: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                comment: "房號",
+            },
+            bed: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                comment: "床號",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -52,6 +62,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('role');
+        await queryInterface.dropTable('bunk');
     }
 };

@@ -1,30 +1,25 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface RolePermissionAttributes {
+interface PointLogAttributes {
     id?: number
-    role_id: number
-    permission_id: number
-    is_actived: boolean
+    sid: string
+    project_id: number
+    point_rule_id: number
+    remark?: string
     created_at: Date
     created_by?: number
-    updated_at?: Date
-    updated_by?: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class RolePermission
-        extends Model<RolePermissionAttributes>
-        implements RolePermissionAttributes
-    {
+    class PointLog extends Model<PointLogAttributes> implements PointLogAttributes {
         id!: number
-        role_id!: number
-        permission_id!: number
-        is_actived!: boolean
+        sid!: string
+        project_id!: number
+        point_rule_id!: number
+        remark?: string
         created_at!: Date
         created_by?: number
-        updated_at?: Date
-        updated_by?: number
 
         /**
          * Helper method for defining associations.
@@ -35,7 +30,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             // define association here
         }
     }
-    RolePermission.init(
+    PointLog.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -43,20 +38,25 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            role_id: {
+            sid: {
+                type: DataTypes.STRING(20),
+                allowNull: false,
+                comment: "住宿生學號",
+            },
+            project_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "角色編號",
+                comment: "項目ID",
             },
-            permission_id: {
+            point_rule_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "權限編號",
+                comment: "點數規則ID",
             },
-            is_actived: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                comment: "是否啟用",
+            remark: {
+                type: DataTypes.STRING(500),
+                allowNull: true,
+                comment: "備註",
             },
             created_at: {
                 type: DataTypes.DATE,
@@ -68,25 +68,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: true,
                 comment: "建立者",
             },
-            updated_at: {
-                type: DataTypes.DATE,
-                allowNull: true,
-                comment: "更新時間",
-            },
-            updated_by: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-                comment: "更新者",
-            },
         },
         {
             sequelize,
-            modelName: "role_permission",
+            modelName: "point_log",
             timestamps: false,
             freezeTableName: true,
         }
     )
-    return RolePermission
+    return PointLog
 }
 
-export default RolePermissionAttributes
+export default PointLogAttributes

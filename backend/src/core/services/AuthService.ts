@@ -15,10 +15,10 @@ import ip from "../../utils/ip"
 import HttpException from "../../exceptions/HttpException"
 
 export default new (class AuthService {
-    public async getUserAuthInfoByAccount(
-        account: string
+    public async getUserAuthInfoByEmail(
+        email: string
     ): Promise<RequestUser> {
-        const user = await AuthDao.getUserAuthInfoByAccount(account)
+        const user = await AuthDao.getUserAuthInfoByEmail(email)
         const roles = _.map(user?.roles, (role) => {
             return { id: role.id as number, name: role.name }
         })
@@ -35,7 +35,7 @@ export default new (class AuthService {
             id: user.id as number,
             name: user.name,
             is_admin: user.is_admin,
-            is_active: user.is_active,
+            is_actived: user.is_actived,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }
@@ -62,20 +62,20 @@ export default new (class AuthService {
             id: user.id as number,
             name: user.name,
             is_admin: user.is_admin,
-            is_active: user.is_active,
+            is_actived: user.is_actived,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }
         return requestUser
     }
 
-    public async getUserInfoByAccount(account: string): Promise<UserModel> {
-        const user = await AuthDao.getUserInfoByAccount(account)
+    public async getUserInfoByEmail(email: string): Promise<UserModel> {
+        const user = await AuthDao.getUserInfoByEmail(email)
         return user
     }
 
-    private async signJwtByAccount(account: string): Promise<string> {
-        const user = await this.getUserAuthInfoByAccount(account)
+    private async signJwtByEmail(email: string): Promise<string> {
+        const user = await this.getUserAuthInfoByEmail(email)
         const access_token = jwt.sign(user, process.env.AUTH_SECRET as string, {
             expiresIn: process.env.AUTH_ACCESS_EXPIRESIN,
         })
@@ -136,7 +136,7 @@ export default new (class AuthService {
         req: Request,
         res: Response
     ): Promise<AuthResult> {
-        const access_token = await this.signJwtByAccount(user.account as string)
+        const access_token = await this.signJwtByEmail(user.email as string)
         const refresh_token = await this.setRefreshToken(
             user.id as number,
             RefreshTokenType.登入,

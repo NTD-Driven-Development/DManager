@@ -24,7 +24,7 @@ module.exports = {
                 allowNull: false,
                 comment: "Route Path",
             },
-            is_active: {
+            is_actived: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",

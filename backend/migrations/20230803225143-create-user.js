@@ -9,12 +9,17 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
+            sid: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+                comment: "學號",
+            },
             name: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
                 comment: "姓名",
             },
-            account: {
+            email: {
                 type: Sequelize.STRING(255),
                 allowNull: false,
                 comment: "帳號",
@@ -29,7 +34,7 @@ module.exports = {
                 allowNull: false,
                 comment: "是否為管理員",
             },
-            is_active: {
+            is_actived: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",

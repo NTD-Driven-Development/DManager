@@ -21,8 +21,8 @@ class PassportProvider implements IProvider {
         Passport.use(
             new LocalStrategy(
                 options,
-                async (account: string, password: string, done) => {
-                    const user = await AuthService.getUserInfoByAccount(account)
+                async (email: string, password: string, done) => {
+                    const user = await AuthService.getUserInfoByEmail(email)
                     if (
                         _.isEmpty(user) ||
                         strings.verifyHash(password, user.password) == false
@@ -33,7 +33,7 @@ class PassportProvider implements IProvider {
                         )
                     }
 
-                    if (user.is_active == false) {
+                    if (user.is_actived == false) {
                         return done(
                             { status: 400, message: "帳號已停用" },
                             false

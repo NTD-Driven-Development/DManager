@@ -4,7 +4,7 @@ import { Model } from "sequelize"
 interface RoleAttributes {
     id?: number
     name: string
-    is_active: boolean
+    is_actived: boolean
     created_at: Date
     created_by?: number
     updated_at?: Date
@@ -17,7 +17,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     class Role extends Model<RoleAttributes> implements RoleAttributes {
         id!: number
         name!: string
-        is_active!: boolean
+        is_actived!: boolean
         created_at!: Date
         created_by?: number
         updated_at?: Date
@@ -57,7 +57,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 comment: "角色名稱",
             },
-            is_active: {
+            is_actived: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",
