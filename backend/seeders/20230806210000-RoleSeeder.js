@@ -18,11 +18,13 @@ module.exports = {
             {
                 id: 1,
                 name: '編輯者',
+                is_actived: true,
                 created_at: now,
             },
             {
                 id: 2,
                 name: '檢視者',
+                is_actived: true,
                 created_at: now,
             },
         ]
