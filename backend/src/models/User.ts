@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface UserAttributes {
     id?: number
-    sid: string
+    sid?: string
     name: string
     email: string
     password: string
@@ -20,7 +20,7 @@ interface UserAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class User extends Model<UserAttributes> implements UserAttributes {
         id!: number
-        sid!: string
+        sid?: string
         name!: string
         email!: string
         password!: string
@@ -45,6 +45,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 foreignKey: "user_id",
                 as: "roles",
             })
+            User.belongsTo(models.boarder, {
+                foreignKey: "sid",
+                as: "boarder",
+            })
         }
     }
     User.init(
@@ -57,7 +61,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             sid: {
                 type: DataTypes.STRING(20),
-                allowNull: false,
+                allowNull: true,
                 comment: "學號",
             },
             name: {

@@ -15,6 +15,7 @@
         "make:model": "sequelize-cli model:generate --models-path \"./src/models\" --name",
         "make:seed": "sequelize-cli seed:generate --seeders-path \"./seeders\" --name",
         "seed": "sequelize-cli db:seed:all",
+        "seed:run": "sequelize-cli db:seed --seed",
         "quick:init": "npm run migrate:refresh && npm run seed"
     },
     "author": "GXiang",

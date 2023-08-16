@@ -13,17 +13,20 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
         */
-        await queryInterface.bulkInsert('user', [
+        const now = moment().toDate();
+        const roles = [
             {
-                sid: "0",
-                email : 'admin@dormiday.com',
-                password: '$2b$10$kJJAb.B4QK3qcZ32XdHPmu5XUap.Svu50QzpuJ4PTWnfW9T8FNIbe',
-                name: 'Admin',
-                is_admin: true,
-                is_actived: true,
-                created_at: moment().toDate(),
-            }
-        ]);
+                id: 1,
+                name: '編輯者',
+                created_at: now,
+            },
+            {
+                id: 2,
+                name: '檢視者',
+                created_at: now,
+            },
+        ]
+        await queryInterface.bulkInsert('role', roles);
     },
 
     async down(queryInterface, Sequelize) {

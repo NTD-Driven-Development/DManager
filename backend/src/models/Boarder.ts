@@ -11,9 +11,9 @@ interface BoarderAttributes {
     boarder_role_id: number
     boarder_status_id: number
     name: string
-    phone: string
+    phone?: string
     class_id: number
-    birthday: Date
+    birthday?: Date
     avatar?: string
     remark?: string
     access_card?: string
@@ -37,9 +37,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         boarder_role_id!: number
         boarder_status_id!: number
         name!: string
-        phone!: string
+        phone?: string
         class_id!: number
-        birthday!: Date
+        birthday?: Date
         avatar?: string
         remark?: string
         access_card?: string
@@ -68,7 +68,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             project_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "期別ID",
+                comment: "項目ID",
             },
             floor: {
                 type: DataTypes.STRING(10),
@@ -107,7 +107,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             phone: {
                 type: DataTypes.STRING(20),
-                allowNull: false,
+                allowNull: true,
                 comment: "電話",
             },
             class_id: {
@@ -117,7 +117,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             birthday: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "生日",
             },
             avatar: {

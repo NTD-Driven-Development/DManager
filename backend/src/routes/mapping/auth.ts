@@ -11,5 +11,6 @@ router.post('/login', [validate(loginSchema), jwtAuth("local")], AuthController.
 router.post('/refresh', AuthController.refreshToken);
 
 router.use(jwtAuth("jwt"));
+router.get('/check', AuthController.healthCheck)
 router.post('/logout', [], AuthController.logout);
 export default router;

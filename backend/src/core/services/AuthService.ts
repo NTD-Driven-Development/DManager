@@ -15,9 +15,7 @@ import ip from "../../utils/ip"
 import HttpException from "../../exceptions/HttpException"
 
 export default new (class AuthService {
-    public async getUserAuthInfoByEmail(
-        email: string
-    ): Promise<RequestUser> {
+    public async getUserAuthInfoByEmail(email: string): Promise<RequestUser> {
         const user = await AuthDao.getUserAuthInfoByEmail(email)
         const roles = _.map(user?.roles, (role) => {
             return { id: role.id as number, name: role.name }
@@ -42,9 +40,7 @@ export default new (class AuthService {
         return requestUser
     }
 
-    public async getUserAuthInfoById(
-        id: number
-    ): Promise<RequestUser> {
+    public async getUserAuthInfoById(id: number): Promise<RequestUser> {
         const user = await AuthDao.getUserAuthInfoById(id)
         const roles = _.map(user?.roles, (role) => {
             return { id: role.id as number, name: role.name }
@@ -72,14 +68,6 @@ export default new (class AuthService {
     public async getUserInfoByEmail(email: string): Promise<UserModel> {
         const user = await AuthDao.getUserInfoByEmail(email)
         return user
-    }
-
-    private async signJwtByEmail(email: string): Promise<string> {
-        const user = await this.getUserAuthInfoByEmail(email)
-        const access_token = jwt.sign(user, process.env.AUTH_SECRET as string, {
-            expiresIn: process.env.AUTH_ACCESS_EXPIRESIN,
-        })
-        return access_token
     }
 
     private async signJwtById(id: number): Promise<string> {
@@ -136,9 +124,10 @@ export default new (class AuthService {
         req: Request,
         res: Response
     ): Promise<AuthResult> {
-        const access_token = await this.signJwtByEmail(user.email as string)
+        const userid = user.id as number
+        const access_token = await this.signJwtById(userid)
         const refresh_token = await this.setRefreshToken(
-            user.id as number,
+            userid,
             RefreshTokenType.登入,
             req
         )
@@ -169,27 +158,35 @@ export default new (class AuthService {
         }
     }
 
-    public async refreshToken(req: Request, res: Response): Promise<AuthResult> {
+    public async refreshToken(
+        req: Request,
+        res: Response
+    ): Promise<AuthResult> {
         const access_token = _.split(
             req.headers?.authorization as string,
             " "
         )[1] as string
         const refresh_token = req.cookies?.refresh_token as string
+
         // if token is empty
         if (_.isEmpty(access_token) || _.isEmpty(refresh_token))
             throw new HttpException("請重新登入", 401)
+
         // if jwttoken is invalid
         const decoded = await this.vertifyJWTToken(access_token)
         if (typeof decoded === "string" && decoded === "驗證失敗") {
             throw new HttpException(decoded, 401)
         }
+
         const authLog = await LogDao.findSysAuthLogByRefreshtoken(refresh_token)
         // if refreshtoken is not found or expired
         if (_.isEmpty(authLog)) {
             throw new HttpException("請重新登入", 401)
         }
 
-        const access_token_new = await this.signJwtById(authLog.user_id as number)
+        const access_token_new = await this.signJwtById(
+            authLog.user_id as number
+        )
         const refresh_token_new = await this.setRefreshToken(
             authLog.user_id as number,
             RefreshTokenType.刷新,

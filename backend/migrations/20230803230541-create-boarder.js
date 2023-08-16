@@ -12,7 +12,7 @@ module.exports = {
             project_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "期別ID",
+                comment: "項目ID",
             },
             floor: {
                 type: Sequelize.STRING(10),
@@ -51,7 +51,7 @@ module.exports = {
             },
             phone: {
                 type: Sequelize.STRING(20),
-                allowNull: false,
+                allowNull: true,
                 comment: "電話",
             },
             class_id: {
@@ -61,7 +61,7 @@ module.exports = {
             },
             birthday: {
                 type: Sequelize.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "生日",
             },
             avatar: {
