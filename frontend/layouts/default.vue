@@ -29,49 +29,49 @@
                 </div>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
                 @click="navigateTo('/projects'); isMenuOpen = false;">
-                    <div>項目管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/projects') }]">項目管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/projects')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
                 @click="navigateTo('/boarders'); isMenuOpen = false;">
-                    <div>住宿生管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/boarders') }]">住宿生管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/boarders')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
                 @click="navigateTo('/records/point'); isMenuOpen = false;">
-                    <div>紀錄管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/records/point') }]">紀錄管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/records/point')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/notes'); isMenuOpen = false;">
-                    <div>記事管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/notes') }]">記事管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/notes')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/users'); isMenuOpen = false;">
-                    <div>成員管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/users') }]">成員管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/users')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/exports'); isMenuOpen = false;">
-                    <div>匯出管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/exports') }]">匯出管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/exports')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/options'); isMenuOpen = false;">
-                    <div>選單管理</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/options') }]">選單管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/options')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/logs'); isMenuOpen = false;">
-                    <div>事件記錄</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/logs') }]">事件記錄</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/logs')"></Icon>
                 </button>
@@ -117,33 +117,6 @@
     const isMenuOpen = ref(false);
 
     const sideBarBlackScreen = ref<HTMLElement>();
-    const markup = ref();
-    const engine = ref();
-    const worker = ref();
-    const member = ref();
-    const staff = ref();
-    const security = ref();
-
-    onMounted(() => {
-        if (path.startsWith('/markup')) {
-            markup.value.checked = true;
-        }
-        else if (path.startsWith('/engine')) {
-            engine.value.checked = true;
-        }
-        else if (path.startsWith('/worker')) {
-            worker.value.checked = true;
-        }
-        else if (path.startsWith('/member')) {
-            member.value.checked = true;
-        }
-        else if (path.startsWith('/staff')) {
-            staff.value.checked = true;
-        }
-        else if (path.startsWith('/security')) {
-            security.value.checked = true;
-        }
-    });
 
     const logout = () => {
         authStore.logout()

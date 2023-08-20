@@ -1,13 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
-import { ApiPaginator, ApiResponse, PaginationQueries, PaginationResponse } from '~/core/api';
+import { ApiPaginator, ApiResponse, Options, PaginationQueries, PaginationResponse } from '~/core/api';
 import _ from 'lodash';
 import * as Model from '~/src/model';
 
-const PREFIX = '/boarders';
+const PREFIX = '/api/boarders';
 
 export class BoarderPaginator extends ApiPaginator<Boarder, BoarderPaginationQueries> {
-    constructor() {
-        super();
+    constructor(options?: Options) {
+        super(options);
         this.startQueriesWatcher();
     }
 
@@ -25,16 +25,39 @@ export class BoarderPaginator extends ApiPaginator<Boarder, BoarderPaginationQue
     }
 
     withQuery = <K extends keyof BoarderPaginationQueries, V extends BoarderPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'semester_id') {
-            this.semesterIdHandler(key, value);
+        if (key === 'project_id') {
+            this.projectIdHandler(key, value);
         }
     };
 
-    protected semesterIdHandler = _.throttle(this.setQuery, 800);
+    protected projectIdHandler = _.throttle(this.setQuery, 800);
+}
+
+export const createBoarder = async (formData: CreateBoarderFormData) => {
+    try {
+        const response = await axios.post(`${PREFIX}`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
 }
 
 type Boarder = Model.Boarder
 
+interface CreateBoarderFormData {
+    project_id: number,
+    floor: number,
+    room_type: string,
+    room_no: number,
+    bed: number,
+    sid: string,
+    name: string,
+    class: number,
+    boarder_status_id: number,
+    remark?: string,
+}
+
 interface BoarderPaginationQueries extends PaginationQueries {
-    semester_id: number,
+    project_id?: number,
 }

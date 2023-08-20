@@ -24,13 +24,12 @@ export const prefixInteger = (value: string | number, length: number) => {
 }
 
 export const addComma = (n: number | string) => {
-    n = +n;
-    if (_.isNaN(n)) return;
+    if (_.isNaN(+n)) return;
 
     return n?.toLocaleString();
 }
 
-export const showParseError = (notifier: InstanceType<typeof ToastNotifier>, error: any) => {
+export const showParseError = (notifier: InstanceType<typeof ToastNotifier> | undefined = undefined, error: any) => {
     const messages = [];
 
     if (_.isObject(error?.response?.data?.detail)) {

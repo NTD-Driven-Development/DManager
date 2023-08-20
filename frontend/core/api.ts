@@ -59,7 +59,7 @@ export abstract class ApiRequestable<T, Q extends Queries = Queries> extends Axi
         });
     };
 
-    bind = <K extends keyof Q, V extends Q[K]>(ref: Ref<V>, queryKey: K, options?: WatchOptions) => {
+    bind = <K extends keyof Q, V extends Q[K]>(queryKey: K, ref: Ref<V>, options?: WatchOptions) => {
         const stopHandler = watch(() => ref.value, (n, o) => {
             this.withQuery(queryKey, n);
         }, options);
@@ -67,7 +67,7 @@ export abstract class ApiRequestable<T, Q extends Queries = Queries> extends Axi
         return stopHandler;
     }
 
-    bindWith = <T, K extends keyof Q, V extends Q[K]>(ref: Ref<T>, queryKey: K, transformer: (v: T) => V, options?: WatchOptions) => {
+    bindWith = <T, K extends keyof Q, V extends Q[K]>(queryKey: K, ref: Ref<T>, transformer: (v: T) => V, options?: WatchOptions) => {
         const stopHandler = watch(() => ref.value, (n, o) => {
             this.withQuery(queryKey, transformer(n));
         }, options);
@@ -75,7 +75,7 @@ export abstract class ApiRequestable<T, Q extends Queries = Queries> extends Axi
         return stopHandler;
     }
 
-    bindFilter = <T, K extends keyof Q, V extends Q[K]>(filter: Filter<T>, queryKey: K, transformer: (items: T[]) => V, options?: WatchOptions) => {
+    bindFilter = <T, K extends keyof Q, V extends Q[K]>(queryKey: K, filter: Filter<T>, transformer: (items: T[]) => V, options?: WatchOptions) => {
         const stopHandler = watch(() => filter.filterItems.value, (n, o) => {
             this.withQuery(queryKey, transformer(n));
         }, options);
@@ -137,9 +137,9 @@ extends ApiRequestable<PaginationResponse<T>, Q> {
     }
 
     protected onFulfilled(fulfill: AxiosResponse<ApiResponse<PaginationResponse<T>>, any>): void {
-        this._data.value = fulfill.data.data.items;
-        this.paginate.value.currentPage = fulfill.data.data.current_page;
-        this.paginate.value.lastPage = fulfill.data.data.last_page;
+        this._data.value = fulfill.data.data?.items;
+        this.paginate.value.currentPage = fulfill.data.data?.current_page!;
+        this.paginate.value.lastPage = fulfill.data.data?.last_page!;
         super.onFulfilled(fulfill);
     }
 
@@ -172,10 +172,9 @@ extends ApiRequestable<PaginationResponse<T>, Q> {
 }
 
 export interface ApiResponse<T> {
-    data: T,
-    message: string,
-    status: number,
-    success: boolean,
+    data?: T,
+    error?: string,
+    statusCode: number,
 }
 
 export interface PaginationResponse<T> {

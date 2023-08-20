@@ -3,7 +3,7 @@ import { ApiPaginator, ApiResponse, PaginationResponse } from '~/core/api';
 import _ from 'lodash';
 import * as Model from '~/src/model';
 
-const PREFIX = '/points';
+const PREFIX = '/api/points';
 
 export class ProjectPaginator extends ApiPaginator<Point> {
     constructor() {

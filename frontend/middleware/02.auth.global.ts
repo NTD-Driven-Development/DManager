@@ -2,7 +2,7 @@ import { pathToRegexp } from 'path-to-regexp';
 import { useAuthStore } from '~/stores/auth';
 
 const LOGIN_PATH = '/login';
-const REDIRECT_PATH = '/';
+const REDIRECT_PATH = '/dashboard';
 
 // 驗證是否已登入
 export default defineNuxtRouteMiddleware(async (to, from) => {
@@ -11,9 +11,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     if (process.server) return;
 
-    if (['/', 'index'].includes(to.path)) {
-        console.log('dwwd');
-        
+    if (['/'].includes(to.path)) {
         return navigateTo({
             path: '/dashboard',
             replace: true,
@@ -26,25 +24,24 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     // 如果未登入 則直接導向登入頁
-    // if (!authStore.authUser) {
-    //     let query = {} as any;
+    if (!authStore.authUser) {
+        let query = {} as any;
 
-    //     if (from.path != LOGIN_PATH)
-    //         query.target = from.path;
-    //     else if (to.path != LOGIN_PATH)
-    //         query.target = to.path;
-
+        if (from.path != LOGIN_PATH)
+            query.target = from.path;
+        else if (to.path != LOGIN_PATH)
+            query.target = to.path;
         
-    //     if (to.path == LOGIN_PATH) {
-    //         return;
-    //     }
-    //     else {
-    //         return navigateTo({
-    //             path: LOGIN_PATH,
-    //             query,
-    //         });
-    //     }
-    // }
+        if (to.path == LOGIN_PATH) {
+            return;
+        }
+        else {
+            return navigateTo({
+                path: LOGIN_PATH,
+                query,
+            });
+        }
+    }
 
     // 已驗證身分的狀況下 嘗試前往登入頁 則直接導向控制台
     if (to?.query?.target) return navigateTo(to?.query?.target as string);

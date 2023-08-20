@@ -20,7 +20,8 @@ export const useAuthStore = defineStore('auth', () => {
     const authUser = ref<User | null>(null);
 
     const isRole = (role: UserRole) => {
-        return authUser?.value?.role == role;
+        return false;
+        // return authUser?.value == role;
     }
 
     async function login(formData: LoginFormData) {
@@ -79,7 +80,6 @@ export const useAuthStore = defineStore('auth', () => {
     
             const session = response.data.data;
             if (process.client) {
-                // useAuthStore().$state.authUser = session;
                 authUser.value = session;
             }
     

@@ -1,18 +1,18 @@
 <template>
-	<NuxtLayout :name="layout">
-		<NuxtPage/>
-	</NuxtLayout>
+	<div>
+		<NuxtLayout>
+			<NuxtPage/>
+		</NuxtLayout>
+	</div>
 </template>
 
 <script setup lang="ts">
-	const layout = ref('default');
-
 	watch(() => useRoute().path, (n) => {
 		if (n.startsWith('/login')) {
-			layout.value = '';
+			setPageLayout('');
 		}
 		else {
-			layout.value = 'default';
+			setPageLayout('default');
 		}
 	}, { immediate: true, deep: true });
 </script>

@@ -3,7 +3,7 @@ import { ApiPaginator, ApiResponse, PaginationResponse } from '~/core/api';
 import _ from 'lodash';
 import * as Model from '~/src/model';
 
-const PREFIX = '/users';
+const PREFIX = '/api/users';
 
 export class SemesterPaginator extends ApiPaginator<User> {
     constructor() {
