@@ -50,7 +50,7 @@ export class BoarderStatusesCaller extends ApiCaller<BoarderStatus[]> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<Model.BoarderStatus[]>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<BoarderStatus[]>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -64,9 +64,97 @@ export class BoarderStatusesCaller extends ApiCaller<BoarderStatus[]> {
     }
 }
 
+export class ClassesCaller extends ApiCaller<Class[]> {
+    constructor() {
+        super();
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<Class[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/classes?${searchParams}`);
+    }
+}
+
+export class BoarderRolesCaller extends ApiCaller<BoarderRole[]> {
+    constructor() {
+        super();
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<BoarderRole[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/boarderRoles?${searchParams}`);
+    }
+}
+
+export class PointRulesCaller extends ApiCaller<PointRule[]> {
+    constructor() {
+        super();
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<PointRule[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/pointRules?${searchParams}`);
+    }
+}
+
+export class TelCardContractersCaller extends ApiCaller<TelCardContracter[]> {
+    constructor() {
+        super();
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<TelCardContracter[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/telCardContracters?${searchParams}`);
+    }
+}
+
 type Project = Model.Project
 
 type BoarderStatus = Model.BoarderStatus
+
+type Class = Model.Class
+
+type BoarderRole = Model.BoarderRole
+
+type PointRule = Model.PointRule
+
+type TelCardContracter = Model.TelCardContacter
 
 interface RoomNo {
     no: number,
