@@ -18,21 +18,27 @@
                 @change=""/>
             </div>
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
-                <Detail v-for="it, index in boarderList" :key="index" class="bg-white">
-                    <template #summary="{ isVisable }">
-                        <div class="flex justify-between items-center w-full h-full">
-                            <div class="flex flex-col flex-1 justify-center">
-                                {{ it?.name }}
+                <TransitionGroup
+                enter-active-class="transition-all duration-1000"
+                leave-active-class="transition-all duration-1000"
+                enter-from-class="opacity-0 -translate-x-48"
+                leave-to-class="opacity-0 -translate-x-48">
+                    <Detail v-for="it, index in boarderList" :key="index" class="bg-white">
+                        <template #summary="{ isVisable }">
+                            <div class="flex justify-between items-center w-full h-full">
+                                <div class="flex flex-col flex-1 justify-center">
+                                    {{ it?.name }}
+                                </div>
+                                <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                             </div>
-                            <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
-                        </div>
-                    </template>
-                    <template #content>
-                        <div class="text-sm">
-                            {{ it?.remark ?? '尚無備註' }}
-                        </div>
-                    </template>
-                </Detail>
+                        </template>
+                        <template #content>
+                            <div class="text-sm">
+                                {{ it?.remark ?? '尚無備註' }}
+                            </div>
+                        </template>
+                    </Detail>
+                </TransitionGroup>
             </div>
         </div>
     </div>

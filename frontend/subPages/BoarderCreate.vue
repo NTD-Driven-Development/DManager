@@ -74,7 +74,9 @@
                         <span>班級：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="class" placeholder="請輸入班級" class="w-full rounded"/>
+                        <Select name="class_id" placeholder="請選擇班級"
+                        :options="classList" :option-key="'id'" :option-value="'name'"
+                        class="w-full rounded"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
@@ -106,7 +108,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { BoarderStatusesCaller, BunksCaller } from '~/composables/api/share';
+    import { BoarderStatusesCaller, BunksCaller, ClassesCaller } from '~/composables/api/share';
     import { createBoarder } from '~/composables/api/boarder';
     import { Project } from '~/src/model';
     import * as yup from 'yup';
@@ -125,9 +127,9 @@
         room_type: yup.string().required(),
         room_no: yup.number().required(),
         bed: yup.number().required(),
-        sid: yup.string().required(),
+        sid: yup.number().required(),
         name: yup.string().required(),
-        class: yup.number().required(),
+        class_id: yup.number().required(),
         boarder_status_id: yup.number().required(),
         remark: yup.string().nullable(),
     });
@@ -140,9 +142,12 @@
 
     const bunksCaller = new BunksCaller();
     const { data: bunkList } = bunksCaller;
+    const classesCaller = new ClassesCaller()
+    .success((v) => setFieldValue('class_id', v?.data?.[0]?.id));
+    const { data: classList } = classesCaller;
     const boarderStatusesCaller = new BoarderStatusesCaller()
     .success((v) => setFieldValue('boarder_status_id', v?.data?.[0]?.id));
-    const { data: boarderStatusList } = boarderStatusesCaller;
+    const { data: boarderStatusList } = boarderStatusesCaller; 
 
     const floorList = computed(() => {
         const floorList = bunkList.value ?? [];

@@ -41,46 +41,6 @@ export default defineNuxtPlugin(() => {
         ]
     }));
 
-    mock.onGet('/api/share/bunks?').reply(200, createResponse({
-        data: [
-            { 
-                floor: 2,
-                rooms: [
-                    { 
-                        type: 'D',
-                        numbers: [
-                            {
-                                no: 1,
-                                beds: [1,2,3,4,5,6],
-                            },
-                            {
-                                no: 2,
-                                beds: [1,2,3,4,5,6],
-                            },
-                        ],
-                    },
-                    { 
-                        type: 'E',
-                        numbers: [
-                            {
-                                no: 1,
-                                beds: [1,2,3,4,5,6],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ]
-    }));
-
-    mock.onGet('/api/share/boarderStatuses?').reply(200, createResponse<BoarderStatus[]>({
-        data: [
-            { id: 1, name: '未進住' },
-            { id: 2, name: '住宿生' },
-            { id: 3, name: '已離宿' },
-        ]
-    }));
-
     mock.onGet('/api/boarders?project_id=1').reply(200, createPaginationResponse<Boarder>({
         data: {
             from: 1,
@@ -111,7 +71,9 @@ export default defineNuxtPlugin(() => {
             items: [
                 { sid: 1, name: '學生1', remark: '備註' },
                 { sid: 2, name: '學生2', remark: '備註' },
-                { sid: 3, name: '學生3', remark: '備註' },
+                { sid: 5, name: '學生5', remark: '備註' },
+                { sid: 6, name: '學生6', remark: '備註' },
+                { sid: 7, name: '學生7', remark: '備註' },
             ],
         }
     }));
