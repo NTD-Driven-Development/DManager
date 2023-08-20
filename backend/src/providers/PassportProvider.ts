@@ -5,9 +5,10 @@ import Passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt"
 import config from "../configs/passport"
-import RequestUser from "../core/viewModels/auth/RequestUser"
+import RequestUser from "../core/exportDtos/auth/RequestUser"
 import AuthService from "../core/services/AuthService"
 import strings from "../utils/strings"
+import HttpException from "../exceptions/HttpException"
 
 class PassportProvider implements IProvider {
     app: Express
@@ -22,33 +23,37 @@ class PassportProvider implements IProvider {
             new LocalStrategy(
                 options,
                 async (email: string, password: string, done) => {
-                    const user = await AuthService.getUserInfoByEmail(email)
-                    if (
-                        _.isEmpty(user) ||
-                        strings.verifyHash(password, user.password) == false
-                    ) {
-                        return done(
-                            { status: 400, message: "帳號或密碼輸入錯誤" },
-                            false
-                        )
-                    }
-
-                    if (user.is_actived == false) {
-                        return done(
-                            { status: 400, message: "帳號已停用" },
-                            false
-                        )
-                    }
-
-                    if (user.is_admin == true) {
-                        if (process.env.NODE_ENV == "production"){
+                    try {
+                        const user = await AuthService.getUserInfoByEmail(email)
+                        if (
+                            _.isEmpty(user) ||
+                            strings.verifyHash(password, user.password) == false
+                        ) {
                             return done(
                                 { status: 400, message: "帳號或密碼輸入錯誤" },
                                 false
                             )
                         }
+
+                        if (user.is_actived == false) {
+                            return done(
+                                { status: 400, message: "帳號已停用" },
+                                false
+                            )
+                        }
+
+                        if (user.is_admin == true) {
+                            if (process.env.NODE_ENV == "production"){
+                                return done(
+                                    { status: 400, message: "帳號或密碼輸入錯誤" },
+                                    false
+                                )
+                            }
+                        }
+                        return done(null, user)
+                    } catch (error: any) {
+                        return done(error, false)
                     }
-                    return done(null, user)
                 }
             )
         )

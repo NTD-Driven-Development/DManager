@@ -4,9 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+        "dev": "ts-node-dev --respawn  ./src/index.ts",
         "build": "tsc",
         "start": "node ./build/index.js",
+        "test:unit": "jest --watchAll --verbose --testPathPattern=unit",
+        "test:e2e": "jest --watchAll --verbose --testPathPattern=e2e",
+        "test:path": "jest --watchAll --verbose ",
         "test": "jest --watchAll --verbose",
         "migrate": "sequelize-cli db:migrate",
         "migrate:undo": "sequelize-cli db:migrate:undo",

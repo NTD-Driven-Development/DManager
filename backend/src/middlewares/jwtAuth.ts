@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express"
 import Passport from "passport"
 import HttpException from "../exceptions/HttpException"
 import UserModel from "../models/User"
-import RequestUser from "../core/viewModels/auth/RequestUser"
+import RequestUser from "../core/exportDtos/auth/RequestUser"
 
 const jwtAuth = (type: string) => {
     switch (_.toLower(type)) {
@@ -12,10 +12,13 @@ const jwtAuth = (type: string) => {
                 Passport.authenticate(
                     "local",
                     { session: false },
-                    async (err: any, user: UserModel) => {
+                    async (
+                        err: { status: number, message: string },
+                        user: UserModel
+                    ) => {
                         try {
                             if (err || !user) {
-                                throw new HttpException(err.message, err.status)
+                                throw new HttpException(err?.message, err?.status ?? 502)
                             }
                             req.user = user
                             next()
@@ -32,7 +35,7 @@ const jwtAuth = (type: string) => {
                     { session: false },
                     (err: any, user: RequestUser) => {
                         try {
-                            if (err || _.isEmpty(user)) {
+                            if (err || !user) {
                                 throw new HttpException("請重新登入", 401)
                             }
                             req.user = user

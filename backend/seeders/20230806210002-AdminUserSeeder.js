@@ -16,6 +16,7 @@ module.exports = {
         const now = moment().toDate();
         await queryInterface.bulkInsert('user', [
             {
+                id: 1,
                 sid: null,
                 email : 'admin@dormiday.com',
                 password: '$2b$10$kJJAb.B4QK3qcZ32XdHPmu5XUap.Svu50QzpuJ4PTWnfW9T8FNIbe',
@@ -24,6 +25,20 @@ module.exports = {
                 is_actived: true,
                 created_at: now,
             }
+        ]);
+        await queryInterface.bulkInsert('user_role', [
+            {
+                id: 1,
+                user_id: 1,
+                role_id: 1,
+                created_at: now,
+            },
+            {
+                id: 2,
+                user_id: 1,
+                role_id: 2,
+                created_at: now,
+            },
         ]);
     },
 

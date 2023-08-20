@@ -98,6 +98,12 @@ class App implements IApp {
             const err = new HttpException("Not Found", 404)
             return next(err)
         })
+        // http response handler
+        this.app.use((handle: HttpResponse | any, req: Request, res: Response, next: NextFunction) => {
+            if (handle instanceof HttpResponse) 
+                return res.status(handle.statusCode).json(handle)
+            return next(handle)
+        })
         // error handler
         this.app.use(
             (
