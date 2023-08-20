@@ -9,7 +9,7 @@ export default new (class UserController {
         try {
             await db.sequelize.transaction(async (t: Sequelize.Transaction) => {
                 const data = await UserService.createUser(req.body)
-                next(HttpResponse.success(data))
+                next(HttpResponse.success(data, 201))
             })
         } catch (error) {
             next(error)

@@ -53,7 +53,6 @@ export default new (class ShareController {
             const data = await ShareService.getPointRules()
             next(HttpResponse.success(data))
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

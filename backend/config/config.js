@@ -8,7 +8,7 @@ module.exports = {
         "host": process.env.DB_HOST,
         "dialect": process.env.DB_TYPE,
         "timezone": process.env.DB_TIMEZONE,
-        "logging": true,
+        "logging": false,
         "define": {
             "underscored": true,
             "charset": "utf8mb4",

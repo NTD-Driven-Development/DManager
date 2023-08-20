@@ -52,7 +52,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.post("/api/users").send(
                 createUserPayload
             )
-            expect(response.status).toBe(200)
+            expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
         })
 
