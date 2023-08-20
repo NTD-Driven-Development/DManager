@@ -4,15 +4,7 @@ const moment = require('moment');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        /**
-         * Add seed commands here.
-         *
-         * Example:
-         * await queryInterface.bulkInsert('People', [{
-         *   name: 'John Doe',
-         *   isBetaMember: false
-         * }], {});
-        */
+        console.log(`== 管理員帳號載入中...`);
         const now = moment().toDate();
         await queryInterface.bulkInsert('user', [
             {
@@ -40,6 +32,7 @@ module.exports = {
                 created_at: now,
             },
         ]);
+        console.log(`== 管理員帳號載入完成 (${(moment().toDate() - now) / 1000}s)`);
     },
 
     async down(queryInterface, Sequelize) {

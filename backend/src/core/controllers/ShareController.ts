@@ -8,7 +8,15 @@ export default new (class ShareController {
             const data = await ShareService.getBunks()
             next(HttpResponse.success(data))
         } catch (error) {
-            console.log(error)
+            next(error)
+        }
+    }
+
+    public async getClasses (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getClasses()
+            next(HttpResponse.success(data))
+        } catch (error) {
             next(error)
         }
     }

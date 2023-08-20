@@ -3,6 +3,7 @@ import { Model } from "sequelize"
 
 interface ClassAttributes {
     id?: number
+    code?: string
     name: string
     created_at: Date
     created_by?: number
@@ -15,6 +16,7 @@ interface ClassAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class Class extends Model<ClassAttributes> implements ClassAttributes {
         id!: number
+        code?: string
         name!: string
         created_at!: Date
         created_by?: number
@@ -39,6 +41,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
+            },
+            code: {
+                type: DataTypes.STRING(50),
+                allowNull: true,
+                comment: "班級代碼",
             },
             name: {
                 type: DataTypes.STRING(50),

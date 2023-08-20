@@ -39,4 +39,10 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
             Db.user.destroy({ where: { id: id } })
         )
     }
+
+    public async deleteBySid(sid: string): Promise<Core.IExecuteResult> {
+        return await this.executeResult(() =>
+            Db.user.destroy({ where: { sid: sid } })
+        )
+    }
 })()

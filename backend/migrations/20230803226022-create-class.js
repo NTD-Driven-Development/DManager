@@ -9,6 +9,11 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
+            code: {
+                type: Sequelize.STRING(50),
+                allowNull: true,
+                comment: "班級代碼",
+            },
             name: {
                 type: Sequelize.STRING(50),
                 allowNull: false,

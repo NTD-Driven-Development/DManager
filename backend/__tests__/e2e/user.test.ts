@@ -1,35 +1,68 @@
-import request from "supertest"
-import app from "../../src/index"
-
-const mockApp = request(app)
-const invalidPayload = {
-    name: "test",
-    email: "abcgmail.com",
-    sid: "S1234567890",
-    roles: [1]
-}
-const successPayload = {
-    name: "test",
-    email: "abc@gmail.com",
-    sid: "S1234567890",
-    roles: [1]
-}
+import UserDao from "../../src/core/daos/UserDao"
+import { App } from "../preE2eConfig"
 
 describe("Acceptance test for UserController.", () => {
     describe("建立使用者", () => {
-        it("given valid user data to failure.", async () => {
-            const response = await mockApp
-                .post("/api/users")
-                .send(invalidPayload)
-            expect(response.status).toBe(400)
+        const createUserPayload = {
+            name: "test",
+            email: "test_e2e@gmail.com",
+            sid: "S1234567890test_e2e",
+            roles: [1],
+        }
+        async function clearAllTestData() {
+            await UserDao.deleteBySid(createUserPayload.sid)
+        }
+
+        afterAll(async () => {
+            // 測試後刪除所有測資
+            await clearAllTestData()
         })
 
-        it("given new user data to create succeeded.", async () => {
-            const response = await mockApp
-                .post("/api/users")
-                .send(successPayload)
-            expect(response.status).toBe(200)
+        it("不符合輸入格式應回傳 400.", async () => {
+            const invalidPayload = [
+                {
+                    name: "test_e2e",
+                    email: "test_e2egmail.com",
+                    sid: "S1234567890test_e2e",
+                    roles: [1],
+                },
+                {
+                    name: "test_e2e",
+                    email: "test_e2e@gmail.com",
+                    sid: "S1234567890test_e2e",
+                    roles: [],
+                },
+                {
+                    name: "",
+                    email: "test_e2e@gmail.com",
+                    sid: "S1234567890test_e2e",
+                },
+                {}
+            ]
+            for (const payload of invalidPayload) {
+                console.log(payload)
+                const response = await App.post("/api/users").send(
+                    payload
+                )
+                expect(response.status).toBe(400)
+                expect(response.body?.error).not.toBeNull()
+            }
         })
-        
+
+        it("新用戶應能夠正常新增.", async () => {
+            const response = await App.post("/api/users").send(
+                createUserPayload
+            )
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+        })
+
+        it("不可重複新增相同 Email 使用者.", async () => {
+            const response = await App.post("/api/users").send(
+                createUserPayload
+            )
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toBe("此 Email 已被註冊")
+        })
     })
 })

@@ -1,6 +1,7 @@
 import _, { toInteger } from "lodash"
 import ShareDao from "../daos/ShareDao"
 import BunkModel from "../../models/Bunk"
+import ClassModel from "../../models/Class"
 import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
 
@@ -41,6 +42,10 @@ export default new (class UserService {
     public async getBunks(): Promise<BunkResult[]> {
         const bunks: BunkModel[] = await ShareDao.getBunks()
         const result = this.convertBunksToBunkResult(bunks)
+        return result
+    }
+    public async getClasses(): Promise<ClassModel[]> {
+        const result = await ShareDao.getClasses()
         return result
     }
 })()
