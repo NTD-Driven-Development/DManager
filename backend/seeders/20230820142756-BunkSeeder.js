@@ -4,7 +4,7 @@ const path = require('path')
 const _ = require('lodash')
 const moment = require('moment')
 const fs = require('fs');
-const bunk_Bytes = fs.readFileSync(path.join(__dirname, '../data', 'bunks.json'), 'utf-8');
+const bunk_Bytes = fs.readFileSync(path.join(__dirname, '../data', 'bunk.json'), 'utf-8');
 const bunks = JSON.parse(bunk_Bytes);
 
 /** @type {import('sequelize-cli').Migration} */

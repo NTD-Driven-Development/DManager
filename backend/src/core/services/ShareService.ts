@@ -2,6 +2,10 @@ import _, { toInteger } from "lodash"
 import ShareDao from "../daos/ShareDao"
 import BunkModel from "../../models/Bunk"
 import ClassModel from "../../models/Class"
+import BoarderStatusModel from "../../models/BoarderStatus"
+import BoarderRoleModel from "../../models/BoarderRole"
+import TelCardContacterModel from "../../models/TelCardContacter"
+import PointRuleModel from "../../models/PointRule"
 import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
 
@@ -48,4 +52,21 @@ export default new (class UserService {
         const result = await ShareDao.getClasses()
         return result
     }
+    public async getBoarderStatuses(): Promise<BoarderStatusModel[]> {
+        const result = await ShareDao.getBoarderStatuses()
+        return result
+    }
+    public async getBoarderRoles(): Promise<BoarderRoleModel[]> {
+        const result = await ShareDao.getBoarderRoles()
+        return result
+    }
+    public async getTelCardContacters(): Promise<TelCardContacterModel[]> {
+        const result = await ShareDao.getTelCardContacters()
+        return result
+    }
+    public async getPointRules(): Promise<PointRuleModel[]> {
+        const result = await ShareDao.getPointRules()
+        return result
+    }
+
 })()

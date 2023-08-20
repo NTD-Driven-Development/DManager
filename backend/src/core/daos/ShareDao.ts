@@ -4,6 +4,10 @@ import Core from "../interfaces/IDao"
 import moment from "moment"
 import BunkModel from "../../models/Bunk"
 import ClassModel from "../../models/Class"
+import BoarderRoleModel from "../../models/BoarderRole"
+import BoarderStatusModel from "../../models/BoarderStatus"
+import TelCardContacterModel from "../../models/TelCardContacter"
+import PointRuleModel from "../../models/PointRule"
 import _ from "lodash"
 
 export default new (class ShareDao extends BaseDao {
@@ -15,4 +19,28 @@ export default new (class ShareDao extends BaseDao {
             attributes: ["id", "name"],
         })
     }
+    public async getBoarderStatuses(): Promise<BoarderStatusModel[]> {
+        return await Db.boarder_status.findAll({
+            attributes: ["id", "name"],
+        })
+    }
+    public async getBoarderRoles(): Promise<BoarderRoleModel[]> {
+        return await Db.boarder_role.findAll({
+            attributes: ["id", "name"],
+        })
+    }
+    public async getTelCardContacters(): Promise<TelCardContacterModel[]> {
+        return await Db.tel_card_contacter.findAll({
+            attributes: ["id", "name"],
+        })
+    }
+    public async getPointRules(): Promise<PointRuleModel[]> {
+        return await Db.point_rule.findAll({
+            attributes: ["id", "code", "reason", "point"],
+            where: {
+                is_actived: true
+            },
+        })
+    }
+
 })()

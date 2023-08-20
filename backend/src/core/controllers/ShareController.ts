@@ -20,4 +20,41 @@ export default new (class ShareController {
             next(error)
         }
     }
+
+    public async getBoarderStatuses (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getBoarderStatuses()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getBoarderRoles (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getBoarderRoles()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getTelCardContacters (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getTelCardContacters()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getPointRules (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getPointRules()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
 })()

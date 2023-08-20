@@ -78,6 +78,67 @@ describe("Unit test for ShareService.", () => {
         return ShareService.getClasses()
     }
 
+    function expectBoarderStatusesData() {
+        return [
+            {
+                id: 1,
+                name: "住宿中",
+
+            },
+        ]
+    }
+    async function whenGetBoarderStatuses() {
+        const rawData = expectBoarderStatusesData()
+        jest.spyOn(ShareDao, "getBoarderStatuses").mockResolvedValue(rawData)
+        return await ShareService.getBoarderStatuses()
+    }
+
+    function expectBoarderRolesData() {
+        return [
+            {
+                id: 1,
+                name: "一般生",
+
+            },
+        ]
+    }
+    async function whenGetBoarderRoles() {
+        const rawData = expectBoarderRolesData()
+        jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(rawData)
+        return await ShareService.getBoarderRoles()
+    }
+
+    function expectTelCardContactersData() {
+        return [
+            {
+                id: 1,
+                name: "一般生",
+            },
+        ]
+    }
+    async function whenGetTelCardContacters() {
+        const rawData = expectTelCardContactersData()
+        jest.spyOn(ShareDao, "getTelCardContacters").mockResolvedValue(rawData)
+        return await ShareService.getTelCardContacters()
+    }
+
+    function expectPointRulesData() {
+        return [
+            {
+                id: 1,
+                code: "A1",
+                reason: "加扣點規則1",
+                point: 1,
+                is_active: true,
+            },
+        ]
+    }
+    async function whenGetPointRules() {
+        const rawData = expectPointRulesData()
+        jest.spyOn(ShareDao, "getPointRules").mockResolvedValue(rawData)
+        return await ShareService.getPointRules()
+    }
+
     it("取得樓區室床", async () => {
         const result = await whenGetBunks()
         expect(result).toEqual(expectBunksData())
@@ -86,5 +147,25 @@ describe("Unit test for ShareService.", () => {
     it("取得班級", async () => {
         const result = await whenGetClasses()
         expect(result).toEqual(expectClassesData())
+    })
+
+    it("取得住宿狀態", async () => {
+        const result = await whenGetBoarderStatuses()
+        expect(result).toEqual(expectBoarderStatusesData())
+    })
+
+    it("取得住宿生身分", async () => {
+        const result = await whenGetBoarderRoles()
+        expect(result).toEqual(expectBoarderRolesData())
+    })
+
+    it("取得電話卡聯絡人", async () => {
+        const result = await whenGetTelCardContacters()
+        expect(result).toEqual(expectTelCardContactersData())
+    })
+
+    it("取得加扣點規則", async () => {
+        const result = await whenGetPointRules()
+        expect(result).toEqual(expectPointRulesData())
     })
 })

@@ -40,7 +40,6 @@ describe("Acceptance test for UserController.", () => {
                 {}
             ]
             for (const payload of invalidPayload) {
-                console.log(payload)
                 const response = await App.post("/api/users").send(
                     payload
                 )
