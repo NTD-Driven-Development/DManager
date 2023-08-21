@@ -1,4 +1,4 @@
-import { App } from "../preE2eConfig"
+import { App } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
 

@@ -1,4 +1,4 @@
-import { App } from "../preE2eConfig"
+import { App } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 
 describe("Acceptance test for UserController.", () => {
@@ -14,6 +14,9 @@ describe("Acceptance test for UserController.", () => {
             await Db.user_role.destroy({ where: { user_id: createdUser?.id } })
             await Db.user.destroy({ where: { email: createUserPayload.email } })
         }
+
+        beforeAll(async () => {
+        })
 
         afterAll(async () => {
             // 測試後刪除所有測資
