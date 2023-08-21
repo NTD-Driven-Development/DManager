@@ -60,7 +60,7 @@ describe("Unit test for UserService.", () => {
             const createdResult = await whenCreateUser(payload)
 
             // then
-            expect(createdResult).toBe(true)
+            expect(createdResult).toBe(fakeUser)
             expect(strings.hash).toBeCalledTimes(1)
             expect(UserDao.create).toBeCalledTimes(1)
             expect(UserRoleDao.bulkCreateUserRole).toBeCalledTimes(1)

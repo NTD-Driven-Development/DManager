@@ -27,7 +27,6 @@ export default new (class UserService {
         try {
             const user: UserModel = await UserDao.create(model)
             await UserRoleDao.bulkCreateUserRole(user.id as number, data.roles)
-            console.log(user)
             return user
         } catch (error: any) {
             if (error instanceof Sequelize.UniqueConstraintError) {
