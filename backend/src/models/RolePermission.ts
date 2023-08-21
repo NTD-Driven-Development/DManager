@@ -47,11 +47,19 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "角色編號",
+                references: {
+                    model: "role",
+                    key: "id",
+                }
             },
             permission_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "權限編號",
+                references: {
+                    model: "permission",
+                    key: "id",
+                }
             },
             is_actived: {
                 type: DataTypes.BOOLEAN,

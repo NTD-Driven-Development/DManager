@@ -9,23 +9,35 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
-            sid: {
-                type: Sequelize.STRING(20),
+            boarder_id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "住宿生學號",
+                comment: "住宿生外鍵",
+                references: {
+                    model: "boarder",
+                    key: "id",
+                },
             },
             project_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "項目ID",
+                comment: "項目編號",
+                references: {
+                    model: "project",
+                    key: "id",
+                },
             },
             point_rule_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "點數規則ID",
+                references: {
+                    model: "point_rule",
+                    key: "id",
+                },
             },
             remark: {
-                type: Sequelize.STRING(500),
+                type: Sequelize.STRING(1024),
                 allowNull: true,
                 comment: "備註",
             },

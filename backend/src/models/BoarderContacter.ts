@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface BoarderContacterAttributes {
     id?: number
-    sid: string
+    boarder_id: number
     name: string
     tel: string
     remark?: string
@@ -18,7 +18,7 @@ interface BoarderContacterAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class BoarderContacter extends Model<BoarderContacterAttributes> implements BoarderContacterAttributes {
         id!: number
-        sid!: string
+        boarder_id!: number
         name!: string
         tel!: string
         remark?: string
@@ -46,10 +46,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            sid: {
-                type: DataTypes.STRING(20),
+            boarder_id: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "住宿生學號",
+                comment: "住宿生外鍵",
+                references: {
+                    model: "boarder",
+                    key: "id",
+                },
             },
             name: {
                 type: DataTypes.STRING(10),
@@ -62,7 +66,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 comment: "聯絡人電話",
             },
             remark: {
-                type: DataTypes.STRING(200),
+                type: DataTypes.STRING(1024),
                 allowNull: true,
                 comment: "備註",
             },

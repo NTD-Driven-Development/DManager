@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('boarder_contacter', {
+        await queryInterface.createTable('project_bunk', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -11,22 +11,41 @@ module.exports = {
             },
             boarder_id: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 comment: "住宿生外鍵",
                 references: {
                     model: "boarder",
                     key: "id",
                 },
             },
-            name: {
+            project_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                comment: "項目編號",
+                references: {
+                    model: "project",
+                    key: "id",
+                },
+            },
+            floor: {
                 type: Sequelize.STRING(10),
                 allowNull: false,
-                comment: "緊急聯絡人姓名",
+                comment: "樓層",
             },
-            tel: {
-                type: Sequelize.STRING(20),
+            room_type: {
+                type: Sequelize.STRING(10),
                 allowNull: false,
-                comment: "聯絡人電話",
+                comment: "房型",
+            },
+            room_no: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                comment: "房號",
+            },
+            bed: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                comment: "床號",
             },
             remark: {
                 type: Sequelize.STRING(1024),
@@ -53,19 +72,23 @@ module.exports = {
                 allowNull: true,
                 comment: "更新者",
             },
-            deleted_at: {
-                type: Sequelize.DATE,
-                allowNull: true,
-                comment: "刪除時間",
-            },
-            deleted_by: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                comment: "刪除者",
-            },
-        });
+        }, {
+            indexes: [
+                {
+                    unique: true,
+                    fields: [
+                        "project_id",
+                        "floor",
+                        "room_type",
+                        "room_no",
+                        "bed",
+                    ],
+                }
+            ]
+        }
+        );
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('boarder_contacter');
+        await queryInterface.dropTable('project_bunk');
     }
 };

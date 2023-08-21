@@ -1,25 +1,38 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface PointLogAttributes {
-    id?: number
+interface ProjectBunkAttributes {
+    id: number
     boarder_id: number
     project_id: number
-    point_rule_id: number
+    floor: string
+    room_type: string
+    room_no: string
+    bed: string
     remark?: string
     created_at: Date
     created_by?: number
+    updated_at?: Date
+    updated_by?: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class PointLog extends Model<PointLogAttributes> implements PointLogAttributes {
+    class ProjectBunk
+        extends Model<ProjectBunkAttributes>
+        implements ProjectBunkAttributes
+    {
         id!: number
         boarder_id!: number
         project_id!: number
-        point_rule_id!: number
+        floor!: string
+        room_type!: string
+        room_no!: string
+        bed!: string
         remark?: string
         created_at!: Date
         created_by?: number
+        updated_at?: Date
+        updated_by?: number
 
         /**
          * Helper method for defining associations.
@@ -30,7 +43,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             // define association here
         }
     }
-    PointLog.init(
+    ProjectBunk.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -40,7 +53,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             boarder_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 comment: "住宿生外鍵",
                 references: {
                     model: "boarder",
@@ -56,14 +69,25 @@ module.exports = (sequelize: any, DataTypes: any) => {
                     key: "id",
                 },
             },
-            point_rule_id: {
-                type: DataTypes.INTEGER,
+            floor: {
+                type: DataTypes.STRING(10),
                 allowNull: false,
-                comment: "點數規則ID",
-                references: {
-                    model: "point_rule",
-                    key: "id",
-                },
+                comment: "樓層",
+            },
+            room_type: {
+                type: DataTypes.STRING(10),
+                allowNull: false,
+                comment: "房型",
+            },
+            room_no: {
+                type: DataTypes.STRING(10),
+                allowNull: false,
+                comment: "房號",
+            },
+            bed: {
+                type: DataTypes.STRING(10),
+                allowNull: false,
+                comment: "床號",
             },
             remark: {
                 type: DataTypes.STRING(1024),
@@ -80,15 +104,35 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: true,
                 comment: "建立者",
             },
+            updated_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                comment: "更新時間",
+            },
+            updated_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "更新者",
+            },
         },
         {
             sequelize,
-            modelName: "point_log",
-            timestamps: false,
-            freezeTableName: true,
+            modelName: "boarder",
+            indexes: [
+                {
+                    unique: true,
+                    fields: [
+                        "project_id",
+                        "floor",
+                        "room_type",
+                        "room_no",
+                        "bed",
+                    ],
+                },
+            ],
         }
     )
-    return PointLog
+    return ProjectBunk
 }
 
-export default PointLogAttributes
+export default ProjectBunkAttributes

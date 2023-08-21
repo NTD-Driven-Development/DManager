@@ -13,6 +13,10 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "使用者編號",
+                references: {
+                    model: "user",
+                    key: "id",
+                },
             },
             start_date: {
                 type: Sequelize.DATE,

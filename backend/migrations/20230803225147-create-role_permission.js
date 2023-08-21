@@ -13,11 +13,19 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "角色編號",
+                references: {
+                    model: "role",
+                    key: "id",
+                },
             },
             permission_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "權限編號",
+                references: {
+                    model: "permission",
+                    key: "id",
+                },
             },
             is_actived: {
                 type: Sequelize.BOOLEAN,

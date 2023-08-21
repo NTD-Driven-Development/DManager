@@ -1,25 +1,28 @@
 "use strict"
 import { Model } from "sequelize"
 
-interface PointLogAttributes {
+interface BoarderMappingRoleAttributes {
     id?: number
     boarder_id: number
-    project_id: number
-    point_rule_id: number
-    remark?: string
+    boarder_role_id: number
     created_at: Date
     created_by?: number
+    updated_at?: Date
+    updated_by?: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class PointLog extends Model<PointLogAttributes> implements PointLogAttributes {
+    class BoarderMappingRole
+        extends Model<BoarderMappingRoleAttributes>
+        implements BoarderMappingRoleAttributes
+    {
         id!: number
         boarder_id!: number
-        project_id!: number
-        point_rule_id!: number
-        remark?: string
+        boarder_role_id!: number
         created_at!: Date
         created_by?: number
+        updated_at?: Date
+        updated_by?: number
 
         /**
          * Helper method for defining associations.
@@ -28,9 +31,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            BoarderMappingRole.belongsTo(models.boarder_role, {
+                foreignKey: "boarder_role_id",
+            })
+            BoarderMappingRole.belongsTo(models.boarder, {
+                foreignKey: "boarder_id",
+            })
         }
     }
-    PointLog.init(
+    BoarderMappingRole.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -47,28 +56,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
                     key: "id",
                 },
             },
-            project_id: {
+            boarder_role_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "項目編號",
+                comment: "住宿生身分編號",
                 references: {
-                    model: "project",
+                    model: "boarder_role",
                     key: "id",
                 },
-            },
-            point_rule_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "點數規則ID",
-                references: {
-                    model: "point_rule",
-                    key: "id",
-                },
-            },
-            remark: {
-                type: DataTypes.STRING(1024),
-                allowNull: true,
-                comment: "備註",
             },
             created_at: {
                 type: DataTypes.DATE,
@@ -80,15 +75,25 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: true,
                 comment: "建立者",
             },
+            updated_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                comment: "更新時間",
+            },
+            updated_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "更新者",
+            },
         },
         {
             sequelize,
-            modelName: "point_log",
+            modelName: "boarder_mapping_role",
             timestamps: false,
             freezeTableName: true,
         }
     )
-    return PointLog
+    return BoarderMappingRole
 }
 
-export default PointLogAttributes
+export default BoarderMappingRoleAttributes

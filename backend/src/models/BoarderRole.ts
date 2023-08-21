@@ -4,6 +4,7 @@ import { Model } from "sequelize"
 interface BoarderRoleAttributes {
     id?: number
     name: string
+    project_id: number
     created_at: Date
     created_by?: number
     updated_at?: Date
@@ -16,6 +17,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     class BoarderRole extends Model<BoarderRoleAttributes> implements BoarderRoleAttributes {
         id!: number
         name!: string
+        project_id!: number
         created_at!: Date
         created_by?: number
         updated_at?: Date
@@ -44,6 +46,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING(50),
                 allowNull: false,
                 comment: "住宿生身份別",
+            },
+            project_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: "項目編號",
+                references: {
+                    model: "project",
+                    key: "id",
+                },
             },
             created_at: {
                 type: DataTypes.DATE,

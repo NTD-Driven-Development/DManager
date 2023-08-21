@@ -5,24 +5,19 @@ import strings from "../../src/utils/strings"
 import RoleEnum from "../../src/enumerates/Role"
 import Sequelize from "sequelize"
 
-const hashedPwd = "passwordhashed"
-
-const fakeUser = {
-    id: 1,
-    email: "abc@gmail.com",
-    name: "測試",
-    sid: "0",
-    password: hashedPwd,
-    is_admin: false,
-    is_actived: true,
-    created_at: new Date(),
-}
-
 describe("Unit test for UserService.", () => {
-    // mocked
-    jest.spyOn(strings, "hash").mockReturnValue(hashedPwd)
-    jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(true)
+    const hashedPwd = "passwordhashed"
 
+    const fakeUser = {
+        id: 1,
+        email: "abc@gmail.com",
+        name: "測試",
+        sid: "0",
+        password: hashedPwd,
+        is_admin: false,
+        is_actived: true,
+        created_at: new Date(),
+    }
     function givenCreateUserPayload() {
         return {
             email: "abc@gmail.com",
@@ -32,23 +27,28 @@ describe("Unit test for UserService.", () => {
         }
     }
 
+    async function whenCreateUser(payload: any) {
+        jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
+        jest.spyOn(strings, "hash").mockReturnValue(hashedPwd)
+        jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
+            true as any
+        )
+        return await UserService.createUser(payload)
+    }
+
+    async function whenCreateSameEmailUser(payload: any) {
+        jest.spyOn(UserDao, "create").mockRejectedValue(
+            new Sequelize.UniqueConstraintError({})
+        )
+        return await UserService.createUser(payload)
+    }
+
     function givenUpdateUserPayload() {
         return {
             id: 1,
             name: "測試修改",
             is_actived: false,
         }
-    }
-
-    async function whenCreateUser(payload: any) {
-        jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
-        return await UserService.createUser(payload)
-    }
-    async function whenCreateSameEmailUser(payload: any) {
-        jest.spyOn(UserDao, "create").mockRejectedValue(
-            new Sequelize.UniqueConstraintError({})
-        )
-        return await UserService.createUser(payload)
     }
 
     describe("建立使用者帳號", () => {
@@ -75,7 +75,6 @@ describe("Unit test for UserService.", () => {
             await expect(whenCreateSameEmailUser(payload)).rejects.toThrow(
                 errorMessage
             )
-            
         })
     })
 })

@@ -1,8 +1,9 @@
-import UserDao from "../../src/core/daos/UserDao"
 import { App } from "../preE2eConfig"
+import Db from "../../src/models"
 
 describe("Acceptance test for UserController.", () => {
     describe("建立使用者", () => {
+        let createdUser: any
         const createUserPayload = {
             name: "test",
             email: "test_e2e@gmail.com",
@@ -10,7 +11,8 @@ describe("Acceptance test for UserController.", () => {
             roles: [1],
         }
         async function clearAllTestData() {
-            await UserDao.deleteBySid(createUserPayload.sid)
+            await Db.user_role.destroy({ where: { user_id: createdUser?.id } })
+            await Db.user.destroy({ where: { email: createUserPayload.email } })
         }
 
         afterAll(async () => {
@@ -52,6 +54,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.post("/api/users").send(
                 createUserPayload
             )
+            createdUser = response.body?.data
             expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
         })

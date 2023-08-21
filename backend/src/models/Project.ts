@@ -48,8 +48,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 comment: "項目名稱",
             },
             remark: {
-                type: DataTypes.STRING(500),
-                allowNull: false,
+                type: DataTypes.STRING(1024),
+                allowNull: true,
                 comment: "備註",
             },
             created_at: {

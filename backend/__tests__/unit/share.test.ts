@@ -31,35 +31,45 @@ describe("Unit test for ShareService.", () => {
         ]
     }
     async function whenGetBunks() {
+        const now = new Date()
         const rawData = [
             {
+                id: 1,
                 floor: 1,
                 room_type: "D",
                 room_no: 1,
                 bed: 1,
+                created_at: now,
             },
             {
+                id: 2,
                 floor: 1,
                 room_type: "D",
                 room_no: 1,
                 bed: 2,
+                created_at: now,
             },
             {
+                id: 3,
                 floor: 1,
                 room_type: "E",
                 room_no: 2,
                 bed: 1,
+                created_at: now,
             },
             {
+                id: 4,
                 floor: 1,
                 room_type: "E",
                 room_no: 2,
                 bed: 2,
+                created_at: now,
             },
         ]
-        jest.spyOn(ShareDao, "getBunks").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getBunks").mockResolvedValue(rawData as any)
         return ShareService.getBunks()
     }
+
     function expectClassesData() {
         return [
             {
@@ -74,7 +84,7 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetClasses() {
         const rawData = expectClassesData()
-        jest.spyOn(ShareDao, "getClasses").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getClasses").mockResolvedValue(rawData as any)
         return ShareService.getClasses()
     }
 
@@ -89,7 +99,7 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetBoarderStatuses() {
         const rawData = expectBoarderStatusesData()
-        jest.spyOn(ShareDao, "getBoarderStatuses").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getBoarderStatuses").mockResolvedValue(rawData as any)
         return await ShareService.getBoarderStatuses()
     }
 
@@ -104,7 +114,7 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetBoarderRoles() {
         const rawData = expectBoarderRolesData()
-        jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(rawData as any)
         return await ShareService.getBoarderRoles()
     }
 
@@ -118,7 +128,7 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetTelCardContacters() {
         const rawData = expectTelCardContactersData()
-        jest.spyOn(ShareDao, "getTelCardContacters").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getTelCardContacters").mockResolvedValue(rawData as any)
         return await ShareService.getTelCardContacters()
     }
 
@@ -135,7 +145,7 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetPointRules() {
         const rawData = expectPointRulesData()
-        jest.spyOn(ShareDao, "getPointRules").mockResolvedValue(rawData)
+        jest.spyOn(ShareDao, "getPointRules").mockResolvedValue(rawData as any)
         return await ShareService.getPointRules()
     }
 
@@ -154,7 +164,7 @@ describe("Unit test for ShareService.", () => {
         expect(result).toEqual(expectBoarderStatusesData())
     })
 
-    it("取得住宿生身分", async () => {
+    it("取得住宿生身分別", async () => {
         const result = await whenGetBoarderRoles()
         expect(result).toEqual(expectBoarderRolesData())
     })

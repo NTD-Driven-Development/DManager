@@ -110,4 +110,5 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "exclude": ["./node_modules", "./build", "./coverage", "./__tests__", "./__mocks__"],
+    "typeAcquisition": { "include": ["jest"] },
 }

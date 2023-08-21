@@ -27,7 +27,8 @@ export default new (class UserService {
         try {
             const user: UserModel = await UserDao.create(model)
             await UserRoleDao.bulkCreateUserRole(user.id as number, data.roles)
-            return true
+            console.log(user)
+            return user
         } catch (error: any) {
             if (error instanceof Sequelize.UniqueConstraintError) {
                 throw new HttpException("此 Email 已被註冊", 400)

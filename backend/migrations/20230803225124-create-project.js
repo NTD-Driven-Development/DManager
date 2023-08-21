@@ -2,31 +2,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('boarder_note', {
+        await queryInterface.createTable('project', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
             },
-            boarder_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                comment: "住宿生外鍵",
-                references: {
-                    model: "boarder",
-                    key: "id",
-                },
-            },
-            title: {
+            name: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
-                comment: "標題",
+                comment: "項目名稱",
             },
-            description: {
+            remark: {
                 type: Sequelize.STRING(1024),
-                allowNull: false,
-                comment: "描述",
+                allowNull: true,
+                comment: "備註",
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -61,6 +52,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('boarder_note');
+        await queryInterface.dropTable('project');
     }
 };

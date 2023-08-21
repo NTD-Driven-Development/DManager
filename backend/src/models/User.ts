@@ -63,6 +63,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING(20),
                 allowNull: true,
                 comment: "學號",
+                references: {
+                    model: "boarder",
+                    key: "sid",
+                },
             },
             name: {
                 type: DataTypes.STRING(20),

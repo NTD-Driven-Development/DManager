@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface TelCardLogAttributes {
     id?: number
-    sid: string
+    boarder_id: number
     project_id: number
     tel_card_contacter_id: number
     remark?: string
@@ -14,7 +14,7 @@ interface TelCardLogAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class TelCardLog extends Model<TelCardLogAttributes> implements TelCardLogAttributes {
         id!: number
-        sid!: string
+        boarder_id!: number
         project_id!: number
         tel_card_contacter_id!: number
         remark?: string
@@ -38,23 +38,35 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            sid: {
-                type: DataTypes.STRING(20),
+            boarder_id: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "住宿生學號",
+                comment: "住宿生外鍵",
+                references: {
+                    model: "boarder",
+                    key: "id",
+                },
             },
             project_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "項目ID",
+                comment: "項目編號",
+                references: {
+                    model: "project",
+                    key: "id",
+                },
             },
             tel_card_contacter_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "電話卡聯絡人ID",
+                references: {
+                    model: "tel_card_contacter",
+                    key: "id",
+                },
             },
             remark: {
-                type: DataTypes.STRING(500),
+                type: DataTypes.STRING(1024),
                 allowNull: true,
                 comment: "備註",
             },

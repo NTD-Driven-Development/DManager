@@ -2,17 +2,13 @@
 import { Model } from "sequelize"
 
 interface BoarderAttributes {
-    sid: string
+    id: number
+    sid?: string
     project_id: number
-    floor: string
-    room_type: string
-    room_no: string
-    bed: string
-    boarder_role_id: number
     boarder_status_id: number
     name: string
     phone?: string
-    class_id: number
+    class_id?: number
     birthday?: Date
     avatar?: string
     remark?: string
@@ -21,6 +17,8 @@ interface BoarderAttributes {
     created_by?: number
     updated_at?: Date
     updated_by?: number
+    deleted_at?: Date
+    deleted_by?: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -28,17 +26,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
         extends Model<BoarderAttributes>
         implements BoarderAttributes
     {
-        sid!: string
+        id!: number
+        sid?: string
         project_id!: number
-        floor!: string
-        room_type!: string
-        room_no!: string
-        bed!: string
-        boarder_role_id!: number
         boarder_status_id!: number
         name!: string
         phone?: string
-        class_id!: number
+        class_id?: number
         birthday?: Date
         avatar?: string
         remark?: string
@@ -47,6 +41,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         created_by?: number
         updated_at?: Date
         updated_by?: number
+        
 
         /**
          * Helper method for defining associations.
@@ -59,46 +54,25 @@ module.exports = (sequelize: any, DataTypes: any) => {
     }
     Boarder.init(
         {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false,
+            },
             sid: {
                 type: DataTypes.STRING(20),
-                primaryKey: true,
-                allowNull: false,
+                allowNull: true,
                 comment: "學號",
             },
             project_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: "項目ID",
-            },
-            floor: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-                comment: "樓層",
-            },
-            room_type: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-                comment: "房型",
-            },
-            room_no: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-                comment: "房號",
-            },
-            bed: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-                comment: "床號",
-            },
-            boarder_role_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "住宿身份ID",
-            },
-            boarder_status_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                comment: "住宿狀態ID",
+                comment: "項目編號",
+                references: {
+                    model: "project",
+                    key: "id",
+                },
             },
             name: {
                 type: DataTypes.STRING(20),
@@ -112,8 +86,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             class_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 comment: "班級ID",
+                references: {
+                    model: "class",
+                    key: "id",
+                },
             },
             birthday: {
                 type: DataTypes.DATE,
@@ -126,7 +104,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 comment: "頭像",
             },
             remark: {
-                type: DataTypes.STRING(255),
+                type: DataTypes.STRING(1024),
                 allowNull: true,
                 comment: "備註",
             },
@@ -134,6 +112,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING(50),
                 allowNull: true,
                 comment: "門禁卡號",
+            },
+            boarder_status_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: "住宿狀態編號",
+                references: {
+                    model: "boarder_status",
+                    key: "id",
+                },
             },
             created_at: {
                 type: DataTypes.DATE,
@@ -154,6 +141,16 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
                 comment: "更新者",
+            },
+            deleted_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                comment: "刪除時間",
+            },
+            deleted_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "刪除者",
             },
         },
         {

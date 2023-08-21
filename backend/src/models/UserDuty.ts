@@ -44,6 +44,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "使用者編號",
+                references: {
+                    model: "user",
+                    key: "id",
+                },
             },
             start_date: {
                 type: DataTypes.DATE,

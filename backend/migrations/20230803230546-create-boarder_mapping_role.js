@@ -9,10 +9,23 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
-            name: {
-                type: Sequelize.STRING(50),
+            boarder_id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
-                comment: "住宿生身份別",
+                comment: "住宿生外鍵",
+                references: {
+                    model: "boarder",
+                    key: "id",
+                },
+            },
+            boarder_role_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                comment: "住宿生身分編號",
+                references: {
+                    model: "boarder_role",
+                    key: "id",
+                },
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -33,16 +46,6 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 comment: "更新者",
-            },
-            deleted_at: {
-                type: Sequelize.DATE,
-                allowNull: true,
-                comment: "刪除時間",
-            },
-            deleted_by: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                comment: "刪除者",
             },
         });
     },

@@ -5,7 +5,6 @@ import Core from "../interfaces/IDao"
 import RoleModel from "../../models/Role"
 import PermissionModel from "../../models/Permission"
 import UserModel from "../../models/User"
-import BoarderModel from "../../models/Boarder"
 
 interface RolePermission extends RoleModel {
     permissions?: PermissionModel[]

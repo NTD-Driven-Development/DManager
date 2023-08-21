@@ -3,13 +3,13 @@ import AuthService from "../services/AuthService"
 import HttpResponse from "../../utils/httpResponse"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import UserModel from "../../models/User"
-import db from "../../models"
+import Db from "../../models"
 
 export default new (class AuthController {
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
-            await db.sequelize.transaction(async (t: any) => {
+            await Db.sequelize.transaction(async (t: any) => {
                 const user = req.user as UserModel
                 const data = await AuthService.login(user, req, res)
                 next(HttpResponse.success(data))
@@ -31,7 +31,7 @@ export default new (class AuthController {
     public async refreshToken(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
-            await db.sequelize.transaction(async (t: any) => {
+            await Db.sequelize.transaction(async (t: any) => {
                 const data = await AuthService.refreshToken(req, res)
                 next(HttpResponse.success(data))
             })

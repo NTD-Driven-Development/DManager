@@ -13,11 +13,19 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "使用者編號",
+                references: {
+                    model: "user",
+                    key: "id",
+                },
             },
             role_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: "角色編號",
+                references: {
+                    model: "role",
+                    key: "id",
+                },
             },
             created_at: {
                 type: Sequelize.DATE,
