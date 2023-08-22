@@ -28,20 +28,11 @@ export default new (class ProjectService {
         data: IFindOneProjectResult
     ): FindOneProjectResultDto {
         const bunks = data?.project_bunks
-        if (_.isEmpty(bunks)) {
-            return {
-                id: data.id,
-                name: data.name,
-                remark: data.remark,
-                bunks: [],
-                created_at: data.created_at,
-            }
-        }
         return {
             id: data.id,
             name: data.name,
             remark: data.remark,
-            bunks: data.project_bunks,
+            bunks: bunks ?? [],
             created_at: data.created_at,
         } as FindOneProjectResultDto
     }

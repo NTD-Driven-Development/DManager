@@ -226,7 +226,7 @@ describe("Acceptance test for ProjectController.", () => {
         })
 
         afterAll(async () => {
-            await Db.project.destroy({ where: { name: testProjectName } })
+            await Db.project.destroy({ where: { id: testProject.id } })
         })
     })
 
@@ -362,7 +362,7 @@ describe("Acceptance test for ProjectController.", () => {
                     where: { project_id: testProject?.id },
                 })
                 await Db.boarder.destroy({ where: { project_id: testProject?.id } })
-                await Db.project.destroy({ where: { name: testProjectName } })
+                await Db.project.destroy({ where: { id: testProject?.id } })
                 await Db.class.destroy({
                     where: {
                         name: { [Op.in]: givenImportPayload(testProject?.id).all_new_classes },

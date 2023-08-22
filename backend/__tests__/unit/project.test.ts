@@ -295,7 +295,7 @@ describe("Unit test for ProjectService.", () => {
 
 
     describe("取得項目列表", () => {
-        it("應能正常取得", async () => {
+        it("確實呼叫 DAO，正確轉換分頁內容格式", async () => {
             // given
             const expectResult = expectGetAllProjectsData()
             
@@ -310,7 +310,7 @@ describe("Unit test for ProjectService.", () => {
     })
 
     describe("取得單筆", () => {
-        it("應能正常取得", async () => {
+        it("確實呼叫 DAO", async () => {
             // given
             const expectResult = expectProjectDataByIdData()
             
@@ -337,7 +337,7 @@ describe("Unit test for ProjectService.", () => {
     })
 
     describe("建立項目", () => {
-        it("應能正常建立", async () => {
+        it("確實呼叫 DAO", async () => {
             // given
             const payload = givenCreateProjectPayload()
 
@@ -351,7 +351,7 @@ describe("Unit test for ProjectService.", () => {
     })
 
     describe("更新項目", () => {
-        it("應能正常更新", async () => {
+        it("確實呼叫 DAO", async () => {
             // given
             const payload = givenUpdateProjectPayload()
 
@@ -375,7 +375,7 @@ describe("Unit test for ProjectService.", () => {
     })
 
     describe("刪除項目", () => {
-        it("應能正常刪除", async () => {
+        it("確實呼叫 DAO", async () => {
             // given
             const payload = givenDeleteProjectPayload()
 
@@ -399,7 +399,7 @@ describe("Unit test for ProjectService.", () => {
     })
 
     describe("匯入住宿生資料", () => {
-        it("應能正常匯入", async () => {
+        it("確實呼叫 DAO", async () => {
             // given
             const payload = givenImportBoardersPayload()
 
