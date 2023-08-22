@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('boarder_role', {
+        await queryInterface.createTable('boarder_mapping_role', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -10,7 +10,7 @@ module.exports = {
                 allowNull: false,
             },
             boarder_id: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.UUID,
                 allowNull: false,
                 comment: "住宿生外鍵",
                 references: {
@@ -50,6 +50,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('boarder_role');
+        await queryInterface.dropTable('boarder_mapping_role');
     }
 };

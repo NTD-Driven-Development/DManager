@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface BoarderMappingRoleAttributes {
     id?: number
-    boarder_id: number
+    boarder_id: string
     boarder_role_id: number
     created_at: Date
     created_by?: number
@@ -17,7 +17,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         implements BoarderMappingRoleAttributes
     {
         id!: number
-        boarder_id!: number
+        boarder_id!: string
         boarder_role_id!: number
         created_at!: Date
         created_by?: number
@@ -48,7 +48,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             boarder_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.UUID,
                 allowNull: false,
                 comment: "住宿生外鍵",
                 references: {

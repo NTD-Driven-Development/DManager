@@ -3,8 +3,8 @@ import Db from "../../src/models"
 import _ from "lodash"
 
 describe("Acceptance test for ShareController.", () => {
-    const testProjectId = 1919191919
-    const testPointRuleId = 1919191919
+    const testProjectId = 1000000000
+    const testPointRuleId = 1000000000
 
     async function happyPathData() {
         const now = new Date()

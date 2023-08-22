@@ -2,7 +2,7 @@
 import { Model } from "sequelize"
 
 interface BoarderAttributes {
-    id: number
+    id: string
     sid?: string
     project_id: number
     boarder_status_id: number
@@ -26,7 +26,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         extends Model<BoarderAttributes>
         implements BoarderAttributes
     {
-        id!: number
+        id!: string
         sid?: string
         project_id!: number
         boarder_status_id!: number
@@ -55,9 +55,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     Boarder.init(
         {
             id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.UUID,
                 primaryKey: true,
-                autoIncrement: true,
                 allowNull: false,
             },
             sid: {
@@ -156,6 +155,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
         {
             sequelize,
             modelName: "boarder",
+            timestamps: false,
+            freezeTableName: true,
         }
     )
     return Boarder

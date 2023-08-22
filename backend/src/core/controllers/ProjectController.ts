@@ -18,6 +18,21 @@ export default new (class ProjectController {
         }
     }
 
+    public async getProjectDataById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const id = req.params.id
+            const data = await ProjectService.getProjectDataById(id)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
     public async createProject(
         req: Request,
         res: Response,
@@ -57,6 +72,22 @@ export default new (class ProjectController {
                 next(HttpResponse.success(data))
             })
         } catch (error) {
+            next(error)
+        }
+    }
+
+    public async importBoardersData(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
+                const data = await ProjectService.importBoardersData(req.body)
+                next(HttpResponse.success(data))
+            })
+        } catch (error) {
+            console.log(error)
             next(error)
         }
     }

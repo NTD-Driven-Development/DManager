@@ -10,7 +10,7 @@ module.exports = {
                 allowNull: false,
             },
             boarder_id: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.UUID,
                 allowNull: false,
                 comment: "住宿生外鍵",
                 references: {

@@ -56,8 +56,13 @@ export default new (class UserService {
         const result = await ShareDao.getBoarderStatuses()
         return result
     }
-    public async getBoarderRoles(): Promise<BoarderRoleModel[]> {
+    public async getBoarderRoles(query?: {project_id: number}): Promise<BoarderRoleModel[]> {
         const result = await ShareDao.getBoarderRoles()
+        if (query?.project_id) {
+            return _.filter(result, (item) => {
+                return item.project_id == query.project_id
+            })
+        }
         return result
     }
     public async getTelCardContacters(): Promise<TelCardContacterModel[]> {

@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface PointLogAttributes {
     id?: number
-    boarder_id: number
+    boarder_id: string
     project_id: number
     point_rule_id: number
     remark?: string
@@ -14,7 +14,7 @@ interface PointLogAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class PointLog extends Model<PointLogAttributes> implements PointLogAttributes {
         id!: number
-        boarder_id!: number
+        boarder_id!: string
         project_id!: number
         point_rule_id!: number
         remark?: string
@@ -39,7 +39,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             boarder_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.UUID,
                 allowNull: false,
                 comment: "住宿生外鍵",
                 references: {

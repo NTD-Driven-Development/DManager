@@ -26,7 +26,7 @@ export default new (class ShareDao extends BaseDao {
     }
     public async getBoarderRoles(): Promise<BoarderRoleModel[]> {
         return await Db.boarder_role.findAll({
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "project_id"],
         })
     }
     public async getTelCardContacters(): Promise<TelCardContacterModel[]> {

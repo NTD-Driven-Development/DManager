@@ -9,7 +9,8 @@ const router = Router();
 
 // router.use(jwtAuth("jwt"));
 router.get('', ProjectController.getAllProjectsData);
-// router.get('/:id', ProjectController.getProjectDataById);
+router.get('/:id', ProjectController.getProjectDataById);
+router.post('/import', [], ProjectController.importBoardersData);
 router.post('', [], ProjectController.createProject);
 router.put('', ProjectController.updateProject);
 router.delete('/:id', ProjectController.deleteProject);

@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface BoarderNoteAttributes {
     id?: number
-    boarder_id: number
+    boarder_id: string
     title: string
     description: string
     created_at: Date
@@ -17,7 +17,7 @@ interface BoarderNoteAttributes {
 module.exports = (sequelize: any, DataTypes: any) => {
     class BoarderNote extends Model<BoarderNoteAttributes> implements BoarderNoteAttributes {
         id!: number
-        boarder_id!: number
+        boarder_id!: string
         title!: string
         description!: string
         created_at!: Date
@@ -45,7 +45,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             boarder_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.UUID,
                 allowNull: false,
                 comment: "住宿生外鍵",
                 references: {

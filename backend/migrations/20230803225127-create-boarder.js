@@ -4,9 +4,8 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('boarder', {
             id: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.UUID,
                 primaryKey: true,
-                autoIncrement: true,
                 allowNull: false,
             },
             sid: {

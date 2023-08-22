@@ -3,7 +3,7 @@ import { Model } from "sequelize"
 
 interface ProjectBunkAttributes {
     id: number
-    boarder_id: number
+    boarder_id: string
     project_id: number
     floor: string
     room_type: string
@@ -22,7 +22,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         implements ProjectBunkAttributes
     {
         id!: number
-        boarder_id!: number
+        boarder_id!: string
         project_id!: number
         floor!: string
         room_type!: string
@@ -41,6 +41,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            ProjectBunk.belongsTo(models.project, {
+                foreignKey: "project_id",
+                as: "project",
+            })
         }
     }
     ProjectBunk.init(
@@ -52,7 +56,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             boarder_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.UUID,
                 allowNull: true,
                 comment: "住宿生外鍵",
                 references: {
@@ -117,7 +121,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         },
         {
             sequelize,
-            modelName: "boarder",
+            modelName: "project_bunk",
+            timestamps: false,
+            freezeTableName: true,
             indexes: [
                 {
                     unique: true,
