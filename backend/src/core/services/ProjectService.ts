@@ -15,7 +15,7 @@ import BoarderMappingRoleModel from "../../models/BoarderMappingRole"
 import ClassModel from "../../models/Class"
 import ProjectBunkModel from "../../models/ProjectBunk"
 import FindOneProjectResultDto from "../exportDtos/project/FindOneProjectResultDto"
-import PaginationResultDto from "../exportDtos/pagination/PaginationResultDto"
+import PaginationResultDto from "../exportDtos/PaginationResultDto"
 import { withPagination } from "../../utils/pagination"
 
 export default new (class ProjectService {
