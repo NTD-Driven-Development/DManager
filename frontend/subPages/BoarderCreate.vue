@@ -51,21 +51,21 @@
                 <div class="flex flex-1 flex-col gap-0.5">
                     <div class="flex gap-0.5 shrink-0 text-white">
                         <span class="text-red-500">*</span>
-                        <span>學號：</span>
-                    </div>
-                    <div class="flex-1 text-black text-xs">
-                        <Input name="sid" placeholder="請輸入學號" class="w-full rounded"/>
-                    </div>
-                </div>
-                <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
-                        <span class="text-red-500">*</span>
                         <span>姓名：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Input name="name" placeholder="請輸入姓名" class="w-full rounded"/>
                     </div>
                 </div>
+                <div class="flex flex-1 flex-col gap-0.5">
+                    <div class="flex gap-0.5 shrink-0 text-white">
+                        <span>學號：</span>
+                    </div>
+                    <div class="flex-1 text-black text-xs">
+                        <Input name="sid" placeholder="請輸入學號" class="w-full rounded"/>
+                    </div>
+                </div>
+                
             </div>
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-1 flex-col gap-0.5">
@@ -75,7 +75,7 @@
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="class_id" placeholder="請選擇班級"
-                        :options="classList" :option-key="'id'" :option-value="'name'"
+                        :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" init-value="0"
                         class="w-full rounded"/>
                     </div>
                 </div>
@@ -127,9 +127,9 @@
         room_type: yup.string().required(),
         room_no: yup.number().required(),
         bed: yup.number().required(),
-        sid: yup.number().required(),
         name: yup.string().required(),
-        class_id: yup.number().required(),
+        sid: yup.number().nullable(),
+        class_id: yup.number().nullable(),
         boarder_status_id: yup.number().required(),
         remark: yup.string().nullable(),
     });
@@ -137,13 +137,12 @@
     const props = defineProps<Props>();
     const emits = defineEmits<Emits>();
 
-    const { handleSubmit, values, setFieldValue } = useForm({ validationSchema: schema });
+    const { handleSubmit, values, setFieldValue, resetForm } = useForm({ validationSchema: schema });
     const toastNotifier = inject(ToastNotifierKey);
 
     const bunksCaller = new BunksCaller();
     const { data: bunkList } = bunksCaller;
     const classesCaller = new ClassesCaller()
-    .success((v) => setFieldValue('class_id', v?.data?.[0]?.id));
     const { data: classList } = classesCaller;
     const boarderStatusesCaller = new BoarderStatusesCaller()
     .success((v) => setFieldValue('boarder_status_id', v?.data?.[0]?.id));
@@ -184,13 +183,15 @@
                 room_type: data?.room_type,
                 room_no: data?.room_no,
                 bed: data?.bed,
-                sid: data?.sid,
                 name: data?.name,
+                sid: data?.sid,
                 class: data?.class,
                 boarder_status_id: data?.boarder_status_id,
             });
+
             toastNotifier?.success('新增成功');
             emits('onCreated');
+            resetForm();
         }
         catch(error) {
             showParseError(toastNotifier, error);

@@ -51,9 +51,9 @@ interface CreateBoarderFormData {
     room_type: string,
     room_no: number,
     bed: number,
-    sid: string,
     name: string,
-    class: number,
+    sid?: string,
+    class?: number,
     boarder_status_id: number,
     remark?: string,
 }

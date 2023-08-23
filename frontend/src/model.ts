@@ -42,7 +42,11 @@ export interface TelCardContacter {
 }
 
 export interface Boarder {
-    sid: number,
+    sid?: string,
+    floor: number,
+    room_type: string,
+    room_no: number,
+    bed: number,
     name: string,
     avatar?: string,
     remark?: string,

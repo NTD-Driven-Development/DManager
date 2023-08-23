@@ -50,7 +50,8 @@
     import { BoarderPaginator } from '~/composables/api/boarder';
     import { ProjectsCaller } from '~/composables/api/share';
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>(); 
+    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+
     const boarderPaginator = new BoarderPaginator({ immediate: false });
     const { data: boarderList } = boarderPaginator;
     const projectsCaller = new ProjectsCaller()

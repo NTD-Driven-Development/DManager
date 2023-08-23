@@ -11,7 +11,7 @@
     import _ from 'lodash';
 
     interface Props {
-        initValue?: T,
+        initValue?: T[K],
         optionKey?: K,
         optionValue?: ((it: T) => string) | K;
         options?: readonly T[],

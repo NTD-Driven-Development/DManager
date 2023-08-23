@@ -90,6 +90,23 @@ export const resize = (src: string | Blob, maxSideLength: number, quality: numbe
     });
 }
 
+export const toDBC = (text: string) => { 
+    let tmp = ""; 
+
+    for(let i = 0; i < text.length; i++) { 
+        if (text.charCodeAt(i) == 32) { 
+            tmp = tmp + String.fromCharCode(12288); 
+        } 
+        if (text.charCodeAt(i) < 127) { 
+            tmp = tmp + String.fromCharCode(text.charCodeAt(i) + 65248); 
+        }
+        else
+            tmp += text[i];
+    }
+    
+    return tmp; 
+}
+
 export const toQueryString = <T extends object>(value: T) => {
     return _.mapValues(value, (p) => {
         if (false) {

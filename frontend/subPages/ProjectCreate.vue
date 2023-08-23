@@ -42,7 +42,7 @@
 
     const emits = defineEmits<Emits>();
 
-    const { handleSubmit } = useForm({ validationSchema: schema });
+    const { handleSubmit, resetForm } = useForm({ validationSchema: schema });
     const toastNotifier = inject(ToastNotifierKey);
 
     const onSubmit = handleSubmit(async (data) => {
@@ -51,8 +51,10 @@
                 name: data?.name,
                 remark: data?.remark,
             });
+            
             toastNotifier?.success('新增成功');
             emits('onCreated');
+            resetForm();
         }
         catch(error) {
             showParseError(toastNotifier, error);

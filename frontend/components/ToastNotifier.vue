@@ -70,7 +70,7 @@
     }
 
     const show = async (message: string, type = 'success' as Type, options?: Partial<Options>) => {
-        const timeout = options?.timeout ?? 3000;
+        const timeout = options?.timeout ?? 30000;
         const closable = options?.closable ?? true;
         const copyable = options?.copyable ?? true;
         // init
@@ -78,7 +78,8 @@
         // push
         toastList.value.push(item);
         await nextTick();
-        item.visible = true;        
+        const target = toastList.value.find((it) => it?.date == item?.date);
+        if (target) target.visible = true;
         await new Promise(r => setTimeout(r, timeout));
         // remove
         const o = toastList.value.find((it) => it.date == item.date)
