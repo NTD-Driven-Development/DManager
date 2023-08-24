@@ -588,6 +588,7 @@ describe("Unit test for ProjectService.", () => {
                 class_id: payload.class_id,
                 sid: payload.sid,
                 boarder_status_id: payload.boarder_status_id,
+                remark: payload.remark,
                 id: uuid.v4(),
             })
             expect(BoarderMappingRoleDao.bulkCreate).toBeCalledWith([
