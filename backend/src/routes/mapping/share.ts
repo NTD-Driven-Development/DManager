@@ -15,4 +15,6 @@ router.get('/boarderRoles', ShareController.getBoarderRoles);
 router.get('/telCardContacters', ShareController.getTelCardContacters);
 // 取得加扣點規則
 router.get('/pointRules', ShareController.getPointRules);
+// 取得項目
+router.get('/projects', ShareController.getProjects);
 export default router;

@@ -11,7 +11,8 @@ export default new (class ProjectController {
         next: NextFunction
     ) {
         try {
-            const data = await ProjectService.getAllProjectsData()
+            const query = req.query
+            const data = await ProjectService.getAllProjectsData(query as any)
             next(HttpResponse.success(data))
         } catch (error) {
             next(error)
@@ -40,6 +41,20 @@ export default new (class ProjectController {
     ) {
         try {
             const data = await ProjectService.createProject(req.body)
+            next(HttpResponse.success(data, 201))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async createProjectBunk(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const project_id = req.params.id
+            const data = await ProjectService.createProjectBunk(project_id, req.body)
             next(HttpResponse.success(data, 201))
         } catch (error) {
             next(error)
@@ -87,7 +102,22 @@ export default new (class ProjectController {
                 next(HttpResponse.success(data))
             })
         } catch (error) {
-            console.log(error)
+            next(error)
+        }
+    }
+
+    public async exchangeBunk(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const project_id = req.params.id
+            await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
+                const data = await ProjectService.exchangeBunk(project_id as any, req.body)
+                next(HttpResponse.success(data))
+            })
+        } catch (error) {
             next(error)
         }
     }

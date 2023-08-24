@@ -45,6 +45,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 foreignKey: "project_id",
                 as: "project",
             })
+            ProjectBunk.belongsTo(models.boarder, {
+                foreignKey: "boarder_id",
+                as: "boarder",
+            })
         }
     }
     ProjectBunk.init(

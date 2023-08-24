@@ -9,6 +9,34 @@ describe("Acceptance test for ProjectController.", () => {
     const testProjectName = "E2ETestCreateProject"
     const testProjectNameModified = "E2ETestUpdateProject"
     let testProject: any
+
+    async function deleteImportData(project_id: number) {
+        try {
+            await Db.project_bunk.destroy({
+                where: { project_id: project_id },
+            })
+            await Db.boarder_mapping_role.destroy({
+                where: { created_at: { [Op.gte]: now } },
+            })
+            await Db.boarder_role.destroy({
+                where: { project_id: project_id },
+            })
+            await Db.boarder.destroy({
+                where: { project_id: project_id },
+            })
+            await Db.project.destroy({ where: { id: project_id } })
+            await Db.class.destroy({
+                where: {
+                    name: {
+                        [Op.in]: givenImportPayload(project_id).all_new_classes,
+                    },
+                },
+            })
+        } catch (error: any) {
+            console.log(error)
+        }
+    }
+
     function givenCreateProjectPayload() {
         return {
             name: testProjectName,
@@ -39,7 +67,7 @@ describe("Acceptance test for ProjectController.", () => {
                 "陸生",
                 "僑生",
             ],
-            all_new_classes: ["資工研二"],
+            all_new_classes: ["測試班級E2E"],
             items: [
                 {
                     sid: "1111134023",
@@ -127,7 +155,7 @@ describe("Acceptance test for ProjectController.", () => {
                     name: "王明如",
                     remark: "",
                     new_boarder_roles: ["陸生"],
-                    new_class: "資工研二",
+                    new_class: "測試班級E2E",
                 },
                 {
                     sid: "1411107038",
@@ -154,6 +182,67 @@ describe("Acceptance test for ProjectController.", () => {
             ],
         }
     }
+
+    function givenCreateBunkPayload(boarderRolesId: number) {
+        return {
+            floor: "9",
+            room_type: "E",
+            room_no: "7",
+            bed: "6",
+            remark: "",
+            name: "測試人物",
+            sid: "1999999999",
+            class_id: 66,
+            boarder_status_id: 1,
+            boarder_role_ids: [boarderRolesId],
+        }
+    }
+    describe("取得項目列表", () => {
+        it("預先建立項目", async () => {
+            // given
+            const payload = givenCreateProjectPayload()
+
+            // when
+            const response = await App.post("/api/projects").send(payload)
+            testProject = response.body?.data
+
+            // then
+            expect(response.status).toBe(201)
+            expect(testProject).toBeTruthy()
+        })
+
+        it("取得項目列表", async () => {
+            // given
+            // when
+            const response = await App.get("/api/projects")
+            const data = response.body?.data
+
+            // then
+            expect(response.status).toBe(200)
+            expect(data).toBeTruthy()
+            expect(data).toHaveProperty("total")
+            expect(data).toHaveProperty("current_page")
+            expect(data).toHaveProperty("last_page")
+            expect(data).toHaveProperty("items")
+            expect(data.items.length).toBeGreaterThan(0)
+        })
+
+        it("分頁邏輯", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 2,
+            }
+            // when
+            const response = await App.get("/api/projects").query(payload)
+            const data = response.body?.data
+
+            // then
+            expect(response.status).toBe(200)
+            expect(data).toBeTruthy()
+            expect(data.items.length).toBeLessThanOrEqual(payload.limit)
+        })
+    })
 
     describe("建立項目", () => {
         it("測試資料建立成功", async () => {
@@ -277,18 +366,20 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("確認已匯入該項目住宿生資訊", async () => {
             // given
-            const project_id = testProject.id
+            const payload = {
+                project_id: testProject.id,
+            }
 
             // when
-            const response = await App.get(
-                "/api/boarders?project_id=" + project_id
-            )
-            const data = response.body?.data
+            const response = await App.get("/api/boarders").query(payload)
+            const data = response.body?.data.items
 
             // then
             expect(response.status).toBe(200)
             expect(data).toBeTruthy()
-            expect(data.length).toBe(givenImportPayload(project_id).items.length)
+            expect(data.length).toBe(
+                givenImportPayload(payload.project_id).items.length
+            )
             _.forEach(data, (item) => {
                 expect(item).toHaveProperty("name")
                 expect(item).toHaveProperty("class_id")
@@ -303,7 +394,7 @@ describe("Acceptance test for ProjectController.", () => {
             // when
             const response = await App.get("/api/projects/" + project_id)
             const data = response.body?.data
-            const filterHasBoarder = data?.bunks;
+            const filterHasBoarder = data?.bunks
 
             // then
             expect(response.status).toBe(200)
@@ -339,7 +430,10 @@ describe("Acceptance test for ProjectController.", () => {
             const response = await App.get("/api/share/classes")
             const data = response.body?.data
             const filterHasNewClass = _.filter(data, (c: { id; name }) =>
-                _.includes(givenImportPayload(testProject.id).all_new_classes, c.name)
+                _.includes(
+                    givenImportPayload(testProject.id).all_new_classes,
+                    c.name
+                )
             )
 
             // then
@@ -350,31 +444,210 @@ describe("Acceptance test for ProjectController.", () => {
             )
         })
 
-        async function deleteImportData() {
-            try {
-                await Db.project_bunk.destroy({
-                    where: { project_id: testProject?.id },
-                })
-                await Db.boarder_mapping_role.destroy({
-                    where: { created_at: {[Op.gte]: now} },
-                })
-                await Db.boarder_role.destroy({
-                    where: { project_id: testProject?.id },
-                })
-                await Db.boarder.destroy({ where: { project_id: testProject?.id } })
-                await Db.project.destroy({ where: { id: testProject?.id } })
-                await Db.class.destroy({
-                    where: {
-                        name: { [Op.in]: givenImportPayload(testProject?.id).all_new_classes },
-                    },
-                })
-            } catch (error: any) {
-                console.log(error)
-            }
-        }
+        afterAll(async () => {
+            await deleteImportData(testProject?.id)
+        })
+    })
+
+    describe("該項目建立床位", () => {
+        let testProject: any
+        let boarderRoles: any
+
+        it("預先建立項目", async () => {
+            const response = await App.post("/api/projects").send({
+                name: testProjectName,
+            })
+            testProject = response.body?.data
+            expect(response.status).toBe(201)
+        })
+
+        it("預先匯入資料", async () => {
+            // given
+            const payload = givenImportPayload(testProject.id)
+
+            // when
+            const response = await App.post("/api/projects/import").send(
+                payload
+            )
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+        })
+
+        it("取得該項目之住宿生身分別", async () => {
+            // given
+            const project_id = testProject.id
+
+            // when
+            const response = await App.get(
+                "/api/share/boarderRoles?project_id=" + project_id
+            )
+            boarderRoles = response.body?.data
+
+            // then
+            expect(response.status).toBe(200)
+            expect(boarderRoles).toBeTruthy()
+            expect(boarderRoles.length).toBe(
+                givenImportPayload(project_id).all_new_boarder_roles.length
+            )
+        })
+
+        it("建立該項目之床位與住宿生資訊", async () => {
+            // given
+            const boarderRolesId = _.first(_.map(boarderRoles, (br) => br.id))
+            const payload = givenCreateBunkPayload(boarderRolesId)
+
+            // when
+            const response = await App.post(
+                `/api/projects/${testProject.id}/bunks`
+            ).send(payload)
+            const testBunk = response.body?.data
+
+            // then
+            expect(response.status).toBe(201)
+            expect(testBunk).toBeTruthy()
+        })
+
+        it("確認該項目床位已建立", async () => {
+            // given
+            const boarderRolesId = _.first(_.map(boarderRoles, (br) => br.id))
+            const payload = givenCreateBunkPayload(boarderRolesId)
+            const project_id = testProject.id
+
+            // when
+            const response = await App.get("/api/projects/" + project_id)
+            const data = response.body?.data
+            const filterHasBunk = _.find(
+                data?.bunks,
+                (b) =>
+                    b.floor === payload.floor &&
+                    b.room_type === payload.room_type &&
+                    b.room_no === payload.room_no &&
+                    b.bed === payload.bed
+            )
+
+            // then
+            expect(response.status).toBe(200)
+            expect(filterHasBunk).toBeTruthy()
+        })
+
+        it("確認住宿生及身分已建立", async () => {
+            // given
+            const project_id = testProject.id
+
+            // when
+            const response = await App.get(
+                "/api/boarders?project_id=" + project_id
+            )
+            const data = response.body?.data.items
+            const filterHasTestData = _.find(data, (b) => b.name === "測試人物")
+
+            // then
+            expect(response.status).toBe(200)
+            expect(filterHasTestData).toBeTruthy()
+            expect(filterHasTestData).toHaveProperty("boarder_roles")
+        })
 
         afterAll(async () => {
-            await deleteImportData()
+            await deleteImportData(testProject?.id)
+        })
+    })
+
+    describe("交換床位", () => {
+        let bunks: any
+        let origin_bunk_id: number
+        let origin_boarder_id: number
+        let exchange_bunk_id: number
+        let exchange_boarder_id: number
+
+        it("預先建立項目", async () => {
+            const response = await App.post("/api/projects").send({
+                name: testProjectName,
+            })
+            testProject = response.body?.data
+            expect(response.status).toBe(201)
+        })
+
+        it("預先匯入資料", async () => {
+            // given
+            const payload = givenImportPayload(testProject.id)
+
+            // when
+            const response = await App.post("/api/projects/import").send(
+                payload
+            )
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+        })
+
+        it("取得該項目床位資料", async () => {
+            // given
+            const project_id = testProject.id
+
+            // when
+            const response = await App.get("/api/projects/" + project_id)
+            const data = response.body?.data
+            bunks = data?.bunks
+
+            // then
+            expect(response.status).toBe(200)
+            expect(bunks).toBeTruthy()
+            expect(bunks.length).toBe(
+                givenImportPayload(project_id).items.length
+            )
+        })
+
+        it("交換床位", async () => {
+            // given
+            origin_bunk_id = _.first(_.map(bunks, (b) => b.id))
+            origin_boarder_id = _.first(_.map(bunks, (b) => b.boarder_id))
+            exchange_bunk_id = _.last(_.map(bunks, (b) => b.id))
+            exchange_boarder_id = _.last(_.map(bunks, (b) => b.boarder_id))
+
+            const payload = {
+                origin_bunk_id,
+                origin_boarder_id,
+                exchange_bunk_id,
+                exchange_boarder_id,
+            }
+
+            // when
+            const response = await App.post(
+                `/api/projects/${testProject.id}/exchangeBunk`
+            ).send(payload)
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+        })
+
+        it("確認交換後的床位", async () => {
+            // given
+            const project_id = testProject.id
+
+            // when
+            const response = await App.get("/api/projects/" + project_id)
+            const data = response.body?.data
+            const filterHasOriginBoarder = _.find(
+                data?.bunks,
+                (b) => b.boarder_id === origin_boarder_id
+            )
+            const filterHasExchangeBoarder = _.find(
+                data?.bunks,
+                (b) => b.boarder_id === exchange_boarder_id
+            )
+
+            // then
+            expect(response.status).toBe(200)
+            expect(filterHasOriginBoarder.id).toBe(exchange_bunk_id)
+            expect(filterHasExchangeBoarder.id).toBe(origin_bunk_id)
+        })
+
+        afterAll(async () => {
+            await deleteImportData(testProject?.id)
         })
     })
 })

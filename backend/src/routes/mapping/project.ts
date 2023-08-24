@@ -11,6 +11,8 @@ const router = Router();
 router.get('', ProjectController.getAllProjectsData);
 router.get('/:id', ProjectController.getProjectDataById);
 router.post('/import', [], ProjectController.importBoardersData);
+router.post('/:id/bunks', [], ProjectController.createProjectBunk);
+router.post('/:id/exchangeBunk', [], ProjectController.exchangeBunk);
 router.post('', [], ProjectController.createProject);
 router.put('', ProjectController.updateProject);
 router.delete('/:id', ProjectController.deleteProject);

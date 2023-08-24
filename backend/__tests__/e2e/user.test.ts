@@ -10,18 +10,6 @@ describe("Acceptance test for UserController.", () => {
             sid: "S1234567890test_e2e",
             roles: [1],
         }
-        async function clearAllTestData() {
-            await Db.user_role.destroy({ where: { user_id: createdUser?.id } })
-            await Db.user.destroy({ where: { email: createUserPayload.email } })
-        }
-
-        beforeAll(async () => {
-        })
-
-        afterAll(async () => {
-            // 測試後刪除所有測資
-            await clearAllTestData()
-        })
 
         it("不符合輸入格式應回傳 400.", async () => {
             const invalidPayload = [
@@ -68,6 +56,12 @@ describe("Acceptance test for UserController.", () => {
             )
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("此 Email 已被註冊")
+        })
+
+        afterAll(async () => {
+            // 測試後刪除所有測資
+            await Db.user_role.destroy({ where: { user_id: createdUser?.id } })
+            await Db.user.destroy({ where: { email: createUserPayload.email } })
         })
     })
 })

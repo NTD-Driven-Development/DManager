@@ -50,6 +50,23 @@ module.exports = (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            Boarder.belongsTo(models.project, {
+                foreignKey: "project_id",
+                as: "project",
+            })
+            Boarder.belongsTo(models.boarder_status, {
+                foreignKey: "boarder_status_id",
+                as: "boarder_status",
+            })
+            Boarder.belongsTo(models.class, {
+                foreignKey: "class_id",
+                as: "class",
+            })
+            Boarder.belongsToMany(models.boarder_role, {
+                through: "boarder_mapping_role",
+                foreignKey: "boarder_id",
+                as: "boarder_roles",
+            })
         }
     }
     Boarder.init(

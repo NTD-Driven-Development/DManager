@@ -8,7 +8,7 @@ export default new (class BoarderController {
     public async getBoardersFromProject (req: Request, res: Response, next: NextFunction) {
         try {
             const project_id = req.query?.project_id as string
-            const data = await BoarderService.getBoardersFromProject(project_id)
+            const data = await BoarderService.getBoardersFromProject(project_id, req.query as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

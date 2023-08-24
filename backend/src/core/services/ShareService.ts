@@ -8,6 +8,7 @@ import TelCardContacterModel from "../../models/TelCardContacter"
 import PointRuleModel from "../../models/PointRule"
 import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
+import ProjectModel from "../../models/Project"
 
 export default new (class UserService {
     private convertBunksToBunkResult(bunks: BunkModel[]): BunkResult[] {
@@ -71,6 +72,10 @@ export default new (class UserService {
     }
     public async getPointRules(): Promise<PointRuleModel[]> {
         const result = await ShareDao.getPointRules()
+        return result
+    }
+    public async getProjects(): Promise<ProjectModel[]> {
+        const result = await ShareDao.getProjects()
         return result
     }
 

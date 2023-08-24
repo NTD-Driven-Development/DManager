@@ -6,6 +6,9 @@ import RoleEnum from "../../src/enumerates/Role"
 import Sequelize from "sequelize"
 
 describe("Unit test for UserService.", () => {
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
     const hashedPwd = "passwordhashed"
 
     const fakeUser = {

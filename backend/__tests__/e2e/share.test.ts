@@ -89,4 +89,10 @@ describe("Acceptance test for ShareController.", () => {
         expect(response.status).toBe(200)
         expect(testData).toBeTruthy()
     })
+
+    it("取得項目", async () => {
+        const response = await App.get("/api/share/projects")
+        expect(response.status).toBe(200)
+        expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
+    })
 })

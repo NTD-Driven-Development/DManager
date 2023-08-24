@@ -56,4 +56,13 @@ export default new (class ShareController {
             next(error)
         }
     }
+
+    public async getProjects (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getProjects()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
 })()

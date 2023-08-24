@@ -3,6 +3,9 @@ import ShareDao from "../../src/core/daos/ShareDao"
 import HttpException from "../../src/exceptions/HttpException"
 
 describe("Unit test for ShareService.", () => {
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
     function expectBunksData() {
         return [
             {
@@ -93,13 +96,14 @@ describe("Unit test for ShareService.", () => {
             {
                 id: 1,
                 name: "住宿中",
-
             },
         ]
     }
     async function whenGetBoarderStatuses() {
         const rawData = expectBoarderStatusesData()
-        jest.spyOn(ShareDao, "getBoarderStatuses").mockResolvedValue(rawData as any)
+        jest.spyOn(ShareDao, "getBoarderStatuses").mockResolvedValue(
+            rawData as any
+        )
         return await ShareService.getBoarderStatuses()
     }
 
@@ -108,13 +112,14 @@ describe("Unit test for ShareService.", () => {
             {
                 id: 1,
                 name: "一般生",
-
             },
         ]
     }
     async function whenGetBoarderRoles() {
         const rawData = expectBoarderRolesData()
-        jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(rawData as any)
+        jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(
+            rawData as any
+        )
         return await ShareService.getBoarderRoles()
     }
 
@@ -128,7 +133,9 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetTelCardContacters() {
         const rawData = expectTelCardContactersData()
-        jest.spyOn(ShareDao, "getTelCardContacters").mockResolvedValue(rawData as any)
+        jest.spyOn(ShareDao, "getTelCardContacters").mockResolvedValue(
+            rawData as any
+        )
         return await ShareService.getTelCardContacters()
     }
 
@@ -147,6 +154,23 @@ describe("Unit test for ShareService.", () => {
         const rawData = expectPointRulesData()
         jest.spyOn(ShareDao, "getPointRules").mockResolvedValue(rawData as any)
         return await ShareService.getPointRules()
+    }
+
+    function expectProjectsData() {
+        return [
+            {
+                id: 1,
+                code: "A1",
+                reason: "加扣點規則1",
+                point: 1,
+                is_active: true,
+            },
+        ]
+    }
+    async function whenGetProjects() {
+        const rawData = expectProjectsData()
+        jest.spyOn(ShareDao, "getProjects").mockResolvedValue(rawData as any)
+        return await ShareService.getProjects()
     }
 
     it("取得樓區室床", async () => {
@@ -177,5 +201,10 @@ describe("Unit test for ShareService.", () => {
     it("取得加扣點規則", async () => {
         const result = await whenGetPointRules()
         expect(result).toEqual(expectPointRulesData())
+    })
+
+    it("取得項目", async () => {
+        const result = await whenGetProjects()
+        expect(result).toEqual(expectProjectsData())
     })
 })

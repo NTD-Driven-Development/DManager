@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 const withPagination = async (
     queryCount: number,
     data: any,
@@ -11,9 +13,10 @@ const withPagination = async (
         Math.ceil(queryCount / limit) === 0 ? 1 : Math.ceil(queryCount / limit)
     const from = (offset - 1) * limit + 1 < 1 ? 0 : (offset - 1) * limit + 1
     const to = offset * limit < queryCount ? offset * limit : queryCount
-    // const items = data.slice(from - 1, to)
+    // data pagination
+    const items = _.slice(data, from - 1, to)
 
-    return { total, per_page, current_page, last_page, from, to, items: data }
+    return { total, per_page, current_page, last_page, from, to, items: items }
 }
 
 const validatePagination = async (
