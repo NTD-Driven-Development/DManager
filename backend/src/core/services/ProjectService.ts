@@ -204,6 +204,7 @@ export default new (class ProjectService {
             class_id: data?.class_id,
             sid: data?.sid,
             boarder_status_id: data.boarder_status_id,
+            remark: data?.remark,
         } as BoarderModel
     }
 
