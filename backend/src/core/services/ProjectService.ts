@@ -109,9 +109,10 @@ export default new (class ProjectService {
     ): number | undefined {
         return (
             data.class_id ??
-            _.find(all_new_classes, (item: ClassModel) => {
-                return item.name === data.new_class
-            })?.id
+            _.find(
+                all_new_classes,
+                (item: ClassModel) => item.name === data.new_class
+            )?.id
         )
     }
 
@@ -120,9 +121,7 @@ export default new (class ProjectService {
         boarder_roles: BoarderRoleModel[]
     ): (number | undefined)[] {
         return _.map(data.new_boarder_roles, (role) => {
-            return _.find(boarder_roles, (result) => {
-                return result.name === role
-            })?.id
+            return _.find(boarder_roles, (result) => result.name === role)?.id
         })
     }
 
@@ -210,10 +209,12 @@ export default new (class ProjectService {
 
     private convertCreateProjectBunkDtoToProjectBunkModel(
         project_id: number,
+        boarder_id: string,
         data: CreateProjectBunkDto
     ): ProjectBunkModel {
         return {
             project_id: project_id,
+            boarder_id: boarder_id,
             floor: data.floor,
             room_type: data.room_type,
             room_no: data.room_no,
@@ -227,24 +228,28 @@ export default new (class ProjectService {
         payload: CreateProjectBunkDto
     ): Promise<any> {
         try {
-            const boarderData = this.convertCreateProjectBunkDtoToBoarderModel(
-                payload,
-                project_id as number
-            )
-            const boarder = await BoarderDao.create(boarderData as BoarderModel)
+            const boarderData: BoarderModel =
+                this.convertCreateProjectBunkDtoToBoarderModel(
+                    payload,
+                    project_id as number
+                )
+            const boarder: BoarderModel = await BoarderDao.create(boarderData)
 
             if (!_.isEmpty(payload.boarder_role_ids)) {
-                const boarderMap = this.convertImportDtoToBoarderMapRoleModel(
-                    boarder.id,
-                    payload.boarder_role_ids as number[]
-                )
+                const boarderMap: BoarderMappingRoleModel[] =
+                    this.convertImportDtoToBoarderMapRoleModel(
+                        boarder.id,
+                        payload.boarder_role_ids as number[]
+                    )
                 await BoarderMappingRoleDao.bulkCreate(boarderMap)
             }
-            const projectBunk =
+            const projectBunk: ProjectBunkModel =
                 this.convertCreateProjectBunkDtoToProjectBunkModel(
                     project_id as number,
+                    boarder.id,
                     payload
                 )
+
             await ProjectDao.createProjectBunk(projectBunk)
             return true
         } catch (error: any) {
@@ -255,16 +260,19 @@ export default new (class ProjectService {
         }
     }
 
-    public async exchangeBunk(project_id: number, payload: {
-        origin_bunk_id: number,
-        origin_boarder_id: string,
-        exchange_bunk_id: number,
-        exchange_boarder_id: string
-    }): Promise<boolean> {
+    public async exchangeBunk(
+        project_id: number,
+        payload: {
+            origin_bunk_id: number
+            origin_boarder_id: string
+            exchange_bunk_id: number
+            exchange_boarder_id: string
+        }
+    ): Promise<boolean> {
         try {
             const params = {
                 project_id,
-                ...payload
+                ...payload,
             }
             const result = await ProjectDao.exchangeBunk(params)
             if (result.affectedRows !== 2) {

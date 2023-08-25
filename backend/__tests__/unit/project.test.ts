@@ -598,6 +598,7 @@ describe("Unit test for ProjectService.", () => {
                 },
             ])
             expect(ProjectDao.createProjectBunk).toBeCalledWith({
+                boarder_id: 1,
                 project_id: project_id,
                 floor: payload.floor,
                 room_type: payload.room_type,
