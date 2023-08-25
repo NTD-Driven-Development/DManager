@@ -67,6 +67,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 foreignKey: "boarder_id",
                 as: "boarder_roles",
             })
+            Boarder.hasOne(models.project_bunk, {
+                foreignKey: "boarder_id",
+                as: "project_bunk",
+            })
         }
     }
     Boarder.init(

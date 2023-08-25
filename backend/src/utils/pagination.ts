@@ -7,11 +7,11 @@ const withPagination = async (
     limit: number = 20
 ) => {
     const total = queryCount
-    const per_page = limit
-    const current_page = offset
+    const per_page = _.toInteger(limit)
+    const current_page = _.toInteger(offset)
     const last_page =
-        Math.ceil(queryCount / limit) === 0 ? 1 : Math.ceil(queryCount / limit)
-    const from = (offset - 1) * limit + 1 < 1 ? 0 : (offset - 1) * limit + 1
+        Math.ceil(queryCount / per_page) === 0 ? 1 : Math.ceil(queryCount / per_page)
+    const from = (current_page - 1) * per_page + 1 < 1 ? 0 : (current_page - 1) * per_page + 1
     const to = offset * limit < queryCount ? offset * limit : queryCount
     // data pagination
     const items = _.slice(data, from - 1, to)

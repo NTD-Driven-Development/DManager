@@ -27,6 +27,15 @@ describe("Unit test for BoarderService.", () => {
                 name: "1E區隊長",
             },
         ],
+        project_bunk: {
+            id: 1,
+            project_id: 1,
+            boarder_id: "1",
+            floor: "1",
+            room_type: "1",
+            room_no: "1",
+            bed: "1",
+        },
     }
 
     function givenGetBoardersFromProjectPayload() {
@@ -64,6 +73,15 @@ describe("Unit test for BoarderService.", () => {
                             name: "1E區隊長",
                         },
                     ],
+                    project_bunk: {
+                        id: 1,
+                        project_id: 1,
+                        boarder_id: "1",
+                        floor: "1",
+                        room_type: "1",
+                        room_no: "1",
+                        bed: "1",
+                    },
                 },
             ],
         }

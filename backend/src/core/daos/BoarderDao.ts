@@ -23,6 +23,11 @@ export default new (class BoarderDao extends BaseDao {
                     model: Db.boarder_status,
                     as: "boarder_status",
                     required: false,
+                },
+                {
+                    model: Db.project_bunk,
+                    as: "project_bunk",
+                    required: false,
                 }
             ],
             where: { deleted_at: null },
