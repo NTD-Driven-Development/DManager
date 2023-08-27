@@ -1,26 +1,27 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface PermissionAttributes {
+export interface PermissionModel {
     id?: number
     description: string
-    method:string
+    method: string
     path: string
     is_actived: boolean
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class Permission extends Model<PermissionAttributes> implements PermissionAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class Permission extends Model<PermissionModel> implements PermissionModel {
         id!: number
         description!: string
-        method!:string
+        method!: string
         path!: string
         is_actived!: boolean
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
@@ -69,8 +70,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -97,5 +99,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return Permission
 }
-
-export default PermissionAttributes

@@ -1,22 +1,23 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface UserDutyAttributes {
+export interface UserDutyModel {
     id: number
     user_id: number
     start_date: Date
     end_date: Date
-    created_at: Date
+    created_at?: Date
     created_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class UserDuty extends Model<UserDutyAttributes> implements UserDutyAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class UserDuty extends Model<UserDutyModel> implements UserDutyModel {
         id!: number
         user_id!: number
         start_date!: Date
         end_date!: Date
-        created_at!: Date
+        created_at?: Date
         created_by?: number
 
         /**
@@ -61,8 +62,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -79,5 +81,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return UserDuty
 }
-
-export default UserDutyAttributes

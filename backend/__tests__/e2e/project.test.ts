@@ -2,21 +2,20 @@ import { Op } from "sequelize"
 import { App } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
-import moment from "moment"
 
 describe("Acceptance test for ProjectController.", () => {
-    const now = moment().toDate()
-    const testProjectName = "E2ETestCreateProject"
-    const testProjectNameModified = "E2ETestUpdateProject"
-    let testProject: any
-
     async function deleteImportData(project_id: number) {
         try {
+            const boarder_role_ids = await Db.boarder_role
+                .findAll({
+                    where: { project_id: project_id },
+                })
+                .then((result: any) => _.map(result, (item) => item.id))
+            await Db.boarder_mapping_role.destroy({
+                where: { boarder_role_id: { [Op.in]: boarder_role_ids } },
+            })
             await Db.project_bunk.destroy({
                 where: { project_id: project_id },
-            })
-            await Db.boarder_mapping_role.destroy({
-                where: { created_at: { [Op.gte]: now } },
             })
             await Db.boarder_role.destroy({
                 where: { project_id: project_id },
@@ -39,7 +38,7 @@ describe("Acceptance test for ProjectController.", () => {
 
     function givenCreateProjectPayload() {
         return {
-            name: testProjectName,
+            name: "E2ETestCreateProject",
             remark: null,
         }
     }
@@ -47,7 +46,7 @@ describe("Acceptance test for ProjectController.", () => {
     function givenUpdateProjectPayload(id: number) {
         return {
             id: id,
-            name: testProjectNameModified,
+            name: "E2ETestUpdateProject",
             remark: "remark",
         }
     }
@@ -198,6 +197,8 @@ describe("Acceptance test for ProjectController.", () => {
         }
     }
     describe("取得項目列表", () => {
+        let testProject: any
+
         it("預先建立項目", async () => {
             // given
             const payload = givenCreateProjectPayload()
@@ -230,8 +231,8 @@ describe("Acceptance test for ProjectController.", () => {
         it("分頁邏輯", async () => {
             // given
             const payload = {
-                offset: 1,
-                limit: 2,
+                offset: "1",
+                limit: "2",
             }
             // when
             const response = await App.get("/api/projects").query(payload)
@@ -240,11 +241,17 @@ describe("Acceptance test for ProjectController.", () => {
             // then
             expect(response.status).toBe(200)
             expect(data).toBeTruthy()
-            expect(data.items.length).toBeLessThanOrEqual(payload.limit)
+            expect(data.items.length).toBeLessThanOrEqual(2)
+        })
+
+        afterAll(async () => {
+            await Db.project.destroy({ where: { id: testProject.id } })
         })
     })
 
     describe("建立項目", () => {
+        let testProject: any
+
         it("測試資料建立成功", async () => {
             // given
             const payload = givenCreateProjectPayload()
@@ -258,11 +265,13 @@ describe("Acceptance test for ProjectController.", () => {
             expect(testProject).toBeTruthy()
         })
         afterAll(async () => {
-            await Db.project.destroy({ where: { name: testProjectName } })
+            await Db.project.destroy({ where: { id: testProject.id } })
         })
     })
 
     describe("取得項目並更新", () => {
+        let testProject: any
+
         it("預先建立項目", async () => {
             // given
             const payload = givenCreateProjectPayload()
@@ -320,11 +329,14 @@ describe("Acceptance test for ProjectController.", () => {
     })
 
     describe("刪除項目", () => {
+        let testProject: any
+
         it("預先建立項目", async () => {
-            const response = await App.post("/api/projects").send({
-                name: testProjectName,
-            })
+            const payload = givenCreateProjectPayload()
+
+            const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
+
             expect(response.status).toBe(201)
         })
 
@@ -337,16 +349,21 @@ describe("Acceptance test for ProjectController.", () => {
             const response = await App.delete("/api/projects/" + testProject.id)
             expect(response.status).toBe(400)
         })
+
+        afterAll(async () => {
+            await Db.project.destroy({ where: { id: testProject.id } })
+        })
     })
 
     describe("匯入住宿生資料", () => {
         let testProject: any
 
         it("建立項目", async () => {
-            const response = await App.post("/api/projects").send({
-                name: testProjectName,
-            })
+            const payload = givenCreateProjectPayload()
+
+            const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
+
             expect(response.status).toBe(201)
         })
 
@@ -454,10 +471,11 @@ describe("Acceptance test for ProjectController.", () => {
         let boarderRoles: any
 
         it("預先建立項目", async () => {
-            const response = await App.post("/api/projects").send({
-                name: testProjectName,
-            })
+            const payload = givenCreateProjectPayload()
+
+            const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
+
             expect(response.status).toBe(201)
         })
 
@@ -549,12 +567,28 @@ describe("Acceptance test for ProjectController.", () => {
             expect(filterHasTestData).toHaveProperty("boarder_roles")
         })
 
+        it("若重複建立床位則回應「400」，error = 「建立失敗，此床位已存在」", async () => {
+            // given
+            const boarderRolesId = _.first(_.map(boarderRoles, (br) => br.id))
+            const payload = givenCreateBunkPayload(boarderRolesId)
+
+            // when
+            const response = await App.post(
+                `/api/projects/${testProject.id}/bunks`
+            ).send(payload)
+
+            // then
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toBe("建立失敗，此床位已存在")
+        })
+
         afterAll(async () => {
             await deleteImportData(testProject?.id)
         })
     })
 
     describe("交換床位", () => {
+        let testProject: any
         let bunks: any
         let origin_bunk_id: number
         let origin_boarder_id: number
@@ -562,10 +596,11 @@ describe("Acceptance test for ProjectController.", () => {
         let exchange_boarder_id: number
 
         it("預先建立項目", async () => {
-            const response = await App.post("/api/projects").send({
-                name: testProjectName,
-            })
+            const payload = givenCreateProjectPayload()
+
+            const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
+
             expect(response.status).toBe(201)
         })
 

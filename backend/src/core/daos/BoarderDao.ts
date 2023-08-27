@@ -2,7 +2,7 @@ import Db from "../../models"
 import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
 import moment from "moment"
-import BoarderModel from "../../models/Boarder"
+import { BoarderModel } from "../../models/Boarder"
 import _ from "lodash"
 
 export default new (class BoarderDao extends BaseDao {
@@ -11,21 +11,26 @@ export default new (class BoarderDao extends BaseDao {
             include: [
                 {
                     model: Db.boarder_role,
+                    attributes: ["id", "name"],
                     as: "boarder_roles",
+                    through: { attributes: [] },
                     required: false,
                 },
                 {
                     model: Db.class,
+                    attributes: ["id", "name"],
                     as: "class",
                     required: false,
                 },
                 {
                     model: Db.boarder_status,
+                    attributes: ["id", "name"],
                     as: "boarder_status",
                     required: false,
                 },
                 {
                     model: Db.project_bunk,
+                    attributes: ["id", "floor", "room_type", "room_no", "bed"],
                     as: "project_bunk",
                     required: false,
                 }
@@ -41,10 +46,6 @@ export default new (class BoarderDao extends BaseDao {
     }
 
     public async bulkCreate(data: BoarderModel[]): Promise<BoarderModel[]> {
-        const now = moment().toDate()
-        const map = _.map(data, (item) => {
-            return { ...item, created_at: now }
-        })
-        return await Db.boarder.bulkCreate(map)
+        return await Db.boarder.bulkCreate(data)
     }
 })()

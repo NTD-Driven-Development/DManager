@@ -1,11 +1,12 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface ClassAttributes {
+export interface ClassModel {
     id?: number
     code?: string
     name: string
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
@@ -13,12 +14,12 @@ interface ClassAttributes {
     deleted_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class Class extends Model<ClassAttributes> implements ClassAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class Class extends Model<ClassModel> implements ClassModel {
         id!: number
         code?: string
         name!: string
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
@@ -54,8 +55,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -92,5 +94,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return Class
 }
-
-export default ClassAttributes

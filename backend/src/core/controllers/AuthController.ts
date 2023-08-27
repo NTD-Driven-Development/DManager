@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import AuthService from "../services/AuthService"
 import HttpResponse from "../../utils/httpResponse"
 import RequestUser from "../exportDtos/auth/RequestUser"
-import UserModel from "../../models/User"
+import { UserModel } from "../../models/User"
 import Db from "../../models"
 
 export default new (class AuthController {

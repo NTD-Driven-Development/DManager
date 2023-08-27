@@ -1,19 +1,23 @@
 "use strict"
 
-const fs = require("fs")
-const path = require("path")
-const Sequelize = require("sequelize")
-const process = require("process")
+import fs from "fs"
+import path from "path"
+import Sequelize from "sequelize"
+import process from "process"
+
 const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || "development"
 const config = require(__dirname + "/../../config/config.js")[env]
 const db: any = {}
 
-let sequelize: any
+let sequelize: Sequelize.Sequelize
 if (config.use_env_variable) {
-    sequelize = new Sequelize(process.env[config.use_env_variable], config)
+    sequelize = new Sequelize.Sequelize(
+        process.env[config.use_env_variable] as any,
+        config
+    )
 } else {
-    sequelize = new Sequelize(
+    sequelize = new Sequelize.Sequelize(
         config.database,
         config.username,
         config.password,
@@ -31,7 +35,14 @@ fs.readdirSync(__dirname)
         )
     })
     .forEach((file: any) => {
-        const model = require(path.join(__dirname, file))(
+        // const model = require(path.join(__dirname, file))(
+        //     sequelize,
+        //     Sequelize.DataTypes
+        // )
+        // db[model.name] = model
+
+        // To ES6
+        const model = require(path.join(__dirname, file)).default(
             sequelize,
             Sequelize.DataTypes
         )

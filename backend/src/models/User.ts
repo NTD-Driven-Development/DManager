@@ -1,7 +1,8 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface UserAttributes {
+export interface UserModel {
     id?: number
     sid?: string
     name: string
@@ -9,7 +10,7 @@ interface UserAttributes {
     password: string
     is_admin: boolean
     is_actived: boolean
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
@@ -17,8 +18,8 @@ interface UserAttributes {
     deleted_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class User extends Model<UserAttributes> implements UserAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class User extends Model<UserModel> implements UserModel {
         id!: number
         sid?: string
         name!: string
@@ -26,7 +27,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         password!: string
         is_admin!: boolean
         is_actived!: boolean
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
@@ -96,8 +97,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -134,5 +136,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return User
 }
-
-export default UserAttributes

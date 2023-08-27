@@ -384,6 +384,20 @@ describe("Unit test for ProjectService.", () => {
 
         return await ProjectService.createProjectBunk(1, payload)
     }
+    async function whenCreateProjectBunkRepeat(payload: any) {
+        jest.spyOn(uuid, "v4").mockReturnValue("123456")
+        jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
+            new Sequelize.UniqueConstraintError({})
+        )
+        jest.spyOn(BoarderDao, "create").mockResolvedValue(
+            true as any as Promise<any>
+        )
+        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
+            true as any as Promise<any>
+        )
+
+        return await ProjectService.createProjectBunk(1, payload)
+    }
 
     function givenExchangeBunkPayload() {
         return {
@@ -615,6 +629,18 @@ describe("Unit test for ProjectService.", () => {
 
             // when
             const result = whenCreateProjectBunkNotFoundProject(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+        })
+
+        it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」", async () => {
+            // given
+            const errorMessage: string = "建立失敗，此床位已存在"
+            const payload = givenCreateProjectBunkPayload()
+
+            // when
+            const result = whenCreateProjectBunkRepeat(payload)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)

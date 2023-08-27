@@ -1,7 +1,8 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface SysLogAttributes {
+export interface SysLogModel {
     id?: number
     clientip: string
     serverip: string
@@ -16,11 +17,11 @@ interface SysLogAttributes {
     params?: string
     body?: string
     detail?: string
-    created_at: Date
+    created_at?: Date
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class SysLog extends Model<SysLogAttributes> implements SysLogAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class SysLog extends Model<SysLogModel> implements SysLogModel {
         id!: number
         clientip!: string
         serverip!: string
@@ -35,7 +36,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         params?: string
         body?: string
         detail?: string
-        created_at!: Date
+        created_at?: Date
 
         /**
          * Helper method for defining associations.
@@ -108,7 +109,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
+                comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
         },
         {
@@ -120,5 +123,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return SysLog
 }
-
-export default SysLogAttributes

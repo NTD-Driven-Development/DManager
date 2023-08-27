@@ -9,6 +9,7 @@ const router = Router();
 
 // router.use(jwtAuth("jwt"));
 router.get('', BoarderController.getBoardersFromProject);
+router.put('', BoarderController.updateBoarder);
 
 
 export default router;

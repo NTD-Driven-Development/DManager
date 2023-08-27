@@ -14,4 +14,13 @@ export default new (class BoarderController {
             next(error)
         }
     }
+
+    public async updateBoarder (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await BoarderService.updateBoarder(req.body as any)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
 })()

@@ -2,7 +2,7 @@ import Db from "../../models"
 import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
 import moment from "moment"
-import UserModel from "../../models/User"
+import { UserModel } from "../../models/User"
 
 export default new (class UserDao extends BaseDao implements Core.IDao {
     public async findAll(): Promise<UserModel[]> {
@@ -20,7 +20,6 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
     }
 
     public async create(user: UserModel): Promise<UserModel> {
-        user.created_at = moment().toDate()
         return await Db.user.create(user)
     }
 

@@ -48,8 +48,9 @@ module.exports = {
             },
             created_at: {
                 type: Sequelize.DATE,
-                allowNull: false
-            }
+                allowNull: true,
+                comment: "建立時間",
+            },
         });
     },
     async down(queryInterface, Sequelize) {

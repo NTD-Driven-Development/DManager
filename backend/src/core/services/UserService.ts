@@ -1,7 +1,7 @@
 import _ from "lodash"
 import UserDao from "../daos/UserDao"
 import UserRoleDao from "../daos/UserRoleDao"
-import UserModel from "../../models/User"
+import { UserModel } from "../../models/User"
 import HttpException from "../../exceptions/HttpException"
 import UpdateUserDto from "../importDtos/users/UpdateUserDto"
 import CreateUserDto from "../importDtos/users/CreateUserDto"

@@ -1,8 +1,7 @@
 import Db from "../../models"
 import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
-import moment from "moment"
-import UserRoleModel from "../../models/UserRole"
+import { UserRoleModel } from "../../models/UserRole"
 import _ from "lodash"
 
 export default new (class UserRoleDao extends BaseDao {
@@ -10,9 +9,8 @@ export default new (class UserRoleDao extends BaseDao {
         user_id: number,
         roles: number[]
     ): Promise<UserRoleModel> {
-        const now = moment().toDate()
         const map = _.map(roles, (role_id) => {
-            return { user_id: user_id, role_id: role_id, created_at: now }
+            return { user_id: user_id, role_id: role_id }
         })
         return await Db.user_role.bulkCreate(map)
     }

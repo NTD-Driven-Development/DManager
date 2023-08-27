@@ -1,7 +1,8 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface SysAuthLogAttributes {
+export interface SysAuthLogModel {
     id?: number
     type: string
     clientip: string
@@ -12,11 +13,11 @@ interface SysAuthLogAttributes {
     refresh_expired_at: Date
     status: boolean
     detail?: string
-    created_at: Date
+    created_at?: Date
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class SysAuthLog extends Model<SysAuthLogAttributes> implements SysAuthLogAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class SysAuthLog extends Model<SysAuthLogModel> implements SysAuthLogModel {
         id!: number
         type!: string
         clientip!: string
@@ -27,7 +28,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         refresh_expired_at!: Date
         status!: boolean
         detail?: string
-        created_at!: Date
+        created_at?: Date
 
         /**
          * Helper method for defining associations.
@@ -44,7 +45,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                primaryKey: true
+                primaryKey: true,
             },
             type: {
                 type: DataTypes.STRING(20),
@@ -52,41 +53,43 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             clientip: {
                 type: DataTypes.STRING(255),
-                allowNull: false
+                allowNull: false,
             },
             serverip: {
                 type: DataTypes.STRING(255),
-                allowNull: false
+                allowNull: false,
             },
             user_agent: {
                 type: DataTypes.STRING(200),
-                allowNull: false
+                allowNull: false,
             },
             user_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
             },
             refresh_token: {
                 type: DataTypes.STRING(255),
-                allowNull: false
+                allowNull: false,
             },
             refresh_expired_at: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: false,
             },
             status: {
                 type: DataTypes.BOOLEAN,
                 allowNull: true,
-                defaultValue: false
+                defaultValue: false,
             },
             detail: {
                 type: DataTypes.TEXT,
-                allowNull: true
+                allowNull: true,
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false
-            }
+                allowNull: true,
+                comment: "建立時間",
+                defaultValue: moment().toDate(),
+            },
         },
         {
             sequelize,
@@ -97,5 +100,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return SysAuthLog
 }
-
-export default SysAuthLogAttributes

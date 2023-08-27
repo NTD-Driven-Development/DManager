@@ -2,8 +2,8 @@ import Db from "../../models"
 import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
 import moment from "moment"
-import ProjectModel from "../../models/Project"
-import ProjectBunkModel from "../../models/ProjectBunk"
+import { ProjectModel } from "../../models/Project"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
 import _ from "lodash"
 import { Op, Sequelize } from "sequelize"
 
@@ -43,7 +43,6 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
     }
 
     public async create(project: ProjectModel): Promise<ProjectModel> {
-        project.created_at = moment().toDate()
         return await Db.project.create(project)
     }
 
@@ -93,7 +92,8 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
         exchange_boarder_id: string
     }): Promise<Core.IExecuteResult> {
         return await this.executeResult(() =>
-            Db.sequelize.query(`
+            Db.sequelize.query(
+                `
                 UPDATE project_bunk
                 SET boarder_id = CASE 
                     WHEN id = :ORIGIN_BUNK_ID THEN :EXCHANGE_BOARDER_ID 

@@ -1,6 +1,7 @@
 import BoarderService from "../../src/core/services/BoarderService"
 import BoarderDao from "../../src/core/daos/BoarderDao"
 import Sequelize from "sequelize"
+import ProjectDao from "../../src/core/daos/ProjectDao"
 
 describe("Unit test for BoarderService.", () => {
     afterEach(() => {
@@ -108,8 +109,8 @@ describe("Unit test for BoarderService.", () => {
     async function whenGetBoardersFromProjectNoData(
         project_id: number | string
     ) {
-        const rawData = []
-        jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData as any)
+        const rawData: any = []
+        jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData)
         return await BoarderService.getBoardersFromProject(project_id)
     }
     async function whenGetBoardersFromProjectWithPagination(
@@ -122,6 +123,51 @@ describe("Unit test for BoarderService.", () => {
         const rawData = [fakeBoarder, fakeBoarder, fakeBoarder, fakeBoarder]
         jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData as any)
         return await BoarderService.getBoardersFromProject(project_id, query)
+    }
+
+    function givenUpdateBoarderPayload() {
+        return {
+            id: "boarder_id",
+            sid: "1234567890",
+            name: "testUpdate",
+            phone: "0912345678",
+            class_id: 1,
+            birthday: "2000/01/01",
+            avatar: null,
+            remark: "備註",
+            access_card: "ACC_123456_CARD",
+            boarder_status_id: 2,
+        }
+    }
+
+    async function whenUpdateBoarderNotFound(payload: {
+        id: string
+        sid: string
+        name: string
+        phone: string
+        class_id: number
+        birthday: string
+        avatar: null
+        remark: string
+        access_card: string
+        boarder_status_id: number
+    }) {
+        return await BoarderService.updateBoarder(payload)
+    }
+
+    async function whenUpdateBoarderSucceed(payload: {
+        id: string
+        sid: string
+        name: string
+        phone: string
+        class_id: number
+        birthday: string
+        avatar: null
+        remark: string
+        access_card: string
+        boarder_status_id: number
+    }) {
+        return await BoarderService.updateBoarder(payload)
     }
 
     describe("取得某項目住宿生資訊", () => {
@@ -163,11 +209,42 @@ describe("Unit test for BoarderService.", () => {
                 )
 
             // when
-            const result = await whenGetBoardersFromProjectWithPagination(project_id, payload)
+            const result = await whenGetBoardersFromProjectWithPagination(
+                project_id,
+                payload
+            )
 
             // then
             expect(result).toEqual(expectResult)
             expect(BoarderDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("編輯住宿生", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const payload = givenUpdateBoarderPayload()
+
+            // when
+            const result = await whenUpdateBoarderSucceed(payload)
+
+            // then
+            expect(result).toEqual(payload)
+            expect(BoarderDao.update).toBeCalledTimes(1)
+            expect(BoarderDao.updateBoarderRoles).toBeCalledTimes(1)
+            expect(ProjectDao.updateProjectBunk).toBeCalledTimes(1)
+        })
+
+        it("若更新資料無異動則應擲出例外「查無資料」", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const payload = givenUpdateBoarderPayload()
+
+            // when
+            const result = whenUpdateBoarderNotFound(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
         })
     })
 })

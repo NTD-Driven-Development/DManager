@@ -2,9 +2,9 @@ import Db from "../../models"
 import BaseDao from "./BaseDao"
 import { Op } from "sequelize"
 import Core from "../interfaces/IDao"
-import RoleModel from "../../models/Role"
-import PermissionModel from "../../models/Permission"
-import UserModel from "../../models/User"
+import { RoleModel } from "../../models/Role"
+import { PermissionModel } from "../../models/Permission"
+import { UserModel } from "../../models/User"
 
 interface RolePermission extends RoleModel {
     permissions?: PermissionModel[]

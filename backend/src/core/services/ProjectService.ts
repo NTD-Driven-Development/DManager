@@ -1,6 +1,6 @@
 import _ from "lodash"
 import ProjectDao, { IFindOneProjectResult } from "../daos/ProjectDao"
-import ProjectModel from "../../models/Project"
+import { ProjectModel } from "../../models/Project"
 import HttpException from "../../exceptions/HttpException"
 import ImportBoardersDto from "../importDtos/projects/ImportBoardersDto"
 import { v4 } from "uuid"
@@ -9,11 +9,11 @@ import ClassDao from "../daos/ClassDao"
 import BoarderRoleDao from "../daos/BoarderRoleDao"
 import BoarderMappingRoleDao from "../daos/BoarderMappingRoleDao"
 import BoarderDao from "../daos/BoarderDao"
-import BoarderModel from "../../models/Boarder"
-import BoarderRoleModel from "../../models/BoarderRole"
-import BoarderMappingRoleModel from "../../models/BoarderMappingRole"
-import ClassModel from "../../models/Class"
-import ProjectBunkModel from "../../models/ProjectBunk"
+import { BoarderModel } from "../../models/Boarder"
+import { BoarderRoleModel } from "../../models/BoarderRole"
+import { BoarderMappingRoleModel } from "../../models/BoarderMappingRole"
+import { ClassModel } from "../../models/Class"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
 import FindOneProjectResultDto from "../exportDtos/project/FindOneProjectResultDto"
 import PaginationResultDto from "../exportDtos/PaginationResultDto"
 import CreateProjectBunkDto from "../importDtos/projects/CreateProjectBunkDto"
@@ -256,6 +256,10 @@ export default new (class ProjectService {
             if (error instanceof Sequelize.ForeignKeyConstraintError) {
                 throw new HttpException("此項目不存在", 400)
             }
+            if (error instanceof Sequelize.UniqueConstraintError) {
+                throw new HttpException("建立失敗，此床位已存在", 400)
+            }
+            console.log(error)
             throw new HttpException(error.message, 500)
         }
     }

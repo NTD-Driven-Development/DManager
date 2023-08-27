@@ -1,13 +1,14 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface BunkAttributes {
+export interface BunkModel {
     id: number
     floor: string
     room_type: string
     room_no: string
     bed: string
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
@@ -15,14 +16,14 @@ interface BunkAttributes {
     deleted_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class Bunk extends Model<BunkAttributes> implements BunkAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class Bunk extends Model<BunkModel> implements BunkModel {
         id!: number
         floor!: string
         room_type!: string
         room_no!: string
         bed!: string
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
@@ -68,8 +69,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -106,5 +108,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return Bunk
 }
-
-export default BunkAttributes

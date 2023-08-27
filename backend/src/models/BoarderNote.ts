@@ -1,12 +1,13 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface BoarderNoteAttributes {
+export interface BoarderNoteModel {
     id?: number
     boarder_id: string
     title: string
     description: string
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
@@ -14,13 +15,16 @@ interface BoarderNoteAttributes {
     deleted_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class BoarderNote extends Model<BoarderNoteAttributes> implements BoarderNoteAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class BoarderNote
+        extends Model<BoarderNoteModel>
+        implements BoarderNoteModel
+    {
         id!: number
         boarder_id!: string
         title!: string
         description!: string
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
@@ -65,8 +69,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -103,5 +108,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return BoarderNote
 }
-
-export default BoarderNoteAttributes

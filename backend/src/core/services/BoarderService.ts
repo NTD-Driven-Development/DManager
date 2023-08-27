@@ -1,6 +1,6 @@
-import _, { toInteger } from "lodash"
+import _ from "lodash"
 import BoarderDao from "../daos/BoarderDao"
-import BoarderModel from "../../models/Boarder"
+import { BoarderModel } from "../../models/Boarder"
 import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"

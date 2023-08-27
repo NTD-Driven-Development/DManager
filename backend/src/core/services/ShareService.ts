@@ -1,14 +1,14 @@
-import _, { toInteger } from "lodash"
+import _ from "lodash"
 import ShareDao from "../daos/ShareDao"
-import BunkModel from "../../models/Bunk"
-import ClassModel from "../../models/Class"
-import BoarderStatusModel from "../../models/BoarderStatus"
-import BoarderRoleModel from "../../models/BoarderRole"
-import TelCardContacterModel from "../../models/TelCardContacter"
-import PointRuleModel from "../../models/PointRule"
+import { BunkModel } from "../../models/Bunk"
+import { ClassModel } from "../../models/Class"
+import { BoarderStatusModel } from "../../models/BoarderStatus"
+import { BoarderRoleModel } from "../../models/BoarderRole"
+import { TelCardContacterModel } from "../../models/TelCardContacter"
+import { PointRuleModel } from "../../models/PointRule"
+import { ProjectModel } from "../../models/Project"
 import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
-import ProjectModel from "../../models/Project"
 
 export default new (class UserService {
     private convertBunksToBunkResult(bunks: BunkModel[]): BunkResult[] {
@@ -64,7 +64,7 @@ export default new (class UserService {
         if (query?.project_id) {
             return _.filter(
                 result,
-                (item) => item.project_id == query.project_id
+                (item: BoarderRoleModel) => item.project_id == query.project_id
             )
         }
         return result

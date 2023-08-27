@@ -4,15 +4,15 @@ import AuthDao from "../daos/AuthDao"
 import LogDao from "../daos/LogDao"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import AuthResult from "../exportDtos/auth/AuthResult"
-import UserModel from "../../models/User"
+import { UserModel } from "../../models/User"
+import { SysAuthLogModel } from "../../models/SysAuthLog"
 import jwt from "jsonwebtoken"
 import { v4 } from "uuid"
-import strings from "../../utils/strings"
-import SysAuthLog from "../../models/SysAuthLog"
 import RefreshTokenType from "../../enumerates/RefreshTokenType"
 import moment from "moment"
 import ip from "../../utils/ip"
 import HttpException from "../../exceptions/HttpException"
+import strings from "../../utils/strings"
 
 export default new (class AuthService {
     public async getUserAuthInfoByEmail(email: string): Promise<RequestUser> {
@@ -87,7 +87,7 @@ export default new (class AuthService {
         const clientip = ip.getClientIp(req)
         const serverip = ip.getServerIp()
         const user_agent = req.headers["user-agent"] as string
-        const model: SysAuthLog = {
+        const model: SysAuthLogModel = {
             type: refreshTokenType,
             clientip: clientip,
             serverip: serverip,

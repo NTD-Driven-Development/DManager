@@ -1,7 +1,8 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface BoarderAttributes {
+export interface BoarderModel {
     id: string
     sid?: string
     project_id: number
@@ -13,7 +14,7 @@ interface BoarderAttributes {
     avatar?: string
     remark?: string
     access_card?: string
-    created_at: Date
+    created_at?: Date
     created_by?: number
     updated_at?: Date
     updated_by?: number
@@ -21,11 +22,8 @@ interface BoarderAttributes {
     deleted_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class Boarder
-        extends Model<BoarderAttributes>
-        implements BoarderAttributes
-    {
+export default (sequelize: any, DataTypes: any) => {
+    class Boarder extends Model<BoarderModel> implements BoarderModel {
         id!: string
         sid?: string
         project_id!: number
@@ -37,11 +35,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
         avatar?: string
         remark?: string
         access_card?: string
-        created_at!: Date
+        created_at?: Date
         created_by?: number
         updated_at?: Date
         updated_by?: number
-        
 
         /**
          * Helper method for defining associations.
@@ -144,8 +141,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -182,5 +180,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return Boarder
 }
-
-export default BoarderAttributes

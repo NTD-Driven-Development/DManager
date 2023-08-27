@@ -1,24 +1,25 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface PointLogAttributes {
+export interface PointLogModel {
     id?: number
     boarder_id: string
     project_id: number
     point_rule_id: number
     remark?: string
-    created_at: Date
+    created_at?: Date
     created_by?: number
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class PointLog extends Model<PointLogAttributes> implements PointLogAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class PointLog extends Model<PointLogModel> implements PointLogModel {
         id!: number
         boarder_id!: string
         project_id!: number
         point_rule_id!: number
         remark?: string
-        created_at!: Date
+        created_at?: Date
         created_by?: number
 
         /**
@@ -72,8 +73,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
+                defaultValue: moment().toDate(),
             },
             created_by: {
                 type: DataTypes.INTEGER,
@@ -90,5 +92,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return PointLog
 }
-
-export default PointLogAttributes

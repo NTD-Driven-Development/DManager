@@ -1,5 +1,3 @@
-import UserModel from "../../../models/User"
-
 interface Role {
     id: number
     name: string
@@ -14,6 +12,6 @@ export default interface RequestUser {
     name: string
     is_admin: boolean
     is_actived: boolean
-    roles: Role[] 
+    roles: Role[]
     permissions: Permission[]
 }

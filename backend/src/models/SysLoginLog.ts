@@ -1,7 +1,8 @@
 "use strict"
+import moment from "moment"
 import { Model } from "sequelize"
 
-interface SysLoginLogAttributes {
+export interface SysLoginLogModel {
     id?: number
     type: string
     clientip: string
@@ -10,11 +11,14 @@ interface SysLoginLogAttributes {
     user_id?: number
     status: boolean
     detail?: string
-    created_at: Date
+    created_at?: Date
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-    class SysLoginLog extends Model<SysLoginLogAttributes> implements SysLoginLogAttributes {
+export default (sequelize: any, DataTypes: any) => {
+    class SysLoginLog
+        extends Model<SysLoginLogModel>
+        implements SysLoginLogModel
+    {
         id!: number
         type!: string
         clientip!: string
@@ -23,7 +27,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         user_id?: number
         status!: boolean
         detail?: string
-        created_at!: Date
+        created_at?: Date
 
         /**
          * Helper method for defining associations.
@@ -40,7 +44,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 autoIncrement: true,
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                primaryKey: true
+                primaryKey: true,
             },
             type: {
                 type: DataTypes.STRING(10),
@@ -48,15 +52,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             clientip: {
                 type: DataTypes.STRING(255),
-                allowNull: false
+                allowNull: false,
             },
             serverip: {
                 type: DataTypes.STRING(255),
-                allowNull: false
+                allowNull: false,
             },
             user_agent: {
                 type: DataTypes.STRING(200),
-                allowNull: false
+                allowNull: false,
             },
             user_id: {
                 type: DataTypes.INTEGER,
@@ -65,16 +69,18 @@ module.exports = (sequelize: any, DataTypes: any) => {
             status: {
                 type: DataTypes.BOOLEAN,
                 allowNull: true,
-                defaultValue: false
+                defaultValue: false,
             },
             detail: {
                 type: DataTypes.TEXT,
-                allowNull: true
+                allowNull: true,
             },
             created_at: {
                 type: DataTypes.DATE,
-                allowNull: false
-            }
+                allowNull: true,
+                comment: "建立時間",
+                defaultValue: moment().toDate(),
+            },
         },
         {
             sequelize,
@@ -85,5 +91,3 @@ module.exports = (sequelize: any, DataTypes: any) => {
     )
     return SysLoginLog
 }
-
-export default SysLoginLogAttributes

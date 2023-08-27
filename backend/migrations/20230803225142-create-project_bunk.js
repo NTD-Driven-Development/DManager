@@ -54,7 +54,7 @@ module.exports = {
             },
             created_at: {
                 type: Sequelize.DATE,
-                allowNull: false,
+                allowNull: true,
                 comment: "建立時間",
             },
             created_by: {
@@ -72,21 +72,7 @@ module.exports = {
                 allowNull: true,
                 comment: "更新者",
             },
-        }, {
-            indexes: [
-                {
-                    unique: true,
-                    fields: [
-                        "project_id",
-                        "floor",
-                        "room_type",
-                        "room_no",
-                        "bed",
-                    ],
-                }
-            ]
-        }
-        );
+        });
     },
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('project_bunk');
