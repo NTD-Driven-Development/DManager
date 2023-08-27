@@ -15,9 +15,27 @@ export default new (class BoarderController {
         }
     }
 
+    public async getBoarderById (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await BoarderService.getBoarderById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async updateBoarder (req: Request, res: Response, next: NextFunction) {
         try {
             const data = await BoarderService.updateBoarder(req.body as any)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async deleteBoarder (req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await BoarderService.deleteBoarder(req.params.id)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

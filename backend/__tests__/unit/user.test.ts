@@ -69,15 +69,17 @@ describe("Unit test for UserService.", () => {
             expect(UserRoleDao.bulkCreateUserRole).toBeCalledTimes(1)
         })
 
-        it("重複註冊相同 Email 應拋出「此 Email 已被註冊」HTTP Exception", async () => {
+        it("重複註冊相同 Email 應拋出「此 Email 已被註冊」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "此 Email 已被註冊"
             const payload = givenCreateUserPayload()
+
             // when
+            const result = whenCreateSameEmailUser(payload)
+
             // then
-            await expect(whenCreateSameEmailUser(payload)).rejects.toThrow(
-                errorMessage
-            )
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 })

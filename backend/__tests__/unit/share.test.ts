@@ -173,38 +173,58 @@ describe("Unit test for ShareService.", () => {
         return await ShareService.getProjects()
     }
 
-    it("取得樓區室床", async () => {
+    function expectBoardersData() {
+        return [
+            {
+                id: 1,
+                name: "住宿生1",
+            },
+        ]
+    }
+    async function whenGetBoardersFromProject(project_id: number) {
+        const rawData = expectBoardersData()
+        jest.spyOn(ShareDao, "getBoardersFromProject").mockResolvedValue(rawData as any)
+        return await ShareService.getBoardersFromProject(project_id)
+    }
+
+    it("取得樓區室床清單", async () => {
         const result = await whenGetBunks()
         expect(result).toEqual(expectBunksData())
     })
 
-    it("取得班級", async () => {
+    it("取得班級清單", async () => {
         const result = await whenGetClasses()
         expect(result).toEqual(expectClassesData())
     })
 
-    it("取得住宿狀態", async () => {
+    it("取得住宿狀態清單", async () => {
         const result = await whenGetBoarderStatuses()
         expect(result).toEqual(expectBoarderStatusesData())
     })
 
-    it("取得住宿生身分別", async () => {
+    it("取得住宿生身分別清單", async () => {
         const result = await whenGetBoarderRoles()
         expect(result).toEqual(expectBoarderRolesData())
     })
 
-    it("取得電話卡聯絡人", async () => {
+    it("取得電話卡聯絡人清單", async () => {
         const result = await whenGetTelCardContacters()
         expect(result).toEqual(expectTelCardContactersData())
     })
 
-    it("取得加扣點規則", async () => {
+    it("取得加扣點規則清單", async () => {
         const result = await whenGetPointRules()
         expect(result).toEqual(expectPointRulesData())
     })
 
-    it("取得項目", async () => {
+    it("取得項目清單", async () => {
         const result = await whenGetProjects()
         expect(result).toEqual(expectProjectsData())
+    })
+
+    it("取得某項目住宿生清單", async () => {
+        const project_id = 1
+        const result = await whenGetBoardersFromProject(project_id)
+        expect(result).toEqual(expectBoardersData())
     })
 })

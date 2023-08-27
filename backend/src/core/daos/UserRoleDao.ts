@@ -16,7 +16,7 @@ export default new (class UserRoleDao extends BaseDao {
     }
 
     public async deleteByUserId(user_id: number): Promise<Core.IExecuteResult> {
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.user_role.destroy({ where: { user_id: user_id } })
         )
     }

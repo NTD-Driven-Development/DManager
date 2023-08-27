@@ -10,6 +10,7 @@ import { TelCardContacterModel } from "../../models/TelCardContacter"
 import { PointRuleModel } from "../../models/PointRule"
 import { ProjectModel } from "../../models/Project"
 import _ from "lodash"
+import { BoarderModel } from "../../models/Boarder"
 
 export default new (class ShareDao extends BaseDao {
     public async getBunks(): Promise<BunkModel[]>  {
@@ -45,6 +46,15 @@ export default new (class ShareDao extends BaseDao {
     }
     public async getProjects(): Promise<ProjectModel[]> {
         return await Db.project.findAll({
+            attributes: ["id", "name"],
+            where: {
+                deleted_at: null
+            },
+            order: [["id", "DESC"]],
+        })
+    }
+    public async getBoardersFromProject(project_id: number | string): Promise<BoarderModel[]> {
+        return await Db.boarder.findAll({
             attributes: ["id", "name"],
             where: {
                 deleted_at: null

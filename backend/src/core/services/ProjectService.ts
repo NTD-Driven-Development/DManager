@@ -23,7 +23,7 @@ export default new (class ProjectService {
     public async getAllProjectsData(query?: {
         offset: number
         limit: number
-    }): Promise<PaginationResultDto> {
+    }): Promise<PaginationResultDto<ProjectModel>> {
         const projects = await ProjectDao.findAll()
         return withPagination(
             projects.length,

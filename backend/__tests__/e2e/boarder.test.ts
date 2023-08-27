@@ -148,7 +148,7 @@ describe("Acceptance test for BoarderController.", () => {
             name: "testUpdate",
             phone: "0912345678",
             class_id: 1,
-            birthday: "2000/01/01",
+            birthday: "2000-01-01T00:00:00.000Z",
             avatar: null,
             remark: "備註",
             access_card: "ACC_123456_CARD",
@@ -188,8 +188,9 @@ describe("Acceptance test for BoarderController.", () => {
         }
     }
 
-    describe("取得匯入後住宿生資訊", () => {
+    describe("取得匯入後住宿生資訊，並能夠進行編輯及刪除", () => {
         let testProject: any
+        let testBoarder: any
 
         it("預先建立項目", async () => {
             // given
@@ -240,9 +241,10 @@ describe("Acceptance test for BoarderController.", () => {
                 expect(item).toHaveProperty("boarder_status")
                 expect(item).toHaveProperty("project_bunk")
             })
+            testBoarder = data?.items[0]
         })
 
-        it("有分頁", async () => {
+        it("確認分頁邏輯無誤", async () => {
             // given
             const payload = {
                 project_id: testProject.id,
@@ -260,88 +262,125 @@ describe("Acceptance test for BoarderController.", () => {
             expect(data?.items?.length ?? 0).toBeLessThanOrEqual(payload.limit)
         })
 
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
-        })
-    })
-
-    describe("編輯住宿生資訊", () => {
-        let testProject: any
-        let testBoarder: any
-
-        it("預先建立項目", async () => {
-            // given
-            const payload = givenCreateProjectPayload()
-
-            // when
-            const response = await App.post("/api/projects").send(payload)
-            testProject = response.body?.data
-
-            // then
-            expect(response.status).toBe(201)
-            expect(response.body?.error).toBeNull()
-        })
-
-        it("預先匯入資料", async () => {
-            // given
-            const payload = givenImportPayload(testProject.id)
-
-            // when
-            const response = await App.post("/api/projects/import").send(
-                payload
-            )
-
-            // then
-            expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
-        })
-
-        it("取得住宿生資訊", async () => {
-            // given
-            const payload = {
-                project_id: testProject.id,
-                offset: 1,
-                limit: 10,
-            }
-
-            // when
-            const response = await App.get("/api/boarders").query(payload)
-            testBoarder = response.body?.data?.items[0]
-
-            // then
-            expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
-        })
-
         it("編輯住宿生資訊", async () => {
             // given
             const boarder_id = testBoarder.id
             const payload = givenUpdateBoarderPayload(boarder_id)
 
             // when
-            const response = await App.put("/api/boarders").send(
-                payload
-            )
+            const response = await App.put("/api/boarders").send(payload)
 
             // then
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
         })
 
-        it("若給定不存在之編號應回應 400 「查無資料」", async () => {
+        it("確認編輯結果", async () => {
+            // given
+            const boarder_id = testBoarder.id
+            const expectResult = givenUpdateBoarderPayload(boarder_id)
+
+            // when
+            const response = await App.get(`/api/boarders/${boarder_id}`)
+            const {
+                id,
+                sid,
+                name,
+                phone,
+                class_id,
+                birthday,
+                avatar,
+                remark,
+                access_card,
+                boarder_status_id,
+            } = response.body?.data
+            const data = {
+                id,
+                sid,
+                name,
+                phone,
+                class_id,
+                birthday,
+                avatar,
+                remark,
+                access_card,
+                boarder_status_id,
+            }
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+            expect(data).toEqual(expectResult)
+        })
+
+        it("若編輯不存在之編號應回應 400「查無資料」", async () => {
             // given
             const errorMessage: string = "查無資料"
-            const boarder_id = -1
+            const boarder_id = "-1"
             const payload = givenUpdateBoarderPayload(boarder_id)
 
             // when
-            const response = await App.put("/api/boarders").send(
-                payload
-            )
+            const response = await App.put("/api/boarders").send(payload)
 
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toEqual(errorMessage)
+        })
+
+        it("刪除住宿生資訊", async () => {
+            // given
+            const boarder_id = testBoarder.id
+
+            // when
+            const response = await App.delete(`/api/boarders/${boarder_id}`)
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+        })
+
+        it("確認刪除結果，查詢單筆應回傳「查無資料」", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const boarder_id = testBoarder.id
+
+            // when
+            const response = await App.get(`/api/boarders/${boarder_id}`)
+
+            // then
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toEqual(errorMessage)
+        })
+
+        it("若刪除不存在之編號應回應 400「查無資料」", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const boarder_id = "-1"
+
+            // when
+            const response = await App.delete(`/api/boarders/${boarder_id}`)
+
+            // then
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toEqual(errorMessage)
+        })
+
+        it("刪除後可再建立同床位資料", async () => {
+            // given
+            const payload = {
+                project_id: testProject.id,
+                ...testBoarder,
+                ...testBoarder.project_bunk,
+            }
+
+            // when
+            const response = await App.post(
+                `/api/projects/${payload.project_id}/bunks`
+            ).send(payload)
+
+            // then
+            expect(response.status).toBe(201)
+            expect(response.body?.error).toBeNull()
         })
 
         afterAll(async () => {

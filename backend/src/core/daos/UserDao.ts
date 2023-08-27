@@ -28,19 +28,17 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
         user: UserModel
     ): Promise<Core.IExecuteResult> {
         user.updated_at = moment().toDate()
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.user.update(user, { where: { id: id } })
         )
     }
 
     public async delete(id: string | number): Promise<Core.IExecuteResult> {
-        return await this.executeResult(() =>
-            Db.user.destroy({ where: { id: id } })
-        )
+        return await this.executeResult(Db.user.destroy({ where: { id: id } }))
     }
 
     public async deleteBySid(sid: string): Promise<Core.IExecuteResult> {
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.user.destroy({ where: { sid: sid } })
         )
     }

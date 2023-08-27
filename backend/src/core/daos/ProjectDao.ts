@@ -15,6 +15,7 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
     public async findAll(): Promise<ProjectModel[]> {
         const projects = await Db.project.findAll({
             where: { deleted_at: null },
+            order: [["id", "DESC"]],
         })
         return projects
     }
@@ -51,13 +52,13 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
         project: ProjectModel
     ): Promise<Core.IExecuteResult> {
         project.updated_at = moment().toDate()
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.project.update(project, { where: { id: id } })
         )
     }
 
     public async delete(id: string | number): Promise<Core.IExecuteResult> {
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.project.update(
                 {
                     deleted_at: moment().toDate(),
@@ -91,7 +92,7 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
         swap_bunk_id: number
         swap_boarder_id: string
     }): Promise<Core.IExecuteResult> {
-        return await this.executeResult(() =>
+        return await this.executeResult(
             Db.sequelize.query(
                 `
                 UPDATE project_bunk
@@ -114,6 +115,18 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
                     },
                 }
             )
+        )
+    }
+
+    public async deleteBunkByBoarderId(
+        boarder_id: string
+    ): Promise<Core.IExecuteResult> {
+        return await this.executeResult(
+            Db.project_bunk.destroy({
+                where: {
+                    boarder_id: boarder_id,
+                },
+            })
         )
     }
 })()

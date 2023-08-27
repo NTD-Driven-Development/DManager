@@ -1,8 +1,8 @@
 import _ from "lodash"
 
-const withPagination = async (
+const withPagination = async<T> (
     queryCount: number,
-    data: any,
+    data: T[],
     offset: number = 1,
     limit: number = 20
 ) => {

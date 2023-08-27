@@ -267,9 +267,6 @@ describe("Unit test for ProjectService.", () => {
     }
 
     function expectGetAllProjectsData() {
-        jest.spyOn(ProjectDao, "findAll").mockResolvedValue([
-            fakeProject,
-        ] as any as Promise<any>)
         return {
             total: 1,
             from: 1,
@@ -299,6 +296,12 @@ describe("Unit test for ProjectService.", () => {
             per_page: limit,
             items: [fakeProject, fakeProject],
         }
+    }
+    async function whenGetAllProjectData() {
+        jest.spyOn(ProjectDao, "findAll").mockResolvedValue([
+            fakeProject,
+        ] as any as Promise<any>)
+        return await ProjectService.getAllProjectsData()
     }
 
     function expectProjectDataByIdData() {
@@ -339,6 +342,18 @@ describe("Unit test for ProjectService.", () => {
             ],
             created_at: now,
         }
+    }
+    async function whenGetProjectDataById(id: number) {
+        jest.spyOn(ProjectDao, "findOneById").mockResolvedValue(
+            fakeProject as any as Promise<any>
+        )
+        return await ProjectService.getProjectDataById(id)
+    }
+    async function whenGetProjectDataByIdNotFound(id: number) {
+        jest.spyOn(ProjectDao, "findOneById").mockResolvedValueOnce(
+            null as any as Promise<any>
+        )
+        return await ProjectService.getProjectDataById(id)
     }
 
     function givenCreateProjectBunkPayload() {
@@ -407,13 +422,13 @@ describe("Unit test for ProjectService.", () => {
             swap_boarder_id: "456",
         }
     }
-    async function whenswapBunk(payload: any) {
+    async function whenSwapBunk(payload: any) {
         jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 2,
         })
         return await ProjectService.swapBunk(1, payload)
     }
-    async function whenswapBunkAffectRowNotEqual2(payload: any) {
+    async function whenSwapBunkAffectRowNotEqual2(payload: any) {
         jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 0,
         })
@@ -426,7 +441,7 @@ describe("Unit test for ProjectService.", () => {
             const expectResult = expectGetAllProjectsData()
 
             // when
-            const projectList = await ProjectService.getAllProjectsData()
+            const projectList = await whenGetAllProjectData()
 
             // then
             expect(projectList).toEqual(expectResult)
@@ -459,31 +474,24 @@ describe("Unit test for ProjectService.", () => {
             const expectResult = expectProjectDataByIdData()
 
             // when
-            jest.spyOn(ProjectDao, "findOneById").mockResolvedValue(
-                fakeProject as any as Promise<any>
-            )
-            const project = await ProjectService.getProjectDataById(
-                expectResult.id
-            )
+            const project = await whenGetProjectDataById(expectResult.id)
 
             // then
             expect(project).toEqual(expectResult)
             expect(ProjectDao.findOneById).toBeCalledTimes(1)
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」", async () => {
+        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
             // given
+            const project_id = -1
             const errorMessage: string = "此項目不存在"
-            const expectResult = null
 
             // when
-            jest.spyOn(ProjectDao, "findOneById").mockResolvedValueOnce(
-                expectResult as any as Promise<any>
-            )
-            const result = ProjectService.getProjectDataById(1)
+            const result = whenGetProjectDataByIdNotFound(project_id)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 
@@ -514,7 +522,7 @@ describe("Unit test for ProjectService.", () => {
             expect(ProjectDao.update).toBeCalledTimes(1)
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」", async () => {
+        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "此項目不存在"
             const payload = givenUpdateProjectPayload()
@@ -524,6 +532,7 @@ describe("Unit test for ProjectService.", () => {
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 
@@ -540,7 +549,7 @@ describe("Unit test for ProjectService.", () => {
             expect(ProjectDao.delete).toBeCalledTimes(1)
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」", async () => {
+        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "此項目不存在"
             const payload = givenDeleteProjectPayload()
@@ -550,6 +559,7 @@ describe("Unit test for ProjectService.", () => {
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 
@@ -569,16 +579,17 @@ describe("Unit test for ProjectService.", () => {
             expect(BoarderMappingRoleDao.bulkCreate).toBeCalledTimes(1)
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」", async () => {
+        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "此項目不存在"
             const payload = givenImportBoardersPayload()
 
             // when
+            const result = whenImportBoardersNotFoundProject(payload)
+
             // then
-            await expect(
-                whenImportBoardersNotFoundProject(payload)
-            ).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 
@@ -622,7 +633,7 @@ describe("Unit test for ProjectService.", () => {
             })
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」", async () => {
+        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "此項目不存在"
             const payload = givenCreateProjectBunkPayload()
@@ -632,9 +643,10 @@ describe("Unit test for ProjectService.", () => {
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
 
-        it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」", async () => {
+        it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "建立失敗，此床位已存在"
             const payload = givenCreateProjectBunkPayload()
@@ -644,6 +656,7 @@ describe("Unit test for ProjectService.", () => {
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 
@@ -654,7 +667,7 @@ describe("Unit test for ProjectService.", () => {
             const payload = givenswapBunkPayload()
 
             // when
-            const swapResult = await whenswapBunk(payload)
+            const swapResult = await whenSwapBunk(payload)
 
             // then
             expect(swapResult).toBe(true)
@@ -664,16 +677,17 @@ describe("Unit test for ProjectService.", () => {
             })
         })
 
-        it("若更新資料影響數目不等於 2 筆，應擲出「交換失敗」", async () => {
+        it("若更新資料影響數目不等於 2 筆，應擲出「交換失敗」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "交換失敗"
             const payload = givenswapBunkPayload()
 
             // when
-            const result = whenswapBunkAffectRowNotEqual2(payload)
+            const result = whenSwapBunkAffectRowNotEqual2(payload)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
 })

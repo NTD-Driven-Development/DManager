@@ -65,4 +65,14 @@ export default new (class ShareController {
             next(error)
         }
     }
+
+    public async getBoardersFromProject (req: Request, res: Response, next: NextFunction) {
+        try {
+            const project_id = req.query?.project_id as string
+            const data = await ShareService.getBoardersFromProject(project_id)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
 })()

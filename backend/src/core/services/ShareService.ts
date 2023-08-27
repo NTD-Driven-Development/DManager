@@ -9,6 +9,7 @@ import { PointRuleModel } from "../../models/PointRule"
 import { ProjectModel } from "../../models/Project"
 import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
+import { BoarderModel } from "../../models/Boarder"
 
 export default new (class UserService {
     private convertBunksToBunkResult(bunks: BunkModel[]): BunkResult[] {
@@ -79,6 +80,10 @@ export default new (class UserService {
     }
     public async getProjects(): Promise<ProjectModel[]> {
         const result = await ShareDao.getProjects()
+        return result
+    }
+    public async getBoardersFromProject(project_id: string | number): Promise<BoarderModel[]> {
+        const result = await ShareDao.getBoardersFromProject(project_id)
         return result
     }
 })()
