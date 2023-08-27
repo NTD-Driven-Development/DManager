@@ -264,13 +264,13 @@ export default new (class ProjectService {
         }
     }
 
-    public async exchangeBunk(
+    public async swapBunk(
         project_id: number,
         payload: {
             origin_bunk_id: number
             origin_boarder_id: string
-            exchange_bunk_id: number
-            exchange_boarder_id: string
+            swap_bunk_id: number
+            swap_boarder_id: string
         }
     ): Promise<boolean> {
         try {
@@ -278,7 +278,7 @@ export default new (class ProjectService {
                 project_id,
                 ...payload,
             }
-            const result = await ProjectDao.exchangeBunk(params)
+            const result = await ProjectDao.swapBunk(params)
             if (result.affectedRows !== 2) {
                 throw new HttpException("交換失敗", 400)
             }

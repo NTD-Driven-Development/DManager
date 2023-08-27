@@ -106,7 +106,7 @@ export default new (class ProjectController {
         }
     }
 
-    public async exchangeBunk(
+    public async swapBunk(
         req: Request,
         res: Response,
         next: NextFunction
@@ -114,7 +114,7 @@ export default new (class ProjectController {
         try {
             const project_id = req.params.id
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const data = await ProjectService.exchangeBunk(project_id as any, req.body)
+                const data = await ProjectService.swapBunk(project_id as any, req.body)
                 next(HttpResponse.success(data))
             })
         } catch (error) {

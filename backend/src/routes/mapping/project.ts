@@ -8,13 +8,21 @@ const router = Router();
 
 
 // router.use(jwtAuth("jwt"));
+// 取得所有項目
 router.get('', ProjectController.getAllProjectsData);
+// 取得單筆項目資料
 router.get('/:id', ProjectController.getProjectDataById);
+// 匯入該項目住宿生 & 床位對應資訊
 router.post('/import', [], ProjectController.importBoardersData);
+// 建立床位
 router.post('/:id/bunks', [], ProjectController.createProjectBunk);
-router.post('/:id/exchangeBunk', [], ProjectController.exchangeBunk);
+// 交換床位
+router.post('/:id/swapBunk', [], ProjectController.swapBunk);
+// 建立項目
 router.post('', [], ProjectController.createProject);
+// 修改項目
 router.put('', ProjectController.updateProject);
+// 刪除項目
 router.delete('/:id', ProjectController.deleteProject);
 
 export default router;

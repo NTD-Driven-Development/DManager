@@ -15,9 +15,6 @@ export default new (class BoarderService {
     ): Promise<IPaginationResultDto> {
         const data = await BoarderDao.findAll()
         const result = _.filter(data, (item) => item.project_id == project_id)
-        if (_.isEmpty(result)) {
-            throw new HttpException("查無資料", 400)
-        }
         return withPagination(
             result.length,
             result,

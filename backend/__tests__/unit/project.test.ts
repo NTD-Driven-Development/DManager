@@ -399,25 +399,25 @@ describe("Unit test for ProjectService.", () => {
         return await ProjectService.createProjectBunk(1, payload)
     }
 
-    function givenExchangeBunkPayload() {
+    function givenswapBunkPayload() {
         return {
             origin_bunk_id: 1,
             origin_boarder_id: "123",
-            exchange_bunk_id: 2,
-            exchange_boarder_id: "456",
+            swap_bunk_id: 2,
+            swap_boarder_id: "456",
         }
     }
-    async function whenExchangeBunk(payload: any) {
-        jest.spyOn(ProjectDao, "exchangeBunk").mockResolvedValue({
+    async function whenswapBunk(payload: any) {
+        jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 2,
         })
-        return await ProjectService.exchangeBunk(1, payload)
+        return await ProjectService.swapBunk(1, payload)
     }
-    async function whenExchangeBunkAffectRowNotEqual2(payload: any) {
-        jest.spyOn(ProjectDao, "exchangeBunk").mockResolvedValue({
+    async function whenswapBunkAffectRowNotEqual2(payload: any) {
+        jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 0,
         })
-        return await ProjectService.exchangeBunk(1, payload)
+        return await ProjectService.swapBunk(1, payload)
     }
 
     describe("取得項目列表", () => {
@@ -651,14 +651,14 @@ describe("Unit test for ProjectService.", () => {
         it("確實呼叫 DAO", async () => {
             // given
             const project_id = 1
-            const payload = givenExchangeBunkPayload()
+            const payload = givenswapBunkPayload()
 
             // when
-            const exchangeResult = await whenExchangeBunk(payload)
+            const swapResult = await whenswapBunk(payload)
 
             // then
-            expect(exchangeResult).toBe(true)
-            expect(ProjectDao.exchangeBunk).toBeCalledWith({
+            expect(swapResult).toBe(true)
+            expect(ProjectDao.swapBunk).toBeCalledWith({
                 project_id,
                 ...payload,
             })
@@ -667,10 +667,10 @@ describe("Unit test for ProjectService.", () => {
         it("若更新資料影響數目不等於 2 筆，應擲出「交換失敗」", async () => {
             // given
             const errorMessage: string = "交換失敗"
-            const payload = givenExchangeBunkPayload()
+            const payload = givenswapBunkPayload()
 
             // when
-            const result = whenExchangeBunkAffectRowNotEqual2(payload)
+            const result = whenswapBunkAffectRowNotEqual2(payload)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)

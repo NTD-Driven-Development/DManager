@@ -106,13 +106,6 @@ describe("Unit test for BoarderService.", () => {
         jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData as any)
         return await BoarderService.getBoardersFromProject(project_id)
     }
-    async function whenGetBoardersFromProjectNoData(
-        project_id: number | string
-    ) {
-        const rawData: any = []
-        jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData)
-        return await BoarderService.getBoardersFromProject(project_id)
-    }
     async function whenGetBoardersFromProjectWithPagination(
         project_id: number | string,
         query: {
@@ -181,18 +174,6 @@ describe("Unit test for BoarderService.", () => {
             // then
             expect(result).toEqual(expectGetBoardersFromProjectData())
             expect(BoarderDao.findAll).toBeCalledTimes(1)
-        })
-
-        it("若此項目不存在任何資料，應拋出錯誤「查無資料」", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const payload = givenGetBoardersFromProjectPayload()
-
-            // when
-            const result = whenGetBoardersFromProjectNoData(payload.project_id)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
         })
 
         it("有分頁", async () => {

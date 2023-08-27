@@ -592,8 +592,8 @@ describe("Acceptance test for ProjectController.", () => {
         let bunks: any
         let origin_bunk_id: number
         let origin_boarder_id: number
-        let exchange_bunk_id: number
-        let exchange_boarder_id: number
+        let swap_bunk_id: number
+        let swap_boarder_id: number
 
         it("預先建立項目", async () => {
             const payload = givenCreateProjectPayload()
@@ -639,19 +639,19 @@ describe("Acceptance test for ProjectController.", () => {
             // given
             origin_bunk_id = _.first(_.map(bunks, (b) => b.id))
             origin_boarder_id = _.first(_.map(bunks, (b) => b.boarder_id))
-            exchange_bunk_id = _.last(_.map(bunks, (b) => b.id))
-            exchange_boarder_id = _.last(_.map(bunks, (b) => b.boarder_id))
+            swap_bunk_id = _.last(_.map(bunks, (b) => b.id))
+            swap_boarder_id = _.last(_.map(bunks, (b) => b.boarder_id))
 
             const payload = {
                 origin_bunk_id,
                 origin_boarder_id,
-                exchange_bunk_id,
-                exchange_boarder_id,
+                swap_bunk_id,
+                swap_boarder_id,
             }
 
             // when
             const response = await App.post(
-                `/api/projects/${testProject.id}/exchangeBunk`
+                `/api/projects/${testProject.id}/swapBunk`
             ).send(payload)
 
             // then
@@ -670,15 +670,15 @@ describe("Acceptance test for ProjectController.", () => {
                 data?.bunks,
                 (b) => b.boarder_id === origin_boarder_id
             )
-            const filterHasExchangeBoarder = _.find(
+            const filterHasswapBoarder = _.find(
                 data?.bunks,
-                (b) => b.boarder_id === exchange_boarder_id
+                (b) => b.boarder_id === swap_boarder_id
             )
 
             // then
             expect(response.status).toBe(200)
-            expect(filterHasOriginBoarder.id).toBe(exchange_bunk_id)
-            expect(filterHasExchangeBoarder.id).toBe(origin_bunk_id)
+            expect(filterHasOriginBoarder.id).toBe(swap_bunk_id)
+            expect(filterHasswapBoarder.id).toBe(origin_bunk_id)
         })
 
         afterAll(async () => {
