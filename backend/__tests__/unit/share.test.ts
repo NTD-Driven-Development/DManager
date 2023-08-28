@@ -177,7 +177,18 @@ describe("Unit test for ShareService.", () => {
         return [
             {
                 id: 1,
+                sid: "123456",
                 name: "住宿生1",
+                class: {
+                    id: 1,
+                    name: "資應五甲",
+                },
+                project_bunk: {
+                    floor: 1,
+                    room_type: "D",
+                    room_no: 1,
+                    bed: 1,
+                }
             },
         ]
     }

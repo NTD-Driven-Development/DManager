@@ -13,7 +13,7 @@ import _ from "lodash"
 import { BoarderModel } from "../../models/Boarder"
 
 export default new (class ShareDao extends BaseDao {
-    public async getBunks(): Promise<BunkModel[]>  {
+    public async getBunks(): Promise<BunkModel[]> {
         return await Db.bunk.findAll()
     }
     public async getClasses(): Promise<ClassModel[]> {
@@ -40,7 +40,7 @@ export default new (class ShareDao extends BaseDao {
         return await Db.point_rule.findAll({
             attributes: ["id", "code", "reason", "point"],
             where: {
-                is_actived: true
+                is_actived: true,
             },
         })
     }
@@ -48,18 +48,31 @@ export default new (class ShareDao extends BaseDao {
         return await Db.project.findAll({
             attributes: ["id", "name"],
             where: {
-                deleted_at: null
+                deleted_at: null,
             },
             order: [["id", "DESC"]],
         })
     }
-    public async getBoardersFromProject(project_id: number | string): Promise<BoarderModel[]> {
+    public async getBoardersFromProject(
+        project_id: number | string
+    ): Promise<BoarderModel[]> {
         return await Db.boarder.findAll({
-            attributes: ["id", "name"],
+            attributes: ["id", "sid", "name"],
+            include: [
+                {
+                    model: Db.project_bunk,
+                    as: "project_bunk",
+                    required: false,
+                },
+                {
+                    model: Db.class,
+                    attributes: ["id", "name"],
+                    as: "class",
+                },
+            ],
             where: {
-                deleted_at: null
+                deleted_at: null,
             },
         })
     }
-
 })()
