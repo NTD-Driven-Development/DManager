@@ -2,14 +2,17 @@
 
 import fs from "fs"
 import path from "path"
-import Sequelize from "sequelize"
+import Sequelize, { Transaction } from "sequelize"
 import process from "process"
+import cls from "cls-hooked"
 
 const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || "development"
 const config = require(__dirname + "/../../config/config.js")[env]
 const db: any = {}
+const namespace = cls.createNamespace('my-very-own-namespace');
 
+Sequelize.Sequelize.useCLS(namespace);
 let sequelize: Sequelize.Sequelize
 if (config.use_env_variable) {
     sequelize = new Sequelize.Sequelize(
@@ -21,7 +24,15 @@ if (config.use_env_variable) {
         config.database,
         config.username,
         config.password,
-        config
+        {
+            ...config,
+            isolationLevel: Transaction.ISOLATION_LEVELS.REPEATABLE_READ,
+            pool: {
+                max: 50,
+                min: 0,
+                idle: 10000
+            },
+        }
     )
 }
 

@@ -4,15 +4,18 @@ import HttpResponse from "../../utils/httpResponse"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { UserModel } from "../../models/User"
 import Db from "../../models"
+import { Transaction } from "sequelize"
 
 export default new (class AuthController {
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
-            await Db.sequelize.transaction(async (t: any) => {
+            await Db.sequelize.transaction(async (t: Transaction) => {
                 const user = req.user as UserModel
                 const data = await AuthService.login(user, req, res)
-                next(HttpResponse.success(data))
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)
@@ -31,9 +34,11 @@ export default new (class AuthController {
     public async refreshToken(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
-            await Db.sequelize.transaction(async (t: any) => {
+            await Db.sequelize.transaction(async (t: Transaction) => {
                 const data = await AuthService.refreshToken(req, res)
-                next(HttpResponse.success(data))
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)

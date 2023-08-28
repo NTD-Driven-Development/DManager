@@ -21,10 +21,10 @@ export default new (class BoarderService {
         )
         // sort by floor, room_type, room_no, bed
         const result = _.sortBy(dataFromProject, [
-            (dataFromProject) => dataFromProject?.project_bunk.floor,
-            (dataFromProject) => dataFromProject?.project_bunk.room_type,
-            (dataFromProject) => dataFromProject?.project_bunk.room_no,
-            (dataFromProject) => dataFromProject?.project_bunk.bed,
+            (dataFromProject) => dataFromProject?.project_bunk?.floor,
+            (dataFromProject) => dataFromProject?.project_bunk?.room_type,
+            (dataFromProject) => dataFromProject?.project_bunk?.room_no,
+            (dataFromProject) => dataFromProject?.project_bunk?.bed,
         ])
         return withPagination(
             result.length,

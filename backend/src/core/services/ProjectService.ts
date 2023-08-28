@@ -259,7 +259,6 @@ export default new (class ProjectService {
             if (error instanceof Sequelize.UniqueConstraintError) {
                 throw new HttpException("建立失敗，此床位已存在", 400)
             }
-            console.log(error)
             throw new HttpException(error.message, 500)
         }
     }

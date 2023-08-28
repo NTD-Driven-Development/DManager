@@ -29,7 +29,6 @@ export default new (class ProjectController {
             const data = await ProjectService.getProjectDataById(id)
             next(HttpResponse.success(data))
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }
@@ -53,9 +52,16 @@ export default new (class ProjectController {
         next: NextFunction
     ) {
         try {
-            const project_id = req.params.id
-            const data = await ProjectService.createProjectBunk(project_id, req.body)
-            next(HttpResponse.success(data, 201))
+            await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
+                const project_id = req.params.id
+                const data = await ProjectService.createProjectBunk(
+                    project_id,
+                    req.body
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data, 201))
+                })
+            })
         } catch (error) {
             next(error)
         }
@@ -69,7 +75,9 @@ export default new (class ProjectController {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
                 const data = await ProjectService.updateProject(req.body)
-                next(HttpResponse.success(data))
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)
@@ -84,7 +92,9 @@ export default new (class ProjectController {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
                 const data = await ProjectService.deleteProject(req.params.id)
-                next(HttpResponse.success(data))
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)
@@ -99,23 +109,26 @@ export default new (class ProjectController {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
                 const data = await ProjectService.importBoardersData(req.body)
-                next(HttpResponse.success(data))
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)
         }
     }
 
-    public async swapBunk(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
+    public async swapBunk(req: Request, res: Response, next: NextFunction) {
         try {
             const project_id = req.params.id
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const data = await ProjectService.swapBunk(project_id as any, req.body)
-                next(HttpResponse.success(data))
+                const data = await ProjectService.swapBunk(
+                    project_id as any,
+                    req.body
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
             })
         } catch (error) {
             next(error)

@@ -469,6 +469,7 @@ describe("Acceptance test for ProjectController.", () => {
     describe("該項目建立床位", () => {
         let testProject: any
         let boarderRoles: any
+        let count: number
 
         it("預先建立項目", async () => {
             const payload = givenCreateProjectPayload()
@@ -580,6 +581,20 @@ describe("Acceptance test for ProjectController.", () => {
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("建立失敗，此床位已存在")
+        })
+
+        it("測試 call /api/boarders 正常", async () => {
+            // given
+            const payload = {
+                project_id: testProject.id,
+            }
+
+            // when
+            const response = await App.get(`/api/boarders`).query(payload)
+
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
         })
 
         afterAll(async () => {
