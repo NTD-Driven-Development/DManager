@@ -109,7 +109,7 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { BoarderStatusesCaller, BunksCaller, ClassesCaller } from '~/composables/api/share';
-    import { createBoarder } from '~/composables/api/boarder';
+    import { createProjectBunk } from '~/composables/api/project';
     import { Project } from '~/src/model';
     import * as yup from 'yup';
     import _ from 'lodash';
@@ -128,7 +128,7 @@
         room_no: yup.number().required(),
         bed: yup.number().required(),
         name: yup.string().required(),
-        sid: yup.number().nullable(),
+        sid: yup.string().nullable(),
         class_id: yup.number().nullable(),
         boarder_status_id: yup.number().required(),
         remark: yup.string().nullable(),
@@ -142,7 +142,7 @@
 
     const bunksCaller = new BunksCaller();
     const { data: bunkList } = bunksCaller;
-    const classesCaller = new ClassesCaller()
+    const classesCaller = new ClassesCaller();
     const { data: classList } = classesCaller;
     const boarderStatusesCaller = new BoarderStatusesCaller()
     .success((v) => setFieldValue('boarder_status_id', v?.data?.[0]?.id));
@@ -177,8 +177,7 @@
 
     const onSubmit = handleSubmit(async (data) => {
         try {            
-            await createBoarder({
-                project_id: props?.project?.id,
+            await createProjectBunk(props?.project?.id, {
                 floor: data?.floor,
                 room_type: data?.room_type,
                 room_no: data?.room_no,
@@ -191,7 +190,8 @@
 
             toastNotifier?.success('新增成功');
             emits('onCreated');
-            resetForm();
+            setFieldValue('name', undefined);
+            setFieldValue('sid', undefined);
         }
         catch(error) {
             showParseError(toastNotifier, error);

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import ToastNotifier from '~/components/ToastNotifier.vue';
+import { Bunk } from '~/src/model';
 
 export const useUrl = (options?: UrlOptions): string => {
     const config = useRuntimeConfig();
@@ -32,14 +33,14 @@ export const addComma = (n: number | string) => {
 export const showParseError = (notifier: InstanceType<typeof ToastNotifier> | undefined = undefined, error: any) => {
     const messages = [];
 
-    if (_.isObject(error?.response?.data?.detail)) {
-        _.forEach(error?.response?.data?.detail, (v, k) => {
+    if (_.isObject(error?.response?.data?.error)) {
+        _.forEach(error?.response?.data?.error, (v, k) => {
             messages.push(`${k}.${v}`);
             return false; // 暫先只取第一筆
         });
     }
-    else if (_.isString(error?.response?.data?.detail)) {
-        messages.push(error?.response?.data?.detail);
+    else if (_.isString(error?.response?.data?.error)) {
+        messages.push(error?.response?.data?.error);
     }
     else if (error?.message) {
         messages.push(_.toString(error?.message));
@@ -105,6 +106,24 @@ export const toDBC = (text: string) => {
     }
     
     return tmp; 
+}
+
+export const toStringlish = (bunk: Bunk) => {
+    return `${bunk?.floor}${bunk?.room_type}${bunk?.room_no}-${bunk?.bed}`;
+}
+
+export const toBunk = (stringlishBunk: string) => {
+    const regex = /^[1-9][A-E][1-7]-[1-6]$/;
+    
+    if (stringlishBunk?.match(regex)) {
+        return {
+            floor: stringlishBunk[0],
+            room_type: stringlishBunk[1],
+            room_no: stringlishBunk[2],
+            bed: stringlishBunk[4],
+        } as Omit<Bunk, 'id'>;
+    }
+    else return null;
 }
 
 export const toQueryString = <T extends object>(value: T) => {

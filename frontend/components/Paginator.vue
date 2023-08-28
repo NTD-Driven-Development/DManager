@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center gap-4 sm:gap-5 lg:gap-6">
-        <div class="flex justify-between items-center w-72 h-10 px-3 shadow border rounded-lg bg-gray-50 sm:w-96 sm:px-4">
+        <div class="flex justify-between items-center w-72 h-10 px-3 shadow border rounded-lg bg-white sm:w-96 sm:px-4">
             <div class="flex gap-2">
                 <Icon icon="ic:round-keyboard-double-arrow-left" class="cursor-pointer w-5 h-5"
                 :class="{'invisible': !apiPaginator?.canPrev()}" @click="apiPaginator?.first()"/>

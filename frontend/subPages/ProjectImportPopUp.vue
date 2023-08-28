@@ -106,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <button class="shrink-0 w-full p-2 text-white bg-gray-500" :disabled="!editedData?.length" @click="onSubmit">
+        <button class="shrink-0 text-sm w-full p-2 text-white bg-gray-500" :disabled="!editedData?.length" @click="onSubmit">
             匯入
         </button>
     </PopUp>
@@ -266,7 +266,7 @@
             default_boarder_status_id: default_boarder_status_id,
             all_new_boarder_roles: all_new_boarder_roles,
             all_new_classes: all_new_classes,
-            items: items?.slice(0, 10),
+            items: items,
         });
 
         toastNotifier?.success('匯入成功');

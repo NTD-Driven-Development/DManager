@@ -8,7 +8,7 @@ const PREFIX = '/api/projects';
 export class ProjectPaginator extends ApiPaginator<Project> {
     constructor() {
         super();
-        this._queries.value.limit = 12;
+        this._queries.value.limit = 18;
         this.startQueriesWatcher();
     }
 
@@ -50,6 +50,7 @@ export class ProjectCaller extends ApiCaller<Project> {
         return axios.get(`${PREFIX}/${this.id}`);
     }
 }
+
 export const createProject = async (formData: CreateProjectFormData) => {
     try {
         const response = await axios.post(`${PREFIX}`, formData);
@@ -58,7 +59,7 @@ export const createProject = async (formData: CreateProjectFormData) => {
     catch(error) {
         throw error;
     }
-};
+}
 
 export const importProject = async (formData: ImportProjectFormData) => {
     try {
@@ -68,7 +69,7 @@ export const importProject = async (formData: ImportProjectFormData) => {
     catch(error) {
         throw error;
     }
-};
+}
 
 export const updateProject = async (formData: UpdateProjectFormData) => {
     try {
@@ -78,7 +79,27 @@ export const updateProject = async (formData: UpdateProjectFormData) => {
     catch(error) {
         throw error;
     }
-};
+}
+
+export const createProjectBunk =async (id: number, formData: CreateProjectBunkFormData) => {
+    try {
+        const response = await axios.post(`${PREFIX}/${id}/bunks`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+export const swapProjectBunk =async (id: number, formData: SwapProjectBunkFormData) => {
+    try {
+        const response = await axios.post(`${PREFIX}/${id}/swapBunk`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
 
 export const deleteProject = async (id: number) => {
     try {
@@ -88,7 +109,7 @@ export const deleteProject = async (id: number) => {
     catch(error) {
         throw error;
     }
-};
+}
 
 type Project = Model.Project
 
@@ -122,6 +143,25 @@ interface UpdateProjectFormData {
     id: number,
     name: string,
     remark?: string,
+}
+
+interface CreateProjectBunkFormData {
+    floor: number,
+    room_type: string,
+    room_no: number,
+    bed: number,
+    name: string,
+    sid?: string,
+    class?: number,
+    boarder_status_id: number,
+    remark?: string,
+}
+
+interface SwapProjectBunkFormData {
+    origin_bunk_id: number,
+    origin_boarder_id: string,
+    swap_bunk_id: number,
+    swap_boarder_id: string,
 }
 
 interface ProjectPaginationQueries extends PaginationQueries {

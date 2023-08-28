@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { ApiCaller, ApiResponse } from '~/core/api';
+import { ApiCaller, ApiResponse, Options, Queries } from '~/core/api';
+import _ from 'lodash';
 import * as Model from '~/src/model';
 
 const PREFIX = '/api/share';
@@ -42,6 +43,34 @@ export class BunksCaller extends ApiCaller<Floor[]> {
 
         return axios.get(`${PREFIX}/bunks?${searchParams}`);
     }
+}
+
+export class BoardersCaller extends ApiCaller<Boarder[], BoardersQueries> {
+    constructor(options?: Options) {
+        super(options);
+        this.startQueriesWatcher();
+    }
+    
+    protected define(): Promise<AxiosResponse<ApiResponse<Boarder[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/boarders?${searchParams}`);
+    }
+
+    withQuery = <K extends keyof BoardersQueries, V extends BoardersQueries[K]>(key: K, value: V) => {
+        if (key === 'project_id') {
+            this.projectIdHandler(key, value);
+        }
+    };
+
+    protected projectIdHandler = _.throttle(this.setQuery, 800);
 }
 
 export class BoarderStatusesCaller extends ApiCaller<BoarderStatus[]> {
@@ -146,6 +175,11 @@ export class TelCardContractersCaller extends ApiCaller<TelCardContracter[]> {
 
 type Project = Model.Project
 
+type Boarder = Model.Boarder & {
+    project_bunk: Model.Bunk,
+    class: Model.Class,
+}
+
 type BoarderStatus = Model.BoarderStatus
 
 type Class = Model.Class
@@ -169,4 +203,8 @@ interface Room {
 interface Floor {
     floor: number,
     rooms: Room[],
+}
+
+interface BoardersQueries extends Queries {
+    project_id?: number,
 }

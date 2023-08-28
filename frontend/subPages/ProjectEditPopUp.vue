@@ -1,5 +1,5 @@
 <template>
-    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center max-w-[80%] bg-gray-500 rounded">
+    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] bg-gray-500 rounded">
         <div class="flex-1 flex flex-col w-full p-4 gap-2 lg:p-6 overflow-auto">
             <div class="flex flex-col justify-center w-full gap-0.5">
                 <div class="flex gap-0.5 shrink-0 text-white">
@@ -15,11 +15,11 @@
                     <span>備註：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">
-                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[80px] max-h-[200px]"/>
+                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[100px] max-h-[200px]"/>
                 </div>
             </div>
         </div>
-        <button class="shrink-0 w-full p-2 text-white bg-gray-600" @click="onSubmit">
+        <button class="shrink-0 text-sm w-full p-2 text-white bg-gray-600" @click="onSubmit">
             儲存
         </button>
     </PopUp>
@@ -66,8 +66,8 @@
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
 
-    const show = async (project_id: number) => {
-        projectCaller.id = project_id;
+    const show = async (projectId: number) => {
+        projectCaller.id = projectId;
         projectCaller?.reload();
 
         await projectCaller?.wait();

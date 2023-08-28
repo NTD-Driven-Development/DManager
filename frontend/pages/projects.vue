@@ -17,24 +17,30 @@
                 @change=""/>
             </div>
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
-                <Detail v-for="it, index in projectList" :key="index" class="bg-white">
-                    <template #summary="{ isVisable }">
-                        <div class="flex justify-between items-center w-full h-full">
-                            <div class="flex flex-col flex-1 justify-center">
-                                {{ it?.name }}
+                <TransitionGroup
+                enter-active-class="transition-all duration-1000"
+                leave-active-class="transition-all duration-1000"
+                enter-from-class="opacity-0 -translate-x-48"
+                leave-to-class="opacity-0 -translate-x-48">
+                    <Detail v-for="it, index in projectList" :key="index" class="bg-white">
+                        <template #summary="{ isVisable }">
+                            <div class="flex justify-between items-center w-full h-full">
+                                <div class="flex flex-col flex-1 justify-center">
+                                    <span>{{ it?.name }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"></Icon>
+                                    <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"></Icon>
-                                <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
+                        </template>
+                        <template #content>
+                            <div class="text-sm">
+                                {{ !_.isEmpty(it?.remark) ? it?.remark : '尚無備註' }}
                             </div>
-                        </div>
-                    </template>
-                    <template #content>
-                        <div class="text-sm">
-                            {{ it?.remark ?? '尚無備註' }}
-                        </div>
-                    </template>
-                </Detail>
+                        </template>
+                    </Detail>
+                </TransitionGroup>
             </div>
             <Paginator :api-paginator="projectPaginator"></Paginator>
         </div>
@@ -46,6 +52,7 @@
 <script setup lang="ts">
     import { Icon } from '@iconify/vue';
     import { ProjectPaginator } from '~/composables/api/project';
+    import _ from 'lodash';
 
     const projectImportPopUp = ref();
     const projectEditPopUp = ref();

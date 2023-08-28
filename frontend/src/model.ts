@@ -14,6 +14,14 @@ export interface Project {
     remark?: string,
 }
 
+export interface Bunk {
+    id: number,
+    floor: string,
+    room_type: string,
+    room_no: string,
+    bed: string,
+}
+
 export interface BoarderStatus {
     id: number,
     name: string,
@@ -42,16 +50,15 @@ export interface TelCardContacter {
 }
 
 export interface Boarder {
+    id: string,
     sid?: string,
-    floor: number,
-    room_type: string,
-    room_no: number,
-    bed: number,
     name: string,
+    project_bunk: Bunk,
     avatar?: string,
     remark?: string,
-    card?: string,
+    access_card?: string,
     birthday?: string,
+    phone?: string,
 }
 
 export interface User {
