@@ -1,19 +1,17 @@
 import { Request, Response, NextFunction } from "express"
-import BoarderService from "../services/BoarderService"
+import ClassService from "../services/ClassService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
-import Sequelize, { Transaction } from "sequelize"
+import Sequelize from "sequelize"
 
-export default new (class BoarderController {
-    public async getBoardersFromProject(
+export default new (class ClassController {
+    public async getClasses(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            const project_id = req.query?.project_id as string
-            const data = await BoarderService.getBoardersFromProject(
-                project_id,
+            const data = await ClassService.getClasses(
                 req.query as any
             )
             next(HttpResponse.success(data, 200))
@@ -22,43 +20,39 @@ export default new (class BoarderController {
         }
     }
 
-    public async getBoarderById(
+    public async createClass(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            const data = await BoarderService.getBoarderById(req.params.id)
+            const data = await ClassService.createClass(req.body as any)
+            next(HttpResponse.success(data, 201))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async updateClass(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await ClassService.updateClass(req.body as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
         }
     }
 
-    public async updateBoarder(
+    public async deleteClass(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            await Db.sequelize.transaction(async (t: Transaction) => {
-                const data = await BoarderService.updateBoarder(req.body as any)
-                t.afterCommit(() => {
-                    next(HttpResponse.success(data, 200))
-                })
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    public async deleteBoarder(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-        try {
-            const data = await BoarderService.deleteBoarder(req.params.id)
+            const data = await ClassService.deleteClass(req.params.id)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

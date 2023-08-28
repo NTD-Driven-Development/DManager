@@ -32,7 +32,8 @@ export default new (class ShareController {
 
     public async getBoarderRoles (req: Request, res: Response, next: NextFunction) {
         try {
-            const data = await ShareService.getBoarderRoles(req.query as any)
+            const project_id = req.query?.project_id as string
+            const data = await ShareService.getBoarderRoles(project_id)
             next(HttpResponse.success(data))
         } catch (error) {
             next(error)

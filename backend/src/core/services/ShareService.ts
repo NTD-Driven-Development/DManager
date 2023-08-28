@@ -58,17 +58,14 @@ export default new (class UserService {
         const result = await ShareDao.getBoarderStatuses()
         return result
     }
-    public async getBoarderRoles(query?: {
-        project_id: number
-    }): Promise<BoarderRoleModel[]> {
+    public async getBoarderRoles(
+        project_id: string | number
+    ): Promise<BoarderRoleModel[]> {
         const result = await ShareDao.getBoarderRoles()
-        if (query?.project_id) {
-            return _.filter(
-                result,
-                (item: BoarderRoleModel) => item.project_id == query.project_id
-            )
-        }
-        return result
+        return _.filter(
+            result,
+            (item: BoarderRoleModel) => item.project_id == project_id
+        )
     }
     public async getTelCardContacters(): Promise<TelCardContacterModel[]> {
         const result = await ShareDao.getTelCardContacters()
@@ -82,7 +79,9 @@ export default new (class UserService {
         const result = await ShareDao.getProjects()
         return result
     }
-    public async getBoardersFromProject(project_id: string | number): Promise<BoarderModel[]> {
+    public async getBoardersFromProject(
+        project_id: string | number
+    ): Promise<BoarderModel[]> {
         const result = await ShareDao.getBoardersFromProject(project_id)
         return result
     }

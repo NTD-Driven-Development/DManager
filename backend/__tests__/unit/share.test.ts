@@ -111,16 +111,17 @@ describe("Unit test for ShareService.", () => {
         return [
             {
                 id: 1,
+                project_id: 1,
                 name: "一般生",
             },
         ]
     }
-    async function whenGetBoarderRoles() {
+    async function whenGetBoarderRoles(project_id: number) {
         const rawData = expectBoarderRolesData()
         jest.spyOn(ShareDao, "getBoarderRoles").mockResolvedValue(
             rawData as any
         )
-        return await ShareService.getBoarderRoles()
+        return await ShareService.getBoarderRoles(project_id)
     }
 
     function expectTelCardContactersData() {
@@ -188,13 +189,15 @@ describe("Unit test for ShareService.", () => {
                     room_type: "D",
                     room_no: 1,
                     bed: 1,
-                }
+                },
             },
         ]
     }
     async function whenGetBoardersFromProject(project_id: number) {
         const rawData = expectBoardersData()
-        jest.spyOn(ShareDao, "getBoardersFromProject").mockResolvedValue(rawData as any)
+        jest.spyOn(ShareDao, "getBoardersFromProject").mockResolvedValue(
+            rawData as any
+        )
         return await ShareService.getBoardersFromProject(project_id)
     }
 
@@ -214,7 +217,8 @@ describe("Unit test for ShareService.", () => {
     })
 
     it("取得住宿生身分別清單", async () => {
-        const result = await whenGetBoarderRoles()
+        const project_id = 1
+        const result = await whenGetBoarderRoles(project_id)
         expect(result).toEqual(expectBoarderRolesData())
     })
 

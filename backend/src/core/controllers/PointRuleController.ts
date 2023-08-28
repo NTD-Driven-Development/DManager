@@ -1,19 +1,17 @@
 import { Request, Response, NextFunction } from "express"
-import BoarderService from "../services/BoarderService"
+import PointRuleService from "../services/PointRuleService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
-import Sequelize, { Transaction } from "sequelize"
+import Sequelize from "sequelize"
 
-export default new (class BoarderController {
-    public async getBoardersFromProject(
+export default new (class PointRuleController {
+    public async getPointRules(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            const project_id = req.query?.project_id as string
-            const data = await BoarderService.getBoardersFromProject(
-                project_id,
+            const data = await PointRuleService.getPointRules(
                 req.query as any
             )
             next(HttpResponse.success(data, 200))
@@ -22,43 +20,39 @@ export default new (class BoarderController {
         }
     }
 
-    public async getBoarderById(
+    public async createPointRule(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            const data = await BoarderService.getBoarderById(req.params.id)
+            const data = await PointRuleService.createPointRule(req.body as any)
+            next(HttpResponse.success(data, 201))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async updatePointRule(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await PointRuleService.updatePointRule(req.body as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
         }
     }
 
-    public async updateBoarder(
+    public async deletePointRule(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            await Db.sequelize.transaction(async (t: Transaction) => {
-                const data = await BoarderService.updateBoarder(req.body as any)
-                t.afterCommit(() => {
-                    next(HttpResponse.success(data, 200))
-                })
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    public async deleteBoarder(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-        try {
-            const data = await BoarderService.deleteBoarder(req.params.id)
+            const data = await PointRuleService.deletePointRule(req.params.id)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

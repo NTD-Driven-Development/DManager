@@ -2,12 +2,12 @@ import Db from "../../models"
 import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
 import moment from "moment"
-import { BoarderRoleModel } from "../../models/BoarderRole"
+import { BoarderStatusModel } from "../../models/BoarderStatus"
 import _ from "lodash"
 
-export default new (class BoarderRoleDao extends BaseDao {
-    public async findAll(): Promise<BoarderRoleModel[]> {
-        return await Db.boarder_role.findAll({
+export default new (class BoarderStatusDao extends BaseDao {
+    public async findAll(): Promise<BoarderStatusModel[]> {
+        return await Db.boarder_status.findAll({
             where: {
                 deleted_at: null,
             },
@@ -15,23 +15,16 @@ export default new (class BoarderRoleDao extends BaseDao {
         })
     }
 
-    public async create(data: BoarderRoleModel): Promise<BoarderRoleModel> {
-        return await Db.boarder_role.create(data)
+    public async create(data: BoarderStatusModel): Promise<BoarderStatusModel> {
+        return await Db.boarder_status.create(data)
     }
 
-    public async bulkCreate(
-        data: { name: string; project_id: number }[]
-    ): Promise<BoarderRoleModel[]> {
-        const map = _.map(data, (item) => {
-            return { name: item.name, project_id: item.project_id }
-        })
-        return await Db.boarder_role.bulkCreate(map)
-    }
-
-    public async update(data: BoarderRoleModel): Promise<Core.IExecuteResult> {
+    public async update(
+        data: BoarderStatusModel
+    ): Promise<Core.IExecuteResult> {
         data.updated_at = moment().toDate()
         return await this.executeResult(
-            Db.boarder_role.update(data, {
+            Db.boarder_status.update(data, {
                 where: {
                     id: data.id,
                     deleted_at: null,
@@ -42,7 +35,7 @@ export default new (class BoarderRoleDao extends BaseDao {
 
     public async deleteById(id: number): Promise<Core.IExecuteResult> {
         return await this.executeResult(
-            Db.boarder_role.update(
+            Db.boarder_status.update(
                 {
                     deleted_at: moment().toDate(),
                 },

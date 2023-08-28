@@ -5,7 +5,7 @@ import moment from "moment"
 import { BoarderModel } from "../../models/Boarder"
 import _ from "lodash"
 
-export interface BoarderData extends BoarderModel{
+export interface BoarderData extends BoarderModel {
     boarder_roles: {
         id: number
         name: string
@@ -58,6 +58,7 @@ export default new (class BoarderDao extends BaseDao {
                 },
             ],
             where: { deleted_at: null },
+            order: [["id", "DESC"]],
         })
         return boarders
     }

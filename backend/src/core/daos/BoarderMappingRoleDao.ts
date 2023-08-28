@@ -14,4 +14,16 @@ export default new (class BoarderMappingRoleDao extends BaseDao {
     ): Promise<BoarderMappingRoleModel[]> {
         return await Db.boarder_mapping_role.bulkCreate(data)
     }
+
+    public async destroyByBoarderId(
+        boarder_id: string
+    ): Promise<Core.IExecuteResult> {
+        return await this.executeResult(
+            Db.boarder_mapping_role.destroy({
+                where: {
+                    boarder_id: boarder_id,
+                },
+            })
+        )
+    }
 })()

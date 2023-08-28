@@ -1,7 +1,10 @@
 import BoarderService from "../../src/core/services/BoarderService"
 import BoarderDao from "../../src/core/daos/BoarderDao"
-import Sequelize from "sequelize"
+import Sequelize, { UniqueConstraintError } from "sequelize"
 import ProjectDao from "../../src/core/daos/ProjectDao"
+import BoarderRoleDao from "../../src/core/daos/BoarderRoleDao"
+import BoarderStatusDao from "../../src/core/daos/BoarderStatusDao"
+import BoarderMappingRoleDao from "../../src/core/daos/BoarderMappingRoleDao"
 
 describe("Unit test for BoarderService.", () => {
     afterEach(() => {
@@ -38,6 +41,15 @@ describe("Unit test for BoarderService.", () => {
             bed: "1",
         },
     }
+    const fakeBoarderRole = {
+        project_id: 1,
+        id: 1,
+        name: "1E區隊長",
+    }
+    const fakeBoarderStatus = {
+        id: 1,
+        name: "E2eTest",
+    }
 
     function givenGetBoardersFromProjectPayload() {
         return {
@@ -55,7 +67,7 @@ describe("Unit test for BoarderService.", () => {
             items: [fakeBoarder],
         }
     }
-    function expectGivenOffset1Limit2ThenGetItemsCountShouldBeEqual2(
+    function expectGivenOffset1Limit2ThenGetBoardersCountShouldBeEqual2(
         offset: number,
         limit: number
     ) {
@@ -75,10 +87,10 @@ describe("Unit test for BoarderService.", () => {
         sid: string
         name: string
         class_id: number
-        class: { id: number; name: string }
+        class: any
         boarder_status_id: number
-        boarder_status: { id: number; name: string }
-        boarder_roles: { id: number; name: string }[]
+        boarder_status: any
+        boarder_roles: any[]
         project_bunk: {
             id: number
             project_id: number
@@ -165,18 +177,27 @@ describe("Unit test for BoarderService.", () => {
             remark: "備註",
             access_card: "ACC_123456_CARD",
             boarder_status_id: 2,
+            boarder_role_ids: [1, 2],
         }
     }
     async function whenUpdateBoarderSucceeded(payload: any) {
         jest.spyOn(BoarderDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
+        jest.spyOn(BoarderMappingRoleDao, "destroyByBoarderId").mockResolvedValue({
+            affectedRows: 1,
+        })
+        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(true as any)
         return await BoarderService.updateBoarder(payload)
     }
     async function whenUpdateBoarderNotFound(payload: any) {
         jest.spyOn(BoarderDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
+        jest.spyOn(BoarderMappingRoleDao, "destroyByBoarderId").mockResolvedValue({
+            affectedRows: 1,
+        })
+        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(true as any)
         return await BoarderService.updateBoarder(payload)
     }
 
@@ -201,7 +222,6 @@ describe("Unit test for BoarderService.", () => {
         } as any)
         return await BoarderService.deleteBoarder(boarder_id)
     }
-
     async function whenDeleteBoarderNotFound(boarder_id: string) {
         jest.spyOn(BoarderDao, "deleteById").mockResolvedValue({
             affectedRows: 0,
@@ -210,6 +230,211 @@ describe("Unit test for BoarderService.", () => {
             affectedRows: 0,
         } as any)
         return await BoarderService.deleteBoarder(boarder_id)
+    }
+
+    function expectGetBoarderRolesFromProjectData() {
+        return {
+            total: 1,
+            from: 1,
+            to: 1,
+            current_page: 1,
+            last_page: 1,
+            per_page: 20,
+            items: [fakeBoarderRole],
+        }
+    }
+    function expectGivenOffset1Limit2ThenGetBoarderRolesCountShouldBeEqual2(
+        offset: number,
+        limit: number
+    ) {
+        return {
+            total: 4,
+            from: 1,
+            to: 2,
+            current_page: offset,
+            last_page: 2,
+            per_page: limit,
+            items: [fakeBoarderRole, fakeBoarderRole],
+        }
+    }
+    async function whenGetBoarderRolesFromProject(project_id: number) {
+        jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
+            fakeBoarderRole,
+        ])
+        const result = await BoarderService.getBoarderRolesFromProject(
+            project_id
+        )
+        return result
+    }
+    async function whenGetBoarderRolesFromProjectWithPagination(
+        project_id: number,
+        query: { offset: number; limit: number }
+    ) {
+        jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
+            fakeBoarderRole,
+            fakeBoarderRole,
+            fakeBoarderRole,
+            fakeBoarderRole,
+        ])
+        const result = await BoarderService.getBoarderRolesFromProject(
+            project_id,
+            query
+        )
+        return result
+    }
+
+    function givenCreateBoarderRolePayload() {
+        return {
+            project_id: 1,
+            name: "1E區隊長",
+        }
+    }
+    async function whenCreateBoarderRoleSucceeded(payload: {
+        project_id: number
+        name: string
+    }) {
+        jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([])
+        jest.spyOn(BoarderRoleDao, "create").mockResolvedValue(true as any)
+        return await BoarderService.createBoarderRole(payload)
+    }
+    async function whenCreateBoarderRoleRepeated(payload: {
+        project_id: number
+        name: string
+    }) {
+        jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
+            fakeBoarderRole,
+        ])
+        jest.spyOn(BoarderRoleDao, "create").mockRejectedValue(true as any)
+        return await BoarderService.createBoarderRole(payload)
+    }
+
+    function givenUpdateBoarderRolePayload() {
+        return {
+            id: 1,
+            name: "1E區隊長(已修改)",
+        }
+    }
+    async function whenUpdateBoarderRoleSucceeded(payload: any) {
+        jest.spyOn(BoarderRoleDao, "update").mockResolvedValue({
+            affectedRows: 1,
+        } as any)
+        return await BoarderService.updateBoarderRole(payload)
+    }
+    async function whenUpdateBoarderRoleNotModified(payload: any) {
+        jest.spyOn(BoarderRoleDao, "update").mockResolvedValue({
+            affectedRows: 0,
+        } as any)
+        return await BoarderService.updateBoarderRole(payload)
+    }
+
+    async function whenDeleteBoarderRoleSucceeded(boarder_role_id: number) {
+        jest.spyOn(BoarderRoleDao, "deleteById").mockResolvedValue({
+            affectedRows: 1,
+        } as any)
+        return await BoarderService.deleteBoarderRole(boarder_role_id)
+    }
+    async function whenDeleteBoarderRoleNotFound(boarder_role_id: number) {
+        jest.spyOn(BoarderRoleDao, "deleteById").mockResolvedValue({
+            affectedRows: 0,
+        } as any)
+        return await BoarderService.deleteBoarderRole(boarder_role_id)
+    }
+
+    function expectGetBoarderStatuesData() {
+        return {
+            total: 1,
+            from: 1,
+            to: 1,
+            current_page: 1,
+            last_page: 1,
+            per_page: 20,
+            items: [fakeBoarderStatus],
+        }
+    }
+    function expectGivenOffset1Limit2ThenGetBoarderStatusCountShouldBeEqual2(
+        offset: number,
+        limit: number
+    ) {
+        return {
+            total: 4,
+            from: 1,
+            to: 2,
+            current_page: offset,
+            last_page: 2,
+            per_page: limit,
+            items: [fakeBoarderStatus, fakeBoarderStatus],
+        }
+    }
+    async function whenGetBoarderStatues() {
+        jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([
+            fakeBoarderStatus,
+        ])
+        const result = await BoarderService.getBoarderStatuses()
+        return result
+    }
+    async function whenGetBoarderStatusesWithPagination(query: {
+        offset: number
+        limit: number
+    }) {
+        jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([
+            fakeBoarderStatus,
+            fakeBoarderStatus,
+            fakeBoarderStatus,
+            fakeBoarderStatus,
+        ])
+        const result = await BoarderService.getBoarderStatuses(query)
+        return result
+    }
+
+    async function whenDeleteBoarderStatusNotFound(id: number) {
+        jest.spyOn(BoarderStatusDao, "deleteById").mockResolvedValue({
+            affectedRows: 0,
+        } as any)
+        const result = await BoarderService.deleteBoarderStatus(id)
+        return result
+    }
+    async function whenDeleteBoarderStatusSucceeded(id: number) {
+        jest.spyOn(BoarderStatusDao, "deleteById").mockResolvedValue({
+            affectedRows: 1,
+        } as any)
+        const result = await BoarderService.deleteBoarderStatus(id)
+        return result
+    }
+
+    async function whenUpdateBoarderStatusNotFound(payload: {
+        id: number
+        name: string
+    }) {
+        jest.spyOn(BoarderStatusDao, "update").mockResolvedValue({
+            affectedRows: 0,
+        } as any)
+        const result = await BoarderService.updateBoarderStatus(payload)
+        return result
+    }
+    async function whenUpdateBoarderStatusSucceed(payload: {
+        id: number
+        name: string
+    }) {
+        jest.spyOn(BoarderStatusDao, "update").mockResolvedValue({
+            affectedRows: 1,
+        } as any)
+        const result = await BoarderService.updateBoarderStatus(payload)
+        return result
+    }
+
+    async function whenCreateBoarderStatusRepeated(payload: { name: string }) {
+        jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([
+            fakeBoarderStatus,
+        ])
+        jest.spyOn(BoarderStatusDao, "create").mockResolvedValue(true as any)
+        const result = await BoarderService.createBoarderStatus(payload)
+        return result
+    }
+    async function whenCreateBoarderStatusSucceeded(payload: { name: string }) {
+        jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([])
+        jest.spyOn(BoarderStatusDao, "create").mockResolvedValue(true as any)
+        const result = await BoarderService.createBoarderStatus(payload)
+        return result
     }
 
     describe("取得某項目住宿生資訊", () => {
@@ -233,7 +458,7 @@ describe("Unit test for BoarderService.", () => {
                 limit: 2,
             }
             const expectResult =
-                expectGivenOffset1Limit2ThenGetItemsCountShouldBeEqual2(
+                expectGivenOffset1Limit2ThenGetBoardersCountShouldBeEqual2(
                     payload.offset,
                     payload.limit
                 )
@@ -277,6 +502,8 @@ describe("Unit test for BoarderService.", () => {
             // then
             expect(result).toEqual(true)
             expect(BoarderDao.update).toBeCalledTimes(1)
+            expect(BoarderMappingRoleDao.destroyByBoarderId).toBeCalledTimes(1)
+            expect(BoarderMappingRoleDao.bulkCreate).toBeCalledTimes(1)
         })
 
         it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
@@ -342,6 +569,249 @@ describe("Unit test for BoarderService.", () => {
 
             // when
             const result = whenDeleteBoarderNotFound(boarder_id)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("取得某項目住宿生身分列表", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const project_id = 1
+
+            // when
+            const result = await whenGetBoarderRolesFromProject(project_id)
+
+            // then
+            expect(result).toEqual(expectGetBoarderRolesFromProjectData())
+            expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("有分頁", async () => {
+            // given
+            const project_id = 1
+            const payload = {
+                offset: 1,
+                limit: 2,
+            }
+            const expectResult =
+                expectGivenOffset1Limit2ThenGetBoarderRolesCountShouldBeEqual2(
+                    payload.offset,
+                    payload.limit
+                )
+
+            // when
+            const result = await whenGetBoarderRolesFromProjectWithPagination(
+                project_id,
+                payload
+            )
+
+            // then
+            expect(result).toEqual(expectResult)
+            expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("建立住宿生身分", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const payload = givenCreateBoarderRolePayload()
+
+            // when
+            const result = await whenCreateBoarderRoleSucceeded(payload)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderRoleDao.create).toBeCalledTimes(1)
+        })
+
+        it("重複建立應擲出例外「資料已重複」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "資料已重複"
+            const payload = givenCreateBoarderRolePayload()
+
+            // when
+            const result = whenCreateBoarderRoleRepeated(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("修改住宿生身分", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const payload = givenUpdateBoarderRolePayload()
+
+            // when
+            const result = await whenUpdateBoarderRoleSucceeded(payload)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderRoleDao.update).toBeCalledTimes(1)
+        })
+
+        it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const payload = givenUpdateBoarderRolePayload()
+
+            // when
+            const result = whenUpdateBoarderRoleNotModified(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("刪除住宿生身分", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const boarder_role_id = 1
+
+            // when
+            const result = await whenDeleteBoarderRoleSucceeded(boarder_role_id)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderRoleDao.deleteById).toBeCalledTimes(1)
+        })
+
+        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const boarder_role_id = 1
+
+            // when
+            const result = whenDeleteBoarderRoleNotFound(boarder_role_id)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("取得住宿生狀態列表", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+
+            // when
+            const result = await whenGetBoarderStatues()
+
+            // then
+            expect(result).toEqual(expectGetBoarderStatuesData())
+            expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("有分頁", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 2,
+            }
+            const expectResult =
+                expectGivenOffset1Limit2ThenGetBoarderStatusCountShouldBeEqual2(
+                    payload.offset,
+                    payload.limit
+                )
+
+            // when
+            const result = await whenGetBoarderStatusesWithPagination(payload)
+
+            // then
+            expect(result).toEqual(expectResult)
+            expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("建立住宿生狀態", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const payload = {
+                name: "E2eTest",
+            }
+
+            // when
+            const result = await whenCreateBoarderStatusSucceeded(payload)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderStatusDao.create).toBeCalledTimes(1)
+        })
+
+        it("重複建立應擲出例外「資料已重複」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "資料已重複"
+            const payload = {
+                name: "E2eTest",
+            }
+
+            // when
+            const result = whenCreateBoarderStatusRepeated(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("修改住宿生狀態", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const payload = {
+                id: 1,
+                name: "E2eTest(Edited)",
+            }
+
+            // when
+            const result = await whenUpdateBoarderStatusSucceed(payload)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderStatusDao.update).toBeCalledTimes(1)
+        })
+
+        it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const payload = {
+                id: 1,
+                name: "E2eTest(Edited)",
+            }
+
+            // when
+            const result = whenUpdateBoarderStatusNotFound(payload)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("刪除住宿生狀態", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const id = 1
+
+            // when
+            const result = await whenDeleteBoarderStatusSucceeded(id)
+
+            // then
+            expect(result).toEqual(true)
+            expect(BoarderStatusDao.deleteById).toBeCalledTimes(1)
+        })
+
+        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+
+            // when
+            const result = whenDeleteBoarderStatusNotFound(id)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
