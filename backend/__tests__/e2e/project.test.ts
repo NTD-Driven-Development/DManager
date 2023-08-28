@@ -1,4 +1,4 @@
-import { Op } from "sequelize"
+import Sequelize, { Op } from "sequelize"
 import { App } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -33,7 +33,9 @@ describe("Acceptance test for ProjectController.", () => {
             })
         } catch (error: any) {
             console.log(error)
-            await deleteImportData(project_id)
+            if (error instanceof Sequelize.ForeignKeyConstraintError) {
+                await deleteImportData(project_id)
+            }
         }
     }
 
