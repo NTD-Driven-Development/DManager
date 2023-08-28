@@ -33,6 +33,7 @@ describe("Acceptance test for ProjectController.", () => {
             })
         } catch (error: any) {
             console.log(error)
+            await deleteImportData(project_id)
         }
     }
 

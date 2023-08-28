@@ -185,6 +185,7 @@ describe("Acceptance test for BoarderController.", () => {
             })
         } catch (error: any) {
             console.log(error)
+            await deleteImportData(project_id)
         }
     }
 
