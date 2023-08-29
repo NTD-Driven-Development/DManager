@@ -128,7 +128,7 @@
     const emits = defineEmits<Emits>();
 
     const toastNotifier = inject(ToastNotifierKey);
-    const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
+    const { handleSubmit, setFieldValue, resetForm } = useForm({ validationSchema: schema });
 
     const popUp = ref();
     const visible = ref(false);
@@ -183,7 +183,7 @@
             setFieldValue('class_id', boader?.class?.id);
             setFieldValue('boarder_status_id', boader?.boarder_status?.id);
             setFieldValue('phone', boader?.phone);
-            setFieldValue('birthday', new Date(boader?.birthday ?? '').toISOString().split('T')[0]);
+            setFieldValue('birthday', boader?.birthday ? toSimpleDate(boader?.birthday) : undefined);
             setFieldValue('access_card', boader?.access_card);
             setFieldValue('remark', boader?.remark);
             setFieldValue('boarder_role_ids', boader?.boarder_roles?.map((v) => v?.id))

@@ -44,8 +44,10 @@ export default defineNuxtConfig({
     },
 	routeRules: {
         '/': { ssr: false },
+        '/login': { ssr: false },
         '/dashboard': { ssr: false },
         '/projects': { ssr: false },
-        '/login': { ssr: false },
+        '/boarders': { ssr: false },
+        '/options': { ssr: false },
     },
 })

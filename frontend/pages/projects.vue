@@ -1,21 +1,23 @@
 <template>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
-        <!-- 操作 -->
-        <div class="flex flex-col gap-2 lg:flex-row">
-            <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"></ProjectCreate>
-            <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
-                <div class="grid grid-cols-2 gap-3">
-                    <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入</button>
-                    <!-- <button class="px-8 py-2 text-white bg-gray-600 rounded">複製自</button> -->
+        <!-- 內容 -->
+        <div class="flex flex-col gap-3 lg:gap-4">
+            <!-- 操作 -->
+            <div class="flex flex-col gap-2 lg:flex-row">
+                <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"></ProjectCreate>
+                <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入</button>
+                        <!-- <button class="px-8 py-2 text-white bg-gray-600 rounded">複製自</button> -->
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- 列表 -->
-        <div class="flex flex-col gap-3 lg:gap-4">
+            <!-- 搜尋 -->
             <div class="w-full lg:w-64">
                 <input placeholder="搜尋項目名稱" class="text-xs w-full rounded"
                 @change=""/>
             </div>
+            <!-- 列表 -->
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
                 <TransitionGroup
                 enter-active-class="transition-all duration-1000"

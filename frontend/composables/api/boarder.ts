@@ -29,7 +29,7 @@ export class BoarderPaginator extends ApiPaginator<Boarder, BoarderPaginationQue
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
-    };
+    }
 
     protected projectIdHandler = _.throttle(this.setQuery, 800);
 }

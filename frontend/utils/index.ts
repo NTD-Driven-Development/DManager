@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import ToastNotifier from '~/components/ToastNotifier.vue';
 import { Bunk } from '~/src/model';
+import ToastNotifier from '~/components/ToastNotifier.vue';
+import _ from 'lodash';
 
 export const useUrl = (options?: UrlOptions): string => {
     const config = useRuntimeConfig();
@@ -124,6 +124,15 @@ export const toBunk = (stringlishBunk: string) => {
         } as Omit<Bunk, 'id'>;
     }
     else return null;
+}
+
+export const toSimpleDate = (stringlishDate: string) => {
+    try {
+        return new Date(stringlishDate)?.toISOString()?.split('T')[0];
+    }
+    catch(error) {
+        return null;
+    }
 }
 
 export const toQueryString = <T extends object>(value: T) => {

@@ -29,7 +29,7 @@ export class ProjectPaginator extends ApiPaginator<Project> {
         if (key === 'limit') {
             this.limitHandler(key, value);
         }
-    };
+    }
 
     protected limitHandler = _.throttle(this.setQuery, 800);
 }

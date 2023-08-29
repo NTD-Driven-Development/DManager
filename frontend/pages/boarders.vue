@@ -1,23 +1,25 @@
 <template>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
-        <!-- 選擇 -->
+        <!-- 選擇項目 -->
         <Select name="selectedProjectId" :options="projectList" option-key="id" option-value="name" class="shadow border text-xs"></Select>
-        <!-- 操作 -->
-        <div class="flex flex-col gap-2 lg:flex-row">
-            <BoarderCreate :project="projectList?.find((v) => v?.id == values?.selectedProjectId)!" class="grow-[1] lg:basis-1"
-            @on-created="boarderPaginator?.reload()"></BoarderCreate>
-            <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
-                <div class="grid grid-cols-2 gap-3">
-                    <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
+        <!-- 內容 -->
+        <div class="flex flex-col gap-3">
+            <!-- 操作 -->
+            <div class="flex flex-col gap-2 lg:flex-row">
+                <BoarderCreate :project="projectList?.find((v) => v?.id == values?.selectedProjectId)!" class="grow-[1] lg:basis-1"
+                @on-created="boarderPaginator?.reload()"></BoarderCreate>
+                <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- 列表 -->
-        <div class="flex flex-col gap-3">
+            <!-- 搜尋 -->
             <div class="w-full lg:w-64">
                 <input placeholder="搜尋住宿生姓名、班級、樓寢床" class="text-xs w-full rounded"
                 @change=""/>
             </div>
+            <!-- 列表 -->
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
                 <TransitionGroup
                 enter-active-class="transition-all duration-1000"
