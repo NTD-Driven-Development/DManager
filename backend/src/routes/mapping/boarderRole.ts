@@ -7,7 +7,7 @@ import validate from '../../middlewares/validateRequest';
 const router = Router();
 
 
-// router.use(jwtAuth("jwt"));
+router.use(jwtAuth("jwt"));
 router.get('', BoarderRoleController.getBoarderRolesFromProject);
 router.post('', BoarderRoleController.createBoarderRole);
 router.put('', BoarderRoleController.updateBoarderRole);

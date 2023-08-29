@@ -1,4 +1,4 @@
-import { App } from "../../config/preE2eConfig"
+import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 
 describe("Acceptance test for UserController.", () => {
@@ -12,6 +12,7 @@ describe("Acceptance test for UserController.", () => {
         }
 
         it("不符合輸入格式應回傳 400.", async () => {
+            // given
             const invalidPayload = [
                 {
                     name: "test_e2e",
@@ -30,30 +31,38 @@ describe("Acceptance test for UserController.", () => {
                     email: "test_e2e@gmail.com",
                     sid: "S1234567890test_e2e",
                 },
-                {}
+                {},
             ]
             for (const payload of invalidPayload) {
-                const response = await App.post("/api/users").send(
-                    payload
-                )
+                // when
+                const response = await App.post("/api/users").send(payload)
+                // then
                 expect(response.status).toBe(400)
                 expect(response.body?.error).not.toBeNull()
             }
         })
 
         it("新用戶應能夠正常新增.", async () => {
-            const response = await App.post("/api/users").send(
-                createUserPayload
-            )
+            // given
+            const payload = createUserPayload
+            // when
+            const response = await App.post("/api/users").send(payload)
+            // then
             createdUser = response.body?.data
             expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
+            expect(createdUser?.name).toBe(payload.name)
+            expect(createdUser?.email).toBe(payload.email)
+            expect(createdUser?.sid).toBe(payload.sid)
+            expect(createdUser?.created_by).toBe(mockUser.id)
         })
 
         it("不可重複新增相同 Email 使用者.", async () => {
-            const response = await App.post("/api/users").send(
-                createUserPayload
-            )
+            // given
+            const payload = createUserPayload
+            // when
+            const response = await App.post("/api/users").send(payload)
+            // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("此 Email 已被註冊")
         })

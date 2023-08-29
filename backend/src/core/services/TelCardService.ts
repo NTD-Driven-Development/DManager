@@ -5,6 +5,7 @@ import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import TelCardContacterDao from "../daos/TelCardContacterDao"
 import { UniqueConstraintError } from "sequelize"
 import { TelCardContacterModel } from "../../models/TelCardContacter"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class TelCardService {
     public async getTelCardContacters(query?: {
@@ -16,11 +17,16 @@ export default new (class TelCardService {
     }
 
     public async createTelCardContacter(
-        TelCardContacter: TelCardContacterModel
+        payload: TelCardContacterModel,
+        user: RequestUser
     ): Promise<TelCardContacterModel> {
         try {
-            await this.ifNameRepeatedThenThrow(TelCardContacter)
-            const result = await TelCardContacterDao.create(TelCardContacter)
+            await this.ifNameRepeatedThenThrow(payload)
+            const model = {
+                ...payload,
+                created_by: user.id,
+            }
+            const result = await TelCardContacterDao.create(model)
             return result
         } catch (error: any) {
             if (error instanceof HttpException) {
@@ -30,23 +36,28 @@ export default new (class TelCardService {
         }
     }
 
-    private async ifNameRepeatedThenThrow(TelCardContacter: TelCardContacterModel) {
-        const data = await TelCardContacterDao.findAllByName(TelCardContacter.name)
+    private async ifNameRepeatedThenThrow(payload: TelCardContacterModel) {
+        const data = await TelCardContacterDao.findAllByName(payload.name)
         const hasRepeat = _.filter(
             data,
-            (item) => item.name === TelCardContacter.name && item.id !== TelCardContacter.id
+            (item) => item.name === payload.name && item.id !== payload.id
         )
         if (hasRepeat.length > 0) {
-            throw new HttpException("名稱重複", 400)
+            throw new HttpException("名稱已存在", 400)
         }
     }
 
     public async updateTelCardContacter(
-        TelCardContacter: TelCardContacterModel
+        payload: TelCardContacterModel,
+        user: RequestUser
     ): Promise<boolean> {
         try {
-            await this.ifNameRepeatedThenThrow(TelCardContacter)
-            const result = await TelCardContacterDao.update(TelCardContacter)
+            await this.ifNameRepeatedThenThrow(payload)
+            const model = {
+                ...payload,
+                updated_by: user.id,
+            }
+            const result = await TelCardContacterDao.update(model)
             if (result.affectedRows === 0) {
                 throw new HttpException("查無資料", 400)
             }
@@ -59,8 +70,11 @@ export default new (class TelCardService {
         }
     }
 
-    public async deleteTelCardContacter(id: string | number): Promise<boolean> {
-        const result = await TelCardContacterDao.deleteById(id as number)
+    public async deleteTelCardContacter(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await TelCardContacterDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }

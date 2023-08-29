@@ -15,6 +15,15 @@ export default new (class BoarderRoleDao extends BaseDao {
         })
     }
 
+    public async findOneById(id: number): Promise<BoarderRoleModel> {
+        return await Db.boarder_role.findOne({
+            where: {
+                id: id,
+                deleted_at: null,
+            },
+        })
+    }
+
     public async create(data: BoarderRoleModel): Promise<BoarderRoleModel> {
         return await Db.boarder_role.create(data)
     }
@@ -40,11 +49,15 @@ export default new (class BoarderRoleDao extends BaseDao {
         )
     }
 
-    public async deleteById(id: number): Promise<Core.IExecuteResult> {
+    public async delete(
+        id: number,
+        deleted_by: number
+    ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.boarder_role.update(
                 {
                     deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
                 },
                 {
                     where: {

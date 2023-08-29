@@ -5,7 +5,7 @@ import validate from "../../middlewares/validateRequest"
 
 const router = Router()
 
-// router.use(jwtAuth("jwt"));
+router.use(jwtAuth("jwt"));
 router.get("", ClassController.getClasses)
 router.post("", ClassController.createClass)
 router.put("", ClassController.updateClass)

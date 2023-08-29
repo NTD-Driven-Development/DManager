@@ -16,6 +16,15 @@ export default new (class PointRuleDao extends BaseDao {
         })
     }
 
+    public async findOneById(id: number): Promise<PointRuleModel> {
+        return await Db.point_rule.findOne({
+            where: {
+                id: id,
+                deleted_at: null,
+            },
+        })
+    }
+
     public async findAllByCode(code: string): Promise<PointRuleModel[]> {
         return await Db.point_rule.findAll({
             where: {
@@ -41,11 +50,15 @@ export default new (class PointRuleDao extends BaseDao {
             })
         )
     }
-    public async deleteById(id: number): Promise<Core.IExecuteResult> {
+    public async delete(
+        id: number,
+        deleted_by: number
+    ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.point_rule.update(
                 {
                     deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
                 },
                 {
                     where: {

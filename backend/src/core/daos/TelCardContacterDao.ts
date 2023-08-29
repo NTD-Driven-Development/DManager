@@ -7,7 +7,7 @@ import _ from "lodash"
 
 export default new (class TelCardContacterDao extends BaseDao {
     public async findAll(): Promise<TelCardContacterModel[]> {
-        return await Db.class.findAll({
+        return await Db.tel_card_contacter.findAll({
             where: {
                 deleted_at: null,
             },
@@ -15,8 +15,17 @@ export default new (class TelCardContacterDao extends BaseDao {
         })
     }
 
+    public async findOneById(id: number): Promise<TelCardContacterModel> {
+        return await Db.tel_card_contacter.findOne({
+            where: {
+                id: id,
+                deleted_at: null,
+            },
+        })
+    }
+
     public async findAllByName(name: string): Promise<TelCardContacterModel[]> {
-        return await Db.class.findAll({
+        return await Db.tel_card_contacter.findAll({
             where: {
                 name: name,
                 deleted_at: null,
@@ -27,7 +36,7 @@ export default new (class TelCardContacterDao extends BaseDao {
     public async create(
         data: TelCardContacterModel
     ): Promise<TelCardContacterModel> {
-        return await Db.class.create(data)
+        return await Db.tel_card_contacter.create(data)
     }
 
     public async update(
@@ -35,7 +44,7 @@ export default new (class TelCardContacterDao extends BaseDao {
     ): Promise<Core.IExecuteResult> {
         data.updated_at = moment().toDate()
         return await this.executeResult(
-            Db.class.update(data, {
+            Db.tel_card_contacter.update(data, {
                 where: {
                     id: data.id,
                     deleted_at: null,
@@ -44,11 +53,12 @@ export default new (class TelCardContacterDao extends BaseDao {
         )
     }
 
-    public async deleteById(id: number): Promise<Core.IExecuteResult> {
+    public async delete(id: number, deleted_by: number): Promise<Core.IExecuteResult> {
         return await this.executeResult(
-            Db.class.update(
+            Db.tel_card_contacter.update(
                 {
                     deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
                 },
                 {
                     where: {

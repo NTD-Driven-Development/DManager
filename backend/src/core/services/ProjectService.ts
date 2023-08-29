@@ -18,6 +18,7 @@ import FindOneProjectResultDto from "../exportDtos/project/FindOneProjectResultD
 import PaginationResultDto from "../exportDtos/PaginationResultDto"
 import CreateProjectBunkDto from "../importDtos/projects/CreateProjectBunkDto"
 import { withPagination } from "../../utils/pagination"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ProjectService {
     public async getAllProjectsData(query?: {
@@ -57,28 +58,51 @@ export default new (class ProjectService {
         return result
     }
 
-    public async createProject(data: {
-        name: string
-        remark: string
-    }): Promise<any> {
-        const project = await ProjectDao.create(data as ProjectModel)
+    public async createProject(
+        payload: ProjectModel,
+        user: RequestUser
+    ): Promise<any> {
+        await this.ifProjectNameRepeatedThenThrow(payload)
+        const model = {
+            ...payload,
+            created_by: user.id,
+        }
+        const project = await ProjectDao.create(model)
         return project
     }
 
-    public async updateProject(data: {
-        id: string | number
-        name: string
-        remark: string
-    }): Promise<boolean> {
-        const result = await ProjectDao.update(data.id, data as ProjectModel)
+    private async ifProjectNameRepeatedThenThrow(payload: ProjectModel) {
+        const data = await ProjectDao.findAll()
+        const hasRepeat = _.filter(
+            data,
+            (item) => item.name === payload.name && item.id !== payload.id
+        )
+        if (hasRepeat.length > 0) {
+            throw new HttpException("名稱已存在", 400)
+        }
+    }
+
+    public async updateProject(
+        payload: ProjectModel,
+        user: RequestUser
+    ): Promise<boolean> {
+        await this.ifProjectNameRepeatedThenThrow(payload)
+        const model = {
+            ...payload,
+            updated_by: user.id,
+        }
+        const result = await ProjectDao.update(model)
         if (result.affectedRows === 0) {
             throw new HttpException("此項目不存在", 400)
         }
         return true
     }
 
-    public async deleteProject(id: string | number): Promise<boolean> {
-        const result = await ProjectDao.delete(id)
+    public async deleteProject(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await ProjectDao.delete(id, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("此項目不存在", 400)
         }
@@ -96,10 +120,11 @@ export default new (class ProjectService {
 
     private convertImportDtoToBoarderMapRoleModel(
         boarder_id: string,
-        boarderRoles: number[]
+        boarderRoles: number[],
+        created_by: number
     ): BoarderMappingRoleModel[] {
         return _.map(boarderRoles, (role) => {
-            return { boarder_id, boarder_role_id: role as number }
+            return { boarder_id, boarder_role_id: role, created_by }
         }) as BoarderMappingRoleModel[]
     }
 
@@ -125,7 +150,10 @@ export default new (class ProjectService {
         })
     }
 
-    public async importBoardersData(data: ImportBoardersDto): Promise<boolean> {
+    public async importBoardersData(
+        data: ImportBoardersDto,
+        user: RequestUser
+    ): Promise<boolean> {
         try {
             const newBoarderMappingRoles: BoarderMappingRoleModel[] = []
             const newProjectBunk: ProjectBunkModel[] = []
@@ -154,7 +182,8 @@ export default new (class ProjectService {
                 const boarder_id = v4()
                 const boarderMap = this.convertImportDtoToBoarderMapRoleModel(
                     boarder_id,
-                    boarderRoles
+                    boarderRoles,
+                    user.id
                 )
                 newBoarderMappingRoles.push(...boarderMap)
                 newProjectBunk.push({
@@ -164,6 +193,7 @@ export default new (class ProjectService {
                     room_type: item.room_type,
                     room_no: item.room_no,
                     bed: item.bed,
+                    created_by: user.id,
                 } as ProjectBunkModel)
                 return {
                     id: boarder_id,
@@ -173,6 +203,7 @@ export default new (class ProjectService {
                     remark: item.remark,
                     sid: item.sid,
                     boarder_status_id: data.default_boarder_status_id,
+                    created_by: user.id,
                 } as BoarderModel
             })
 
@@ -194,7 +225,8 @@ export default new (class ProjectService {
 
     private convertCreateProjectBunkDtoToBoarderModel(
         data: CreateProjectBunkDto,
-        project_id: number
+        project_id: number,
+        created_by: number
     ): BoarderModel {
         return {
             id: v4(),
@@ -204,13 +236,15 @@ export default new (class ProjectService {
             sid: data?.sid,
             boarder_status_id: data.boarder_status_id,
             remark: data?.remark,
+            created_by: created_by,
         } as BoarderModel
     }
 
     private convertCreateProjectBunkDtoToProjectBunkModel(
         project_id: number,
         boarder_id: string,
-        data: CreateProjectBunkDto
+        data: CreateProjectBunkDto,
+        created_by: number
     ): ProjectBunkModel {
         return {
             project_id: project_id,
@@ -220,18 +254,21 @@ export default new (class ProjectService {
             room_no: data.room_no,
             bed: data.bed,
             remark: data.remark,
+            created_by: created_by,
         } as ProjectBunkModel
     }
 
     public async createProjectBunk(
         project_id: number | string,
-        payload: CreateProjectBunkDto
+        payload: CreateProjectBunkDto,
+        user: RequestUser
     ): Promise<any> {
         try {
             const boarderData: BoarderModel =
                 this.convertCreateProjectBunkDtoToBoarderModel(
                     payload,
-                    project_id as number
+                    project_id as number,
+                    user.id
                 )
             const boarder: BoarderModel = await BoarderDao.create(boarderData)
 
@@ -239,7 +276,8 @@ export default new (class ProjectService {
                 const boarderMap: BoarderMappingRoleModel[] =
                     this.convertImportDtoToBoarderMapRoleModel(
                         boarder.id,
-                        payload.boarder_role_ids as number[]
+                        payload.boarder_role_ids as number[],
+                        user.id
                     )
                 await BoarderMappingRoleDao.bulkCreate(boarderMap)
             }
@@ -247,7 +285,8 @@ export default new (class ProjectService {
                 this.convertCreateProjectBunkDtoToProjectBunkModel(
                     project_id as number,
                     boarder.id,
-                    payload
+                    payload,
+                    user.id
                 )
 
             await ProjectDao.createProjectBunk(projectBunk)
@@ -270,7 +309,8 @@ export default new (class ProjectService {
             origin_boarder_id: string
             swap_bunk_id: number
             swap_boarder_id: string
-        }
+        },
+        user: RequestUser
     ): Promise<boolean> {
         try {
             const params = {

@@ -7,7 +7,7 @@ import validate from '../../middlewares/validateRequest';
 const router = Router();
 
 
-// router.use(jwtAuth("jwt"));
+router.use(jwtAuth("jwt"));
 // 取得所有項目
 router.get('', ProjectController.getAllProjectsData);
 // 取得單筆項目資料

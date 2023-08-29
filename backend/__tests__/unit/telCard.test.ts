@@ -6,6 +6,9 @@ describe("Unit test for TelCardService.", () => {
     afterEach(() => {
         jest.clearAllMocks()
     })
+    const fakeUser = {
+        id: 1,
+    } as any
     const fakeTelCardContacter = {
         id: 1,
         name: "E2eTest",
@@ -39,7 +42,7 @@ describe("Unit test for TelCardService.", () => {
             fakeTelCardContacter,
         ])
         jest.spyOn(TelCardContacterDao, "create").mockResolvedValue(true as any)
-        const result = await TelCardService.createTelCardContacter(payload)
+        const result = await TelCardService.createTelCardContacter(payload, fakeUser)
         return result
     }
     async function whenCreateTelCardContacterSucceeded(payload: {
@@ -47,7 +50,7 @@ describe("Unit test for TelCardService.", () => {
     }) {
         jest.spyOn(TelCardContacterDao, "findAllByName").mockResolvedValue([])
         jest.spyOn(TelCardContacterDao, "create").mockResolvedValue(true as any)
-        const result = await TelCardService.createTelCardContacter(payload)
+        const result = await TelCardService.createTelCardContacter(payload, fakeUser)
         return result
     }
 
@@ -56,7 +59,7 @@ describe("Unit test for TelCardService.", () => {
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload)
+        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
         return result
     }
     async function whenUpdateTelCardContacterRepeated(payload: any) {
@@ -64,7 +67,7 @@ describe("Unit test for TelCardService.", () => {
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload)
+        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
         return result
     }
     async function whenUpdateTelCardContacterSucceeded(payload: any) {
@@ -72,21 +75,21 @@ describe("Unit test for TelCardService.", () => {
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload)
+        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
         return result
     }
     async function whenDeleteTelCardContacterNotFound(id: number) {
-        jest.spyOn(TelCardContacterDao, "deleteById").mockResolvedValue({
+        jest.spyOn(TelCardContacterDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await TelCardService.deleteTelCardContacter(id)
+        const result = await TelCardService.deleteTelCardContacter(id, fakeUser)
         return result
     }
     async function whenDeleteTelCardContacterSucceeded(id: number) {
-        jest.spyOn(TelCardContacterDao, "deleteById").mockResolvedValue({
+        jest.spyOn(TelCardContacterDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await TelCardService.deleteTelCardContacter(id)
+        const result = await TelCardService.deleteTelCardContacter(id, fakeUser)
         return result
     }
 
@@ -149,9 +152,9 @@ describe("Unit test for TelCardService.", () => {
             expect(TelCardContacterDao.create).toBeCalledTimes(1)
         })
 
-        it("重複建立應擲出例外「名稱重複」，設定狀態碼 400。", async () => {
+        it("重複建立應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "名稱重複"
+            const errorMessage: string = "名稱已存在"
             const payload = {
                 name: "E2eTest",
             }
@@ -195,9 +198,9 @@ describe("Unit test for TelCardService.", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
 
-        it("若更新名稱已存在則應擲出例外「名稱重複」，設定狀態碼 400。", async () => {
+        it("若更新名稱已存在則應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "名稱重複"
+            const errorMessage: string = "名稱已存在"
             const payload = {
                 id: 3,
                 name: "E2eTest",
@@ -222,7 +225,7 @@ describe("Unit test for TelCardService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(TelCardContacterDao.deleteById).toBeCalledTimes(1)
+            expect(TelCardContacterDao.delete).toBeCalledTimes(1)
         })
 
         it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {

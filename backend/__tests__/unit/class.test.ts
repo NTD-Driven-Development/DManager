@@ -6,6 +6,9 @@ describe("Unit test for ClassService.", () => {
     afterEach(() => {
         jest.clearAllMocks()
     })
+    const fakeUser = {
+        id: 1,
+    } as any
     const fakeClass = {
         id: 1,
         name: "E2eTest",
@@ -31,13 +34,13 @@ describe("Unit test for ClassService.", () => {
     async function whenCreateClassRepeated(payload: { name: string }) {
         jest.spyOn(ClassDao, "findAllByName").mockResolvedValue([fakeClass])
         jest.spyOn(ClassDao, "create").mockResolvedValue(true as any)
-        const result = await ClassService.createClass(payload)
+        const result = await ClassService.createClass(payload, fakeUser)
         return result
     }
     async function whenCreateClassSucceeded(payload: { name: string }) {
         jest.spyOn(ClassDao, "findAllByName").mockResolvedValue([])
         jest.spyOn(ClassDao, "create").mockResolvedValue(true as any)
-        const result = await ClassService.createClass(payload)
+        const result = await ClassService.createClass(payload, fakeUser)
         return result
     }
 
@@ -46,7 +49,7 @@ describe("Unit test for ClassService.", () => {
         jest.spyOn(ClassDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await ClassService.updateClass(payload)
+        const result = await ClassService.updateClass(payload, fakeUser)
         return result
     }
     async function whenUpdateClassRepeated(payload: any) {
@@ -54,7 +57,7 @@ describe("Unit test for ClassService.", () => {
         jest.spyOn(ClassDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await ClassService.updateClass(payload)
+        const result = await ClassService.updateClass(payload, fakeUser)
         return result
     }
     async function whenUpdateClassSucceeded(payload: any) {
@@ -62,21 +65,21 @@ describe("Unit test for ClassService.", () => {
         jest.spyOn(ClassDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await ClassService.updateClass(payload)
+        const result = await ClassService.updateClass(payload, fakeUser)
         return result
     }
     async function whenDeleteClassNotFound(id: number) {
-        jest.spyOn(ClassDao, "deleteById").mockResolvedValue({
+        jest.spyOn(ClassDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await ClassService.deleteClass(id)
+        const result = await ClassService.deleteClass(id, fakeUser)
         return result
     }
     async function whenDeleteClassSucceeded(id: number) {
-        jest.spyOn(ClassDao, "deleteById").mockResolvedValue({
+        jest.spyOn(ClassDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await ClassService.deleteClass(id)
+        const result = await ClassService.deleteClass(id, fakeUser)
         return result
     }
 
@@ -138,9 +141,9 @@ describe("Unit test for ClassService.", () => {
             expect(ClassDao.create).toBeCalledTimes(1)
         })
 
-        it("重複建立應擲出例外「名稱重複」，設定狀態碼 400。", async () => {
+        it("重複建立應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "名稱重複"
+            const errorMessage: string = "名稱已存在"
             const payload = {
                 name: "E2eTest",
             }
@@ -184,9 +187,9 @@ describe("Unit test for ClassService.", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
 
-        it("若更新班級名稱已存在則應擲出例外「名稱重複」，設定狀態碼 400。", async () => {
+        it("若更新班級名稱已存在則應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "名稱重複"
+            const errorMessage: string = "名稱已存在"
             const payload = {
                 id: 3,
                 name: "E2eTest",
@@ -211,7 +214,7 @@ describe("Unit test for ClassService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(ClassDao.deleteById).toBeCalledTimes(1)
+            expect(ClassDao.delete).toBeCalledTimes(1)
         })
 
         it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {

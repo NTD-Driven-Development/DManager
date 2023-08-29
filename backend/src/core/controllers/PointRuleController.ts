@@ -3,6 +3,7 @@ import PointRuleService from "../services/PointRuleService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import Sequelize from "sequelize"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class PointRuleController {
     public async getPointRules(
@@ -11,9 +12,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.getPointRules(
-                req.query as any
-            )
+            const data = await PointRuleService.getPointRules(req.query as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -26,7 +25,10 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.createPointRule(req.body as any)
+            const data = await PointRuleService.createPointRule(
+                req.body as any,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 201))
         } catch (error) {
             next(error)
@@ -39,7 +41,10 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.updatePointRule(req.body as any)
+            const data = await PointRuleService.updatePointRule(
+                req.body as any,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -52,7 +57,10 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.deletePointRule(req.params.id)
+            const data = await PointRuleService.deletePointRule(
+                req.params.id,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

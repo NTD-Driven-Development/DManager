@@ -7,10 +7,7 @@ import _ from "lodash"
 
 export default new (class BoarderMappingRoleDao extends BaseDao {
     public async bulkCreate(
-        data: {
-            boarder_id: string
-            boarder_role_id: number
-        }[]
+        data: BoarderMappingRoleModel[]
     ): Promise<BoarderMappingRoleModel[]> {
         return await Db.boarder_mapping_role.bulkCreate(data)
     }

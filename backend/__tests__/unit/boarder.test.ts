@@ -10,6 +10,9 @@ describe("Unit test for BoarderService.", () => {
     afterEach(() => {
         jest.clearAllMocks()
     })
+    const fakeUser = {
+        id: 1,
+    } as any
     const fakeBoarder = {
         id: "1",
         project_id: 1,
@@ -184,21 +187,31 @@ describe("Unit test for BoarderService.", () => {
         jest.spyOn(BoarderDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        jest.spyOn(BoarderMappingRoleDao, "destroyByBoarderId").mockResolvedValue({
+        jest.spyOn(
+            BoarderMappingRoleDao,
+            "destroyByBoarderId"
+        ).mockResolvedValue({
             affectedRows: 1,
         })
-        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(true as any)
-        return await BoarderService.updateBoarder(payload)
+        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
+            true as any
+        )
+        return await BoarderService.updateBoarder(payload, fakeUser)
     }
     async function whenUpdateBoarderNotFound(payload: any) {
         jest.spyOn(BoarderDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        jest.spyOn(BoarderMappingRoleDao, "destroyByBoarderId").mockResolvedValue({
+        jest.spyOn(
+            BoarderMappingRoleDao,
+            "destroyByBoarderId"
+        ).mockResolvedValue({
             affectedRows: 1,
         })
-        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(true as any)
-        return await BoarderService.updateBoarder(payload)
+        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
+            true as any
+        )
+        return await BoarderService.updateBoarder(payload, fakeUser)
     }
 
     async function whenGetBoarderByIdSucceeded(boarder_id: number) {
@@ -214,22 +227,22 @@ describe("Unit test for BoarderService.", () => {
     }
 
     async function whenDeleteBoarderSucceeded(boarder_id: string) {
-        jest.spyOn(BoarderDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
         jest.spyOn(ProjectDao, "deleteBunkByBoarderId").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        return await BoarderService.deleteBoarder(boarder_id)
+        return await BoarderService.deleteBoarder(boarder_id, fakeUser)
     }
     async function whenDeleteBoarderNotFound(boarder_id: string) {
-        jest.spyOn(BoarderDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
         jest.spyOn(ProjectDao, "deleteBunkByBoarderId").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        return await BoarderService.deleteBoarder(boarder_id)
+        return await BoarderService.deleteBoarder(boarder_id, fakeUser)
     }
 
     function expectGetBoarderRolesFromProjectData() {
@@ -295,7 +308,7 @@ describe("Unit test for BoarderService.", () => {
     }) {
         jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([])
         jest.spyOn(BoarderRoleDao, "create").mockResolvedValue(true as any)
-        return await BoarderService.createBoarderRole(payload)
+        return await BoarderService.createBoarderRole(payload, fakeUser)
     }
     async function whenCreateBoarderRoleRepeated(payload: {
         project_id: number
@@ -305,7 +318,7 @@ describe("Unit test for BoarderService.", () => {
             fakeBoarderRole,
         ])
         jest.spyOn(BoarderRoleDao, "create").mockRejectedValue(true as any)
-        return await BoarderService.createBoarderRole(payload)
+        return await BoarderService.createBoarderRole(payload, fakeUser)
     }
 
     function givenUpdateBoarderRolePayload() {
@@ -318,26 +331,26 @@ describe("Unit test for BoarderService.", () => {
         jest.spyOn(BoarderRoleDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        return await BoarderService.updateBoarderRole(payload)
+        return await BoarderService.updateBoarderRole(payload, fakeUser)
     }
     async function whenUpdateBoarderRoleNotModified(payload: any) {
         jest.spyOn(BoarderRoleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        return await BoarderService.updateBoarderRole(payload)
+        return await BoarderService.updateBoarderRole(payload, fakeUser)
     }
 
     async function whenDeleteBoarderRoleSucceeded(boarder_role_id: number) {
-        jest.spyOn(BoarderRoleDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderRoleDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        return await BoarderService.deleteBoarderRole(boarder_role_id)
+        return await BoarderService.deleteBoarderRole(boarder_role_id, fakeUser)
     }
     async function whenDeleteBoarderRoleNotFound(boarder_role_id: number) {
-        jest.spyOn(BoarderRoleDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderRoleDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        return await BoarderService.deleteBoarderRole(boarder_role_id)
+        return await BoarderService.deleteBoarderRole(boarder_role_id, fakeUser)
     }
 
     function expectGetBoarderStatuesData() {
@@ -387,17 +400,17 @@ describe("Unit test for BoarderService.", () => {
     }
 
     async function whenDeleteBoarderStatusNotFound(id: number) {
-        jest.spyOn(BoarderStatusDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderStatusDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await BoarderService.deleteBoarderStatus(id)
+        const result = await BoarderService.deleteBoarderStatus(id, fakeUser)
         return result
     }
     async function whenDeleteBoarderStatusSucceeded(id: number) {
-        jest.spyOn(BoarderStatusDao, "deleteById").mockResolvedValue({
+        jest.spyOn(BoarderStatusDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await BoarderService.deleteBoarderStatus(id)
+        const result = await BoarderService.deleteBoarderStatus(id, fakeUser)
         return result
     }
 
@@ -408,7 +421,10 @@ describe("Unit test for BoarderService.", () => {
         jest.spyOn(BoarderStatusDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await BoarderService.updateBoarderStatus(payload)
+        const result = await BoarderService.updateBoarderStatus(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenUpdateBoarderStatusSucceed(payload: {
@@ -418,7 +434,10 @@ describe("Unit test for BoarderService.", () => {
         jest.spyOn(BoarderStatusDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await BoarderService.updateBoarderStatus(payload)
+        const result = await BoarderService.updateBoarderStatus(
+            payload,
+            fakeUser
+        )
         return result
     }
 
@@ -427,13 +446,19 @@ describe("Unit test for BoarderService.", () => {
             fakeBoarderStatus,
         ])
         jest.spyOn(BoarderStatusDao, "create").mockResolvedValue(true as any)
-        const result = await BoarderService.createBoarderStatus(payload)
+        const result = await BoarderService.createBoarderStatus(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenCreateBoarderStatusSucceeded(payload: { name: string }) {
         jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([])
         jest.spyOn(BoarderStatusDao, "create").mockResolvedValue(true as any)
-        const result = await BoarderService.createBoarderStatus(payload)
+        const result = await BoarderService.createBoarderStatus(
+            payload,
+            fakeUser
+        )
         return result
     }
 
@@ -558,7 +583,7 @@ describe("Unit test for BoarderService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(BoarderDao.deleteById).toBeCalledTimes(1)
+            expect(BoarderDao.delete).toBeCalledTimes(1)
             expect(ProjectDao.deleteBunkByBoarderId).toBeCalledTimes(1)
         })
 
@@ -678,7 +703,7 @@ describe("Unit test for BoarderService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(BoarderRoleDao.deleteById).toBeCalledTimes(1)
+            expect(BoarderRoleDao.delete).toBeCalledTimes(1)
         })
 
         it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
@@ -802,7 +827,7 @@ describe("Unit test for BoarderService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(BoarderStatusDao.deleteById).toBeCalledTimes(1)
+            expect(BoarderStatusDao.delete).toBeCalledTimes(1)
         })
 
         it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {

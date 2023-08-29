@@ -20,7 +20,7 @@ describe("Unit test for UserService.", () => {
         is_admin: false,
         is_actived: true,
         created_at: new Date(),
-    }
+    } as any
     function givenCreateUserPayload() {
         return {
             email: "abc@gmail.com",
@@ -36,14 +36,14 @@ describe("Unit test for UserService.", () => {
         jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
             true as any
         )
-        return await UserService.createUser(payload)
+        return await UserService.createUser(payload, fakeUser)
     }
 
     async function whenCreateSameEmailUser(payload: any) {
         jest.spyOn(UserDao, "create").mockRejectedValue(
             new Sequelize.UniqueConstraintError({})
         )
-        return await UserService.createUser(payload)
+        return await UserService.createUser(payload, fakeUser)
     }
 
     function givenUpdateUserPayload() {

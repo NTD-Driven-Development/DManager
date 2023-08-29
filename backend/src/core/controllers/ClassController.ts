@@ -3,6 +3,7 @@ import ClassService from "../services/ClassService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import Sequelize from "sequelize"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ClassController {
     public async getClasses(
@@ -26,7 +27,7 @@ export default new (class ClassController {
         next: NextFunction
     ) {
         try {
-            const data = await ClassService.createClass(req.body as any)
+            const data = await ClassService.createClass(req.body as any, req.user as RequestUser)
             next(HttpResponse.success(data, 201))
         } catch (error) {
             next(error)
@@ -39,7 +40,7 @@ export default new (class ClassController {
         next: NextFunction
     ) {
         try {
-            const data = await ClassService.updateClass(req.body as any)
+            const data = await ClassService.updateClass(req.body as any, req.user as RequestUser)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -52,7 +53,7 @@ export default new (class ClassController {
         next: NextFunction
     ) {
         try {
-            const data = await ClassService.deleteClass(req.params.id)
+            const data = await ClassService.deleteClass(req.params.id, req.user as RequestUser)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

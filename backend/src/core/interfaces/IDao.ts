@@ -3,8 +3,8 @@ declare namespace Dao {
         findOneById(id: string | number): Promise<any>
         findAll(): Promise<any[]>
         create(item: any): Promise<any>
-        update(id: string | number, item: any): Promise<IExecuteResult>
-        delete(id: string | number): Promise<IExecuteResult>
+        update(item: any): Promise<IExecuteResult>
+        delete(id: string | number, ...any:any): Promise<IExecuteResult>
     }
 
     interface IExecuteResult {

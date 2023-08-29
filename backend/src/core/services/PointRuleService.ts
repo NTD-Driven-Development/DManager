@@ -5,6 +5,7 @@ import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import PointRuleDao from "../daos/PointRuleDao"
 import { UniqueConstraintError } from "sequelize"
 import { PointRuleModel } from "../../models/PointRule"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class PointRuleService {
     public async getPointRules(query?: {
@@ -16,19 +17,16 @@ export default new (class PointRuleService {
     }
 
     public async createPointRule(
-        PointRule: PointRuleModel
+        payload: PointRuleModel,
+        user: RequestUser
     ): Promise<PointRuleModel> {
         try {
-            const data = await PointRuleDao.findAllByCode(PointRule.code)
-            const hasRepeat = _.filter(
-                data,
-                (item) =>
-                    item.code === PointRule.code && item.id !== PointRule.id
-            )
-            if (hasRepeat.length > 0) {
-                throw new HttpException("代碼重複", 400)
+            await this.ifPointRuleCodeRepeatedThenThrow(payload)
+            const model = {
+                ...payload,
+                created_by: user.id,
             }
-            const result = await PointRuleDao.create(PointRule)
+            const result = await PointRuleDao.create(model)
             return result
         } catch (error: any) {
             if (error instanceof HttpException) {
@@ -38,24 +36,38 @@ export default new (class PointRuleService {
         }
     }
 
-    public async updatePointRule(PointRule: PointRuleModel): Promise<boolean> {
-        const data = await PointRuleDao.findAllByCode(PointRule.code)
+    private async ifPointRuleCodeRepeatedThenThrow(payload: PointRuleModel) {
+        const data = await PointRuleDao.findAllByCode(payload.code)
         const hasRepeat = _.filter(
             data,
-            (item) => item.code === PointRule.code && item.id !== PointRule.id
+            (item) => item.code === payload.code && item.id !== payload.id
         )
         if (hasRepeat.length > 0) {
             throw new HttpException("代碼重複", 400)
         }
-        const result = await PointRuleDao.update(PointRule)
+    }
+
+    public async updatePointRule(
+        payload: PointRuleModel,
+        user: RequestUser
+    ): Promise<boolean> {
+        await this.ifPointRuleCodeRepeatedThenThrow(payload)
+        const model = {
+            ...payload,
+            updated_by: user.id,
+        }
+        const result = await PointRuleDao.update(model)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
         return true
     }
 
-    public async deletePointRule(id: string | number): Promise<boolean> {
-        const result = await PointRuleDao.deleteById(id as number)
+    public async deletePointRule(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await PointRuleDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }

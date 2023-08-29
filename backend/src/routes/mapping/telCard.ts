@@ -7,7 +7,7 @@ import validate from '../../middlewares/validateRequest';
 const router = Router();
 
 
-// router.use(jwtAuth("jwt"));
+router.use(jwtAuth("jwt"));
 router.get('/contacter', TelCardController.getTelCardContacters);
 router.post('/contacter', TelCardController.createTelCardContacter);
 router.put('/contacter', TelCardController.updateTelCardContacter);

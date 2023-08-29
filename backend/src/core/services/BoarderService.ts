@@ -12,6 +12,7 @@ import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 import { BoarderStatusModel } from "../../models/BoarderStatus"
 import UpdateBoarderDto from "../importDtos/boarders/UpdateBoarderDto"
 import BoarderMappingRoleDao from "../daos/BoarderMappingRoleDao"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class BoarderService {
     public async getBoardersFromProject(
@@ -49,18 +50,26 @@ export default new (class BoarderService {
         return result
     }
 
-    public async updateBoarder(boarder: UpdateBoarderDto): Promise<boolean> {
+    public async updateBoarder(
+        payload: UpdateBoarderDto,
+        user: RequestUser
+    ): Promise<boolean> {
         try {
-            const result = await BoarderDao.update(boarder)
+            const model = {
+                ...payload,
+                created_by: user.id,
+            }
+            const result = await BoarderDao.update(model)
             if (result.affectedRows === 0) {
                 throw new HttpException("查無資料", 400)
             }
-            await BoarderMappingRoleDao.destroyByBoarderId(boarder.id)
+            await BoarderMappingRoleDao.destroyByBoarderId(payload.id)
             await BoarderMappingRoleDao.bulkCreate(
-                _.map(boarder.boarder_role_ids, (item) => {
+                _.map(payload.boarder_role_ids, (item) => {
                     return {
-                        boarder_id: boarder.id,
+                        boarder_id: payload.id,
                         boarder_role_id: item,
+                        created_by: user.id,
                     }
                 })
             )
@@ -76,8 +85,11 @@ export default new (class BoarderService {
         }
     }
 
-    public async deleteBoarder(id: string): Promise<boolean> {
-        const result = await BoarderDao.deleteById(id)
+    public async deleteBoarder(
+        id: string,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await BoarderDao.delete(id, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
@@ -103,20 +115,16 @@ export default new (class BoarderService {
     }
 
     public async createBoarderRole(
-        boarderRole: BoarderRoleModel
+        payload: BoarderRoleModel,
+        user: RequestUser
     ): Promise<BoarderRoleModel> {
         try {
-            const data = await BoarderRoleDao.findAll()
-            const hasRepeatData = _.filter(
-                data,
-                (item) =>
-                    item.project_id == boarderRole.project_id &&
-                    item.name == boarderRole.name
-            )
-            if (hasRepeatData.length > 0) {
-                throw new HttpException("資料已重複", 400)
+            await this.ifBoarderRoleNameRepeatedThenThrow(payload)
+            const model = {
+                ...payload,
+                created_by: user.id,
             }
-            const result = await BoarderRoleDao.create(boarderRole)
+            const result = await BoarderRoleDao.create(model)
             return result
         } catch (error: any) {
             if (error instanceof HttpException) {
@@ -126,22 +134,60 @@ export default new (class BoarderService {
         }
     }
 
+    private async ifBoarderRoleNameRepeatedThenThrow(
+        payload: BoarderRoleModel
+    ) {
+        const data = await BoarderRoleDao.findAll()
+        const hasRepeatData = _.filter(
+            data,
+            (item) =>
+                item.name == payload.name &&
+                item.project_id == payload.project_id &&
+                item.id !== payload.id
+        )
+        if (hasRepeatData.length > 0) {
+            throw new HttpException("名稱已存在", 400)
+        }
+    }
+
     public async updateBoarderRole(
-        boarderRole: BoarderRoleModel
+        payload: BoarderRoleModel,
+        user: RequestUser
     ): Promise<boolean> {
-        const result = await BoarderRoleDao.update(boarderRole)
+        await this.ifBoarderRoleNameRepeatedThenThrow(payload)
+        const model = {
+            ...payload,
+            updated_by: user.id,
+        }
+        const result = await BoarderRoleDao.update(model)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
         return true
     }
 
-    public async deleteBoarderRole(id: string | number): Promise<boolean> {
-        const result = await BoarderRoleDao.deleteById(id as number)
+    public async deleteBoarderRole(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await BoarderRoleDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
         return true
+    }
+
+    private async ifBoarderStatusNameRepeatedThenThrow(
+        payload: BoarderStatusModel
+    ) {
+        const data = await BoarderStatusDao.findAll()
+        const hasRepeatData = _.filter(
+            data,
+            (item) => item?.name == payload?.name && item?.id !== payload?.id
+        )
+        if (hasRepeatData.length > 0) {
+            throw new HttpException("名稱已存在", 400)
+        }
     }
 
     public async getBoarderStatuses(query?: {
@@ -152,19 +198,27 @@ export default new (class BoarderService {
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 
+    public async getBoarderStatusById(
+        id: string | number
+    ): Promise<BoarderStatusModel> {
+        const result = await BoarderStatusDao.findOneById(id as number)
+        if (!result) {
+            throw new HttpException("查無資料", 400)
+        }
+        return result
+    }
+
     public async createBoarderStatus(
-        boarderStatus: BoarderStatusModel
+        payload: BoarderStatusModel,
+        user: RequestUser
     ): Promise<BoarderStatusModel> {
         try {
-            const data = await BoarderStatusDao.findAll()
-            const hasRepeatData = _.filter(
-                data,
-                (item) => item?.name == boarderStatus?.name
-            )
-            if (hasRepeatData.length > 0) {
-                throw new HttpException("資料已重複", 400)
+            await this.ifBoarderStatusNameRepeatedThenThrow(payload)
+            const model = {
+                ...payload,
+                created_by: user.id,
             }
-            const result = await BoarderStatusDao.create(boarderStatus)
+            const result = await BoarderStatusDao.create(model)
             return result
         } catch (error: any) {
             if (error instanceof HttpException) {
@@ -175,17 +229,26 @@ export default new (class BoarderService {
     }
 
     public async updateBoarderStatus(
-        boarderStatus: BoarderStatusModel
+        payload: BoarderStatusModel,
+        user: RequestUser
     ): Promise<boolean> {
-        const result = await BoarderStatusDao.update(boarderStatus)
+        await this.ifBoarderStatusNameRepeatedThenThrow(payload)
+        const model = {
+            ...payload,
+            updated_by: user.id,
+        }
+        const result = await BoarderStatusDao.update(model)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
         return true
     }
 
-    public async deleteBoarderStatus(id: string | number): Promise<boolean> {
-        const result = await BoarderStatusDao.deleteById(id as number)
+    public async deleteBoarderStatus(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await BoarderStatusDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }
