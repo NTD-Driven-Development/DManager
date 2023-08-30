@@ -1,5 +1,6 @@
 import TelCardService from "../../src/core/services/TelCardService"
 import TelCardContacterDao from "../../src/core/daos/TelCardContacterDao"
+import TelCardLogDao from "../../src/core/daos/TelCardLogDao"
 import Sequelize, { UniqueConstraintError } from "sequelize"
 
 describe("Unit test for TelCardService.", () => {
@@ -12,6 +13,14 @@ describe("Unit test for TelCardService.", () => {
     const fakeTelCardContacter = {
         id: 1,
         name: "E2eTest",
+    }
+    const fakeTelCardLog = {
+        id: 1,
+        boarder_id: "1",
+        tel_card_contacter_id: 1,
+        project_id: 1,
+        remark: "E2eTest123",
+        created_by: 1,
     }
 
     async function whenGetTelCardContacteredWithPaginatationSucceeded(
@@ -42,7 +51,10 @@ describe("Unit test for TelCardService.", () => {
             fakeTelCardContacter,
         ])
         jest.spyOn(TelCardContacterDao, "create").mockResolvedValue(true as any)
-        const result = await TelCardService.createTelCardContacter(payload, fakeUser)
+        const result = await TelCardService.createTelCardContacter(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenCreateTelCardContacterSucceeded(payload: {
@@ -50,7 +62,10 @@ describe("Unit test for TelCardService.", () => {
     }) {
         jest.spyOn(TelCardContacterDao, "findAllByName").mockResolvedValue([])
         jest.spyOn(TelCardContacterDao, "create").mockResolvedValue(true as any)
-        const result = await TelCardService.createTelCardContacter(payload, fakeUser)
+        const result = await TelCardService.createTelCardContacter(
+            payload,
+            fakeUser
+        )
         return result
     }
 
@@ -59,15 +74,23 @@ describe("Unit test for TelCardService.", () => {
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
+        const result = await TelCardService.updateTelCardContacter(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenUpdateTelCardContacterRepeated(payload: any) {
-        jest.spyOn(TelCardContacterDao, "findAllByName").mockResolvedValue([fakeTelCardContacter])
+        jest.spyOn(TelCardContacterDao, "findAllByName").mockResolvedValue([
+            fakeTelCardContacter,
+        ])
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
+        const result = await TelCardService.updateTelCardContacter(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenUpdateTelCardContacterSucceeded(payload: any) {
@@ -75,7 +98,10 @@ describe("Unit test for TelCardService.", () => {
         jest.spyOn(TelCardContacterDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await TelCardService.updateTelCardContacter(payload, fakeUser)
+        const result = await TelCardService.updateTelCardContacter(
+            payload,
+            fakeUser
+        )
         return result
     }
     async function whenDeleteTelCardContacterNotFound(id: number) {
@@ -90,6 +116,89 @@ describe("Unit test for TelCardService.", () => {
             affectedRows: 1,
         } as any)
         const result = await TelCardService.deleteTelCardContacter(id, fakeUser)
+        return result
+    }
+
+    async function whenGetTelCardLogsFilterProject(payload: {
+        project_id: number
+        offset: number
+        limit: number
+    }) {
+        jest.spyOn(TelCardLogDao, "findAll").mockResolvedValue([
+            {
+                id: 1,
+                project_id: 1,
+                boarder_id: "1",
+                tel_card_contacter_id: 1,
+            },
+            {
+                id: 2,
+                project_id: 2,
+                boarder_id: "2",
+                tel_card_contacter_id: 1,
+            },
+            {
+                id: 3,
+                project_id: 2,
+                boarder_id: "3",
+                tel_card_contacter_id: 1,
+            },
+            {
+                id: 4,
+                project_id: 3,
+                boarder_id: "4",
+                tel_card_contacter_id: 2,
+            },
+        ])
+        const result = await TelCardService.getTelCardLogs(payload)
+        return result
+    }
+    async function whenGetTelCardLogsWithPaginatationSucceeded(
+        fakeTelCardLog: {
+            id: number
+            boarder_id: string
+            tel_card_contacter_id: number
+            project_id: number
+            remark: string
+            created_by: number
+        },
+        payload: { offset: number; limit: number }
+    ) {
+        jest.spyOn(TelCardLogDao, "findAll").mockResolvedValue([
+            fakeTelCardLog,
+            fakeTelCardLog,
+            fakeTelCardLog,
+            fakeTelCardLog,
+        ])
+        const result = await TelCardService.getTelCardLogs(payload)
+        return result
+    }
+
+    async function whenDeleteTelCardNotFound(id: number, fakeUser: any) {
+        jest.spyOn(TelCardLogDao, "delete").mockResolvedValue({
+            affectedRows: 0,
+        } as any)
+        const result = await TelCardService.deleteTelCardLog(id, fakeUser)
+        return result
+    }
+    async function whenDeleteTelCardLogSucceeded(id: number, fakeUser: any) {
+        jest.spyOn(TelCardLogDao, "delete").mockResolvedValue({
+            affectedRows: 1,
+        } as any)
+        const result = await TelCardService.deleteTelCardLog(id, fakeUser)
+        return result
+    }
+
+    async function whenCreateTelCardLogSucceeded(
+        payload: {
+            boarder_id: string
+            tel_card_contacter_id: number
+            project_id: number
+        },
+        fakeUser: any
+    ) {
+        jest.spyOn(TelCardLogDao, "create").mockResolvedValue(true as any)
+        const result = await TelCardService.createTelCardLog(payload, fakeUser)
         return result
     }
 
@@ -235,6 +344,117 @@ describe("Unit test for TelCardService.", () => {
 
             // when
             const result = whenDeleteTelCardContacterNotFound(id)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("取得電話卡紀錄列表", () => {
+        it("呼叫 DAO 與分頁邏輯", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 2,
+            }
+
+            // when
+            const result = await whenGetTelCardLogsWithPaginatationSucceeded(
+                fakeTelCardLog,
+                payload
+            )
+
+            // then
+            expect(result).toEqual({
+                total: 4,
+                from: 1,
+                to: 2,
+                current_page: 1,
+                last_page: 2,
+                per_page: 2,
+                items: [fakeTelCardLog, fakeTelCardLog],
+            })
+            expect(TelCardLogDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("項目篩選", async () => {
+            // given
+            const payload = {
+                project_id: 2,
+                offset: 1,
+                limit: 2,
+            }
+
+            // when
+            const result = await whenGetTelCardLogsFilterProject(payload)
+
+            // then
+            expect(result).toEqual({
+                total: 2,
+                from: 1,
+                to: 2,
+                current_page: 1,
+                last_page: 1,
+                per_page: 2,
+                items: [
+                    {
+                        id: 2,
+                        project_id: 2,
+                        boarder_id: "2",
+                        tel_card_contacter_id: 1,
+                    },
+                    {
+                        id: 3,
+                        project_id: 2,
+                        boarder_id: "3",
+                        tel_card_contacter_id: 1,
+                    },
+                ],
+            })
+            expect(TelCardLogDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("建立住宿生電話卡紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const payload = {
+                boarder_id: "1",
+                tel_card_contacter_id: 1,
+                project_id: 1,
+            }
+            // when
+            const result = await whenCreateTelCardLogSucceeded(
+                payload,
+                fakeUser
+            )
+            // then
+            expect(result).toEqual(true)
+            expect(TelCardLogDao.create).toBeCalledTimes(1)
+        })
+    })
+
+    describe("刪除住宿生電話卡紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const id = 1
+
+            // when
+            const result = await whenDeleteTelCardLogSucceeded(id, fakeUser)
+
+            // then
+            expect(result).toEqual(true)
+            expect(TelCardLogDao.delete).toBeCalledTimes(1)
+        })
+
+        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+
+            // when
+            const result = whenDeleteTelCardNotFound(id, fakeUser)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)

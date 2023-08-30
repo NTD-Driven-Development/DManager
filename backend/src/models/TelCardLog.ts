@@ -33,6 +33,18 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            TelCardLog.belongsTo(models.boarder, {
+                foreignKey: "boarder_id",
+                as: "boarder",
+            })
+            TelCardLog.belongsTo(models.project, {
+                foreignKey: "project_id",
+                as: "project",
+            })
+            TelCardLog.belongsTo(models.tel_card_contacter, {
+                foreignKey: "tel_card_contacter_id",
+                as: "tel_card_contacter",
+            })
             TelCardLog.belongsTo(models.user, {
                 foreignKey: "created_by",
                 as: "creator",

@@ -2,6 +2,7 @@
 import moment from "moment"
 import { Model } from "sequelize"
 import { UserModel } from "./User"
+import { ProjectModel } from "./Project"
 
 export interface BoarderModel {
     id: string
@@ -24,6 +25,7 @@ export interface BoarderModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    project?: ProjectModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

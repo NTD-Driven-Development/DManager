@@ -3,9 +3,11 @@ import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import TelCardContacterDao from "../daos/TelCardContacterDao"
+import TelCardLogDao from "../daos/TelCardLogDao"
 import { UniqueConstraintError } from "sequelize"
 import { TelCardContacterModel } from "../../models/TelCardContacter"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import { TelCardLogModel } from "../../models/TelCardLog"
 
 export default new (class TelCardService {
     public async getTelCardContacters(query?: {
@@ -85,6 +87,46 @@ export default new (class TelCardService {
         user: RequestUser
     ): Promise<boolean> {
         const result = await TelCardContacterDao.delete(id as number, user.id)
+        if (result.affectedRows === 0) {
+            throw new HttpException("查無資料", 400)
+        }
+        return true
+    }
+
+    public async getTelCardLogs(query?: {
+        offset: number
+        limit: number
+        project_id?: number
+    }): Promise<IPaginationResultDto<TelCardLogModel>> {
+        const data = await TelCardLogDao.findAll()
+        if (!query?.project_id) {
+            return withPagination(data.length, data, query?.offset, query?.limit)
+        }
+
+        const result = _.filter(
+            data,
+            (item) => item.project_id == query?.project_id
+        )
+        return withPagination(result.length, result, query?.offset, query?.limit)
+    }
+
+    public async createTelCardLog(
+        payload: TelCardLogModel,
+        user: RequestUser
+    ): Promise<TelCardLogModel> {
+        const model = {
+            ...payload,
+            created_by: user.id,
+        }
+        const result = await TelCardLogDao.create(model)
+        return result
+    }
+
+    public async deleteTelCardLog(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await TelCardLogDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }

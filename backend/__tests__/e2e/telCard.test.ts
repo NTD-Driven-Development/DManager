@@ -3,6 +3,7 @@ import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
 import TelCardContacterDao from "../../src/core/daos/TelCardContacterDao"
+import TelCardLogDao from "../../src/core/daos/TelCardLogDao"
 
 describe("Acceptance test for TelCardController.", () => {
     describe("取得電話卡聯絡人列表", () => {
@@ -129,6 +130,111 @@ describe("Acceptance test for TelCardController.", () => {
             await Db.tel_card_contacter.destroy({
                 where: {
                     id: testTelCardContacter?.id,
+                },
+            })
+        })
+    })
+
+    describe("取得住宿生電話卡紀錄，能夠建立及刪除", () => {
+        let testProject: any
+        let testBoarder: any
+        let testTelCardContacter: any
+        let testTelCardLog: any
+
+        beforeAll(async () => {
+            testProject = await Db.project.create({
+                name: "E2eTest",
+                remark: "E2eTest",
+            })
+            testBoarder = await Db.boarder.create({
+                id: "E2eTest",
+                project_id: testProject.id,
+                name: "E2eTest",
+                boarder_status_id: 1,
+            })
+            testTelCardContacter = await Db.tel_card_contacter.create({
+                name: "E2eTest",
+            })
+            await Db.tel_card_log.create({
+                boarder_id: testBoarder.id,
+                project_id: testProject.id,
+                tel_card_contacter_id: testTelCardContacter.id,
+                remark: "E2eTest123",
+                created_by: mockUser.id,
+            })
+            await Db.tel_card_log.create({
+                boarder_id: testBoarder.id,
+                project_id: testProject.id,
+                tel_card_contacter_id: testTelCardContacter.id,
+                remark: "E2eTest123",
+                created_by: mockUser.id,
+            })
+        })
+
+        it("取得住宿生電話卡紀錄，並且有分頁", async () => {
+            // given
+            const payload = {
+                project_id: testProject.id,
+                offset: 1,
+                limit: 1,
+            }
+            // when
+            const res = await App.get("/api/telCards/log").query(payload)
+            // then
+            expect(res.status).toBe(200)
+            expect(res.body?.data?.items?.length).toBeLessThanOrEqual(1)
+        })
+
+        it("建立住宿生電話卡紀錄", async () => {
+            // given
+            const payload = {
+                project_id: testProject.id,
+                boarder_id: testBoarder.id,
+                tel_card_contacter_id: testTelCardContacter.id,
+                remark: "E2eTest123",
+            }
+            // when
+            const res = await App.post("/api/telCards/log").send(payload)
+            // then
+            testTelCardLog = res.body?.data
+            expect(res.status).toBe(201)
+            expect(testTelCardLog?.project_id).toBe(payload.project_id)
+            expect(testTelCardLog?.boarder_id).toBe(payload.boarder_id)
+            expect(testTelCardLog?.tel_card_contacter_id).toBe(payload.tel_card_contacter_id)
+            expect(testTelCardLog?.remark).toBe(payload.remark)
+            expect(testTelCardLog?.created_by).toBe(mockUser.id)
+        })
+
+        it("刪除住宿生電話卡紀錄", async () => {
+            // given
+            const id = testTelCardLog?.id
+            // when
+            const res = await App.delete(`/api/telCards/log/${id}`)
+            // then
+            expect(res.status).toBe(200)
+            const result = await TelCardLogDao.findOneById(id)
+            expect(result).toBeNull()
+        })
+
+        afterAll(async () => {
+            await Db.tel_card_log.destroy({
+                where: {
+                    project_id: testProject.id,
+                },
+            })
+            await Db.tel_card_contacter.destroy({
+                where: {
+                    id: testTelCardContacter.id,
+                },
+            })
+            await Db.boarder.destroy({
+                where: {
+                    id: testBoarder.id,
+                },
+            })
+            await Db.project.destroy({
+                where: {
+                    id: testProject.id,
                 },
             })
         })

@@ -85,7 +85,6 @@ export default new (class PointRuleController {
             const data = await PointRuleService.getPointLogs(req.query as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

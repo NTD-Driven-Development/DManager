@@ -27,7 +27,9 @@ export default new (class TelCardController {
         next: NextFunction
     ) {
         try {
-            const data = await TelCardService.getTelCardContacterById(req.params.id)
+            const data = await TelCardService.getTelCardContacterById(
+                req.params.id
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -40,7 +42,10 @@ export default new (class TelCardController {
         next: NextFunction
     ) {
         try {
-            const data = await TelCardService.createTelCardContacter(req.body as any, req.user as RequestUser)
+            const data = await TelCardService.createTelCardContacter(
+                req.body as any,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 201))
         } catch (error) {
             next(error)
@@ -53,7 +58,10 @@ export default new (class TelCardController {
         next: NextFunction
     ) {
         try {
-            const data = await TelCardService.updateTelCardContacter(req.body as any, req.user as RequestUser)
+            const data = await TelCardService.updateTelCardContacter(
+                req.body as any,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -66,7 +74,55 @@ export default new (class TelCardController {
         next: NextFunction
     ) {
         try {
-            const data = await TelCardService.deleteTelCardContacter(req.params.id, req.user as RequestUser)
+            const data = await TelCardService.deleteTelCardContacter(
+                req.params.id,
+                req.user as RequestUser
+            )
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getTelCardLogs(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await TelCardService.getTelCardLogs(req.query as any)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async createTelCardLog(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await TelCardService.createTelCardLog(
+                req.body as any,
+                req.user as RequestUser
+            )
+            next(HttpResponse.success(data, 201))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async deleteTelCardLog(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await TelCardService.deleteTelCardLog(
+                req.params.id,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

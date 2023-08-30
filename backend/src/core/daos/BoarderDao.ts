@@ -103,6 +103,12 @@ export default new (class BoarderDao extends BaseDao {
                     as: "updater",
                     required: false,
                 },
+                {
+                    model: Db.project,
+                    attributes: ["id", "name"],
+                    as: "project",
+                    required: false,
+                }
             ],
             where: { id: id, deleted_at: null },
         })

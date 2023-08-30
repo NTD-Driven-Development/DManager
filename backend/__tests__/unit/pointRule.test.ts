@@ -41,6 +41,26 @@ describe("Unit test for PointRuleService.", () => {
         return result
     }
 
+    async function whenGetPointRuleByIdNotFound(id: number) {
+        jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(null as any)
+        const result = await PointRuleService.getPointRuleById(id)
+        return result
+    }
+    async function whenGetPointRuleByIdSucceeded(
+        fakePointRule: {
+            id: number
+            code: string
+            reason: string
+            point: number
+            is_actived: boolean
+        },
+        id: number
+    ) {
+        jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(fakePointRule)
+        const result = await PointRuleService.getPointRuleById(id)
+        return result
+    }
+
     async function whenCreatePointRuleRepeated(payload: any) {
         jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([
             fakePointRule,
@@ -142,6 +162,19 @@ describe("Unit test for PointRuleService.", () => {
             },
         ])
         const result = await PointRuleService.getPointLogs(payload)
+        return result
+    }
+
+    async function whenCreatePointLogSucceeded(
+        payload: {
+            boarder_id: string
+            point_rule_id: number
+            project_id: number
+        },
+        fakeUser: any
+    ) {
+        jest.spyOn(PointLogDao, "create").mockResolvedValue(true as any)
+        const result = await PointRuleService.createPointLog(payload, fakeUser)
         return result
     }
 
@@ -391,11 +424,7 @@ describe("Unit test for PointRuleService.", () => {
                 project_id: 1,
             }
             // when
-            jest.spyOn(PointLogDao, "create").mockResolvedValue(true as any)
-            const result = await PointRuleService.createPointLog(
-                payload,
-                fakeUser
-            )
+            const result = await whenCreatePointLogSucceeded(payload, fakeUser)
             // then
             expect(result).toEqual(true)
             expect(PointLogDao.create).toBeCalledTimes(1)
@@ -435,8 +464,10 @@ describe("Unit test for PointRuleService.", () => {
             const id = 1
 
             // when
-            jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(fakePointRule)
-            const result = await PointRuleService.getPointRuleById(id)
+            const result = await whenGetPointRuleByIdSucceeded(
+                fakePointRule,
+                id
+            )
 
             // then
             expect(result).toEqual(fakePointRule)
@@ -449,8 +480,7 @@ describe("Unit test for PointRuleService.", () => {
             const id = 1
 
             // when
-            jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(null as any)
-            const result = PointRuleService.getPointRuleById(id)
+            const result = whenGetPointRuleByIdNotFound(id)
 
             // then
             await expect(result).rejects.toThrow(errorMessage)
@@ -458,5 +488,3 @@ describe("Unit test for PointRuleService.", () => {
         })
     })
 })
-
-
