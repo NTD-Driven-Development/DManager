@@ -14,8 +14,6 @@ router.get('', ProjectController.getAllProjectsData);
 router.get('/:id', ProjectController.getProjectDataById);
 // 匯入該項目住宿生 & 床位對應資訊
 router.post('/import', [], ProjectController.importBoardersData);
-// 建立床位
-router.post('/:id/bunks', [], ProjectController.createProjectBunk);
 // 交換床位
 router.post('/:id/swapBunk', [], ProjectController.swapBunk);
 // 建立項目

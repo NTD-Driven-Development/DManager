@@ -50,28 +50,6 @@ export default new (class ProjectController {
         }
     }
 
-    public async createProjectBunk(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-        try {
-            await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const project_id = req.params.id
-                const data = await ProjectService.createProjectBunk(
-                    project_id,
-                    req.body,
-                    req.user as RequestUser
-                )
-                t.afterCommit(() => {
-                    next(HttpResponse.success(data, 201))
-                })
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-
     public async updateProject(
         req: Request,
         res: Response,

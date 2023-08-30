@@ -359,64 +359,6 @@ describe("Unit test for ProjectService.", () => {
         return await ProjectService.getProjectDataById(id)
     }
 
-    function givenCreateProjectBunkPayload() {
-        return {
-            floor: "9",
-            room_type: "E",
-            room_no: "7",
-            bed: "6",
-            remark: "",
-            name: "測試人物",
-            sid: "1999999999",
-            class_id: 66,
-            boarder_status_id: 1,
-            boarder_role_ids: [1],
-        }
-    }
-    async function whenCreateProjectBunk(project_id: number, payload: any) {
-        jest.spyOn(uuid, "v4").mockReturnValue("123456")
-        jest.spyOn(ProjectDao, "createProjectBunk").mockResolvedValue({
-            id: 1,
-        } as any as Promise<any>)
-        jest.spyOn(BoarderDao, "create").mockResolvedValue({
-            id: 1,
-        } as any as Promise<any>)
-        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue([
-            {
-                id: 1,
-            },
-        ] as any as Promise<any>)
-        return await ProjectService.createProjectBunk(project_id, payload, fakeUser)
-    }
-    async function whenCreateProjectBunkNotFoundProject(payload: any) {
-        jest.spyOn(uuid, "v4").mockReturnValue("123456")
-        jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
-        )
-        jest.spyOn(BoarderDao, "create").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
-        )
-        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
-            true as any as Promise<any>
-        )
-
-        return await ProjectService.createProjectBunk(1, payload, fakeUser)
-    }
-    async function whenCreateProjectBunkRepeat(payload: any) {
-        jest.spyOn(uuid, "v4").mockReturnValue("123456")
-        jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
-            new Sequelize.UniqueConstraintError({})
-        )
-        jest.spyOn(BoarderDao, "create").mockResolvedValue(
-            true as any as Promise<any>
-        )
-        jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
-            true as any as Promise<any>
-        )
-
-        return await ProjectService.createProjectBunk(1, payload, fakeUser)
-    }
-
     function givenswapBunkPayload() {
         return {
             origin_bunk_id: 1,
@@ -596,72 +538,7 @@ describe("Unit test for ProjectService.", () => {
         })
     })
 
-    describe("建立床位", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const project_id = 1
-            const payload = givenCreateProjectBunkPayload()
-
-            // when
-            const createdResult = await whenCreateProjectBunk(
-                project_id,
-                payload
-            )
-
-            // then
-            expect(createdResult).toBe(true)
-            expect(BoarderDao.create).toBeCalledWith({
-                name: payload.name,
-                project_id: project_id,
-                class_id: payload.class_id,
-                sid: payload.sid,
-                boarder_status_id: payload.boarder_status_id,
-                remark: payload.remark,
-                id: uuid.v4(),
-            })
-            expect(BoarderMappingRoleDao.bulkCreate).toBeCalledWith([
-                {
-                    boarder_id: 1,
-                    boarder_role_id: payload.boarder_role_ids[0],
-                },
-            ])
-            expect(ProjectDao.createProjectBunk).toBeCalledWith({
-                boarder_id: 1,
-                project_id: project_id,
-                floor: payload.floor,
-                room_type: payload.room_type,
-                room_no: payload.room_no,
-                bed: payload.bed,
-                remark: payload.remark,
-            })
-        })
-
-        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "此項目不存在"
-            const payload = givenCreateProjectBunkPayload()
-
-            // when
-            const result = whenCreateProjectBunkNotFoundProject(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-
-        it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "建立失敗，此床位已存在"
-            const payload = givenCreateProjectBunkPayload()
-
-            // when
-            const result = whenCreateProjectBunkRepeat(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
+    
 
     describe("交換床位", () => {
         it("確實呼叫 DAO", async () => {

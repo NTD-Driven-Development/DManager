@@ -16,7 +16,7 @@ router.get('/boarderRoles', ShareController.getBoarderRoles);
 // 取得電話卡聯絡人
 router.get('/telCardContacters', ShareController.getTelCardContacters);
 // 取得加扣點規則
-router.get('/pointRules', ShareController.getPointRules);
+router.get('/points', ShareController.getPointRules);
 // 取得項目
 router.get('/projects', ShareController.getProjects);
 // 取得某項目住宿生

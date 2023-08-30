@@ -22,7 +22,7 @@ router.use('/boarders', boarderRouters);
 router.use('/boarderRoles', boarderRoleRouters);
 router.use('/boarderStatuses', boarderStatusRouters);
 router.use('/classes', classRouters);
-router.use('/pointRules', pointRuleRouters);
+router.use('/points', pointRuleRouters);
 router.use('/telCards', telCardRouters);
 
 export default router;

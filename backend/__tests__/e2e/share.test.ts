@@ -92,7 +92,7 @@ describe("Acceptance test for ShareController.", () => {
     })
 
     it("取得加扣點規則清單", async () => {
-        const response = await App.get("/api/share/pointRules")
+        const response = await App.get("/api/share/points")
         const testData = _.find(response.body?.data, { id: testPointRuleId })
 
         expect(response.status).toBe(200)

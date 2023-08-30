@@ -1,9 +1,9 @@
-import PointRuleService from "../../src/core/services/PointRuleService"
+import PointService from "../../src/core/services/PointService"
 import PointRuleDao from "../../src/core/daos/PointRuleDao"
 import Sequelize, { UniqueConstraintError } from "sequelize"
 import PointLogDao from "../../src/core/daos/PointLogDao"
 
-describe("Unit test for PointRuleService.", () => {
+describe("Unit test for PointService.", () => {
     afterEach(() => {
         jest.clearAllMocks()
     })
@@ -31,19 +31,19 @@ describe("Unit test for PointRuleService.", () => {
             fakePointRule,
             fakePointRule,
         ])
-        const result = await PointRuleService.getPointRules(payload)
+        const result = await PointService.getPointRules(payload)
         return result
     }
 
     async function whenGetPointRulesSucceeded() {
         jest.spyOn(PointRuleDao, "findAll").mockResolvedValue([fakePointRule])
-        const result = await PointRuleService.getPointRules()
+        const result = await PointService.getPointRules()
         return result
     }
 
     async function whenGetPointRuleByIdNotFound(id: number) {
         jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(null as any)
-        const result = await PointRuleService.getPointRuleById(id)
+        const result = await PointService.getPointRuleById(id)
         return result
     }
     async function whenGetPointRuleByIdSucceeded(
@@ -57,7 +57,7 @@ describe("Unit test for PointRuleService.", () => {
         id: number
     ) {
         jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(fakePointRule)
-        const result = await PointRuleService.getPointRuleById(id)
+        const result = await PointService.getPointRuleById(id)
         return result
     }
 
@@ -66,13 +66,13 @@ describe("Unit test for PointRuleService.", () => {
             fakePointRule,
         ])
         jest.spyOn(PointRuleDao, "create").mockResolvedValue(true as any)
-        const result = await PointRuleService.createPointRule(payload, fakeUser)
+        const result = await PointService.createPointRule(payload, fakeUser)
         return result
     }
     async function whenCreatePointRuleSucceeded(payload: any) {
         jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([] as any)
         jest.spyOn(PointRuleDao, "create").mockResolvedValue(true as any)
-        const result = await PointRuleService.createPointRule(payload, fakeUser)
+        const result = await PointService.createPointRule(payload, fakeUser)
         return result
     }
 
@@ -81,7 +81,7 @@ describe("Unit test for PointRuleService.", () => {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload, fakeUser)
+        const result = await PointService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenUpdatePointRuleRepeat(payload: any) {
@@ -91,28 +91,28 @@ describe("Unit test for PointRuleService.", () => {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload, fakeUser)
+        const result = await PointService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenUpdatePointRuleSucceeded(payload: any) {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload, fakeUser)
+        const result = await PointService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenDeletePointRuleNotFound(id: number) {
         jest.spyOn(PointRuleDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.deletePointRule(id, fakeUser)
+        const result = await PointService.deletePointRule(id, fakeUser)
         return result
     }
     async function whenDeletePointRuleSucceeded(id: number) {
         jest.spyOn(PointRuleDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await PointRuleService.deletePointRule(id, fakeUser)
+        const result = await PointService.deletePointRule(id, fakeUser)
         return result
     }
 
@@ -127,7 +127,7 @@ describe("Unit test for PointRuleService.", () => {
             fakePointLog,
             fakePointLog,
         ])
-        const result = await PointRuleService.getPointLogs(payload)
+        const result = await PointService.getPointLogs(payload)
         return result
     }
     async function whenGetPointLogsWithFilterProject(payload: {
@@ -161,7 +161,7 @@ describe("Unit test for PointRuleService.", () => {
                 point_rule_id: 2,
             },
         ])
-        const result = await PointRuleService.getPointLogs(payload)
+        const result = await PointService.getPointLogs(payload)
         return result
     }
 
@@ -174,7 +174,7 @@ describe("Unit test for PointRuleService.", () => {
         fakeUser: any
     ) {
         jest.spyOn(PointLogDao, "create").mockResolvedValue(true as any)
-        const result = await PointRuleService.createPointLog(payload, fakeUser)
+        const result = await PointService.createPointLog(payload, fakeUser)
         return result
     }
 
@@ -182,14 +182,14 @@ describe("Unit test for PointRuleService.", () => {
         jest.spyOn(PointLogDao, "delete").mockResolvedValue({
             affectedRows: 1,
         })
-        const result = await PointRuleService.deletePointLog(id, fakeUser)
+        const result = await PointService.deletePointLog(id, fakeUser)
         return result
     }
     async function whenDeletePointLogNotFound(id: number, fakeUser: any) {
         jest.spyOn(PointLogDao, "delete").mockResolvedValue({
             affectedRows: 0,
         })
-        const result = await PointRuleService.deletePointLog(id, fakeUser)
+        const result = await PointService.deletePointLog(id, fakeUser)
         return result
     }
 

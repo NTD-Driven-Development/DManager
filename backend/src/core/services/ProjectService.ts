@@ -16,7 +16,6 @@ import { ClassModel } from "../../models/Class"
 import { ProjectBunkModel } from "../../models/ProjectBunk"
 import FindOneProjectResultDto from "../exportDtos/project/FindOneProjectResultDto"
 import PaginationResultDto from "../exportDtos/PaginationResultDto"
-import CreateProjectBunkDto from "../importDtos/projects/CreateProjectBunkDto"
 import { withPagination } from "../../utils/pagination"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
@@ -218,85 +217,6 @@ export default new (class ProjectService {
         } catch (error: any) {
             if (error instanceof Sequelize.ForeignKeyConstraintError) {
                 throw new HttpException("此項目不存在", 400)
-            }
-            throw new HttpException(error.message, 500)
-        }
-    }
-
-    private convertCreateProjectBunkDtoToBoarderModel(
-        data: CreateProjectBunkDto,
-        project_id: number,
-        created_by: number
-    ): BoarderModel {
-        return {
-            id: v4(),
-            name: data.name,
-            project_id: project_id,
-            class_id: data?.class_id,
-            sid: data?.sid,
-            boarder_status_id: data.boarder_status_id,
-            remark: data?.remark,
-            created_by: created_by,
-        } as BoarderModel
-    }
-
-    private convertCreateProjectBunkDtoToProjectBunkModel(
-        project_id: number,
-        boarder_id: string,
-        data: CreateProjectBunkDto,
-        created_by: number
-    ): ProjectBunkModel {
-        return {
-            project_id: project_id,
-            boarder_id: boarder_id,
-            floor: data.floor,
-            room_type: data.room_type,
-            room_no: data.room_no,
-            bed: data.bed,
-            remark: data.remark,
-            created_by: created_by,
-        } as ProjectBunkModel
-    }
-
-    public async createProjectBunk(
-        project_id: number | string,
-        payload: CreateProjectBunkDto,
-        user: RequestUser
-    ): Promise<any> {
-        try {
-            const boarderData: BoarderModel =
-                this.convertCreateProjectBunkDtoToBoarderModel(
-                    payload,
-                    project_id as number,
-                    user.id
-                )
-            const boarder: BoarderModel = await BoarderDao.create(boarderData)
-
-            if (!_.isEmpty(payload.boarder_role_ids)) {
-                const boarderMap: BoarderMappingRoleModel[] =
-                    this.convertImportDtoToBoarderMapRoleModel(
-                        boarder.id,
-                        payload.boarder_role_ids as number[],
-                        user.id
-                    )
-                await BoarderMappingRoleDao.bulkCreate(boarderMap)
-            }
-            const projectBunk: ProjectBunkModel =
-                this.convertCreateProjectBunkDtoToProjectBunkModel(
-                    project_id as number,
-                    boarder.id,
-                    payload,
-                    user.id
-                )
-
-            await ProjectDao.createProjectBunk(projectBunk)
-            return true
-        } catch (error: any) {
-            if (error instanceof Sequelize.ForeignKeyConstraintError) {
-                throw new HttpException("此項目不存在", 400)
-            }
-            if (error instanceof Sequelize.UniqueConstraintError) {
-                throw new HttpException("建立失敗，此床位已存在", 400)
             }
             throw new HttpException(error.message, 500)
         }

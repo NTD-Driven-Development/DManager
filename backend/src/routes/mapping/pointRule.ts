@@ -1,5 +1,5 @@
 import { Express, Request, Response, Router } from "express"
-import PointRuleController from "../../core/controllers/PointRuleController"
+import PointController from "../../core/controllers/PointController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
 
@@ -7,20 +7,20 @@ const router = Router()
 
 router.use(jwtAuth("jwt"));
 // 取得加扣點紀錄
-router.get("/log", PointRuleController.getPointLogs)
+router.get("/log", PointController.getPointLogs)
 // 新增加扣點紀錄
-router.post("/log", PointRuleController.createPointLog)
+router.post("/log", PointController.createPointLog)
 // 刪除加扣點紀錄
-router.delete("/log/:id", PointRuleController.deletePointLog)
+router.delete("/log/:id", PointController.deletePointLog)
 // 取得加扣點規則
-router.get("", PointRuleController.getPointRules)
+router.get("/rule", PointController.getPointRules)
 // 取得單筆加扣點規則
-router.get("/:id", PointRuleController.getPointRuleById)
+router.get("/rule/:id", PointController.getPointRuleById)
 // 新增加扣點規則
-router.post("", PointRuleController.createPointRule)
+router.post("/rule", PointController.createPointRule)
 // 修改加扣點規則
-router.put("", PointRuleController.updatePointRule)
+router.put("/rule", PointController.updatePointRule)
 // 刪除加扣點規則
-router.delete("/:id", PointRuleController.deletePointRule)
+router.delete("/rule/:id", PointController.deletePointRule)
 
 export default router

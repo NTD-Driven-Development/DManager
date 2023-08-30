@@ -9,7 +9,7 @@ import { PointRuleModel } from "../../models/PointRule"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { PointLogModel } from "../../models/PointLog"
 
-export default new (class PointRuleService {
+export default new (class PointService {
     public async getPointRules(query?: {
         offset: number
         limit: number

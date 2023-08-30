@@ -5,14 +5,14 @@ import _ from "lodash"
 import PointRuleDao from "../../src/core/daos/PointRuleDao"
 import PointLogDao from "../../src/core/daos/PointLogDao"
 
-describe("Acceptance test for PointRuleController.", () => {
+describe("Acceptance test for PointController.", () => {
     describe("取得加扣點規則列表", () => {
         let testPointRules: any
 
         it("取得加扣點規則列表", async () => {
             // given
             // when
-            const res = await App.get("/api/pointRules")
+            const res = await App.get("/api/points/rule")
             // then
             expect(res.status).toBe(200)
         })
@@ -24,7 +24,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 limit: 1,
             }
             // when
-            const res = await App.get("/api/pointRules").query(payload)
+            const res = await App.get("/api/points/rule").query(payload)
             // then
             const data = res.body?.data
             expect(res.status).toBe(200)
@@ -36,7 +36,7 @@ describe("Acceptance test for PointRuleController.", () => {
             // given
             const id = testPointRules?.items[0]?.id
             // when
-            const response = await App.get(`/api/pointRules/${id}`)
+            const response = await App.get(`/api/points/rule/${id}`)
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
@@ -47,7 +47,7 @@ describe("Acceptance test for PointRuleController.", () => {
             // given
             const id = -1
             // when
-            const response = await App.get(`/api/pointRules/${id}`)
+            const response = await App.get(`/api/points/rule/${id}`)
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("查無資料")
@@ -65,7 +65,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 point: 3,
             }
             // when
-            const res = await App.post("/api/pointRules").send(payload)
+            const res = await App.post("/api/points/rule").send(payload)
             // then
             testPointRule = res.body?.data
             expect(res.status).toBe(201)
@@ -85,7 +85,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 point: 3,
             }
             // when
-            const response = await App.post("/api/pointRules").send(payload)
+            const response = await App.post("/api/points/rule").send(payload)
             // then
             expect(response.status).toBe(400)
         })
@@ -99,7 +99,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 point: 5,
             }
             // when
-            const res = await App.put("/api/pointRules").send(payload)
+            const res = await App.put("/api/points/rule").send(payload)
             // then
             expect(res.status).toBe(200)
             const result = await PointRuleDao.findOneById(payload.id)
@@ -118,7 +118,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 point: 5,
             }
             // when
-            const res = await App.put("/api/pointRules").send(payload)
+            const res = await App.put("/api/points/rule").send(payload)
             // then
             expect(res.status).toBe(400)
             expect(res.body?.error).toBe("代碼重複")
@@ -128,7 +128,7 @@ describe("Acceptance test for PointRuleController.", () => {
             // given
             const id = testPointRule?.id
             // when
-            const res = await App.delete(`/api/pointRules/${id}`)
+            const res = await App.delete(`/api/points/rule/${id}`)
             // then
             expect(res.status).toBe(200)
             expect(await PointRuleDao.findOneById(id)).toBeNull()
@@ -193,7 +193,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 limit: 1,
             }
             // when
-            const res = await App.get("/api/pointRules/log").query(payload)
+            const res = await App.get("/api/points/log").query(payload)
             // then
             expect(res.status).toBe(200)
             expect(res.body?.data?.items?.length).toBeLessThanOrEqual(1)
@@ -208,7 +208,7 @@ describe("Acceptance test for PointRuleController.", () => {
                 remark: "E2eTest123",
             }
             // when
-            const res = await App.post("/api/pointRules/log").send(payload)
+            const res = await App.post("/api/points/log").send(payload)
             // then
             testPointLog = res.body?.data
             expect(res.status).toBe(201)
@@ -223,7 +223,7 @@ describe("Acceptance test for PointRuleController.", () => {
             // given
             const id = testPointLog?.id
             // when
-            const res = await App.delete(`/api/pointRules/log/${id}`)
+            const res = await App.delete(`/api/points/log/${id}`)
             // then
             expect(res.status).toBe(200)
             const result = await PointLogDao.findOneById(id)

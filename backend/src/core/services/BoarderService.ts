@@ -13,6 +13,10 @@ import { BoarderStatusModel } from "../../models/BoarderStatus"
 import UpdateBoarderDto from "../importDtos/boarders/UpdateBoarderDto"
 import BoarderMappingRoleDao from "../daos/BoarderMappingRoleDao"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import CreateBoarderDto from "../importDtos/boarders/CreateBoarderDto"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
+import { BoarderMappingRoleModel } from "../../models/BoarderMappingRole"
+import { v4 } from "uuid"
 
 export default new (class BoarderService {
     public async getBoardersFromProject(
@@ -48,6 +52,90 @@ export default new (class BoarderService {
             throw new HttpException("查無資料", 400)
         }
         return result
+    }
+
+    private convertCreateBoarderDtoToBoarderModel(
+        data: CreateBoarderDto,
+        created_by: number
+    ): BoarderModel {
+        return {
+            id: v4(),
+            name: data.name,
+            project_id: data.project_id,
+            class_id: data?.class_id,
+            sid: data?.sid,
+            boarder_status_id: data.boarder_status_id,
+            remark: data?.remark,
+            created_by: created_by,
+        } as BoarderModel
+    }
+
+    private convertCreateBoarderDtoToProjectBunkModel(
+        boarder_id: string,
+        data: CreateBoarderDto,
+        created_by: number
+    ): ProjectBunkModel {
+        return {
+            project_id: data.project_id,
+            boarder_id: boarder_id,
+            floor: data.floor,
+            room_type: data.room_type,
+            room_no: data.room_no,
+            bed: data.bed,
+            remark: data.remark,
+            created_by: created_by,
+        } as ProjectBunkModel
+    }
+
+    private convertCreateBoarderDtoToBoarderMapRoleModel(
+        boarder_id: string,
+        boarderRoles: number[],
+        created_by: number
+    ): BoarderMappingRoleModel[] {
+        return _.map(boarderRoles, (role) => {
+            return { boarder_id, boarder_role_id: role, created_by }
+        }) as BoarderMappingRoleModel[]
+    }
+
+    public async createBoarder(
+        payload: CreateBoarderDto,
+        user: RequestUser
+    ): Promise<any> {
+        try {
+            const boarderData: BoarderModel =
+                this.convertCreateBoarderDtoToBoarderModel(
+                    payload,
+                    user.id
+                )
+            const boarder: BoarderModel = await BoarderDao.create(boarderData)
+
+            if (!_.isEmpty(payload.boarder_role_ids)) {
+                const boarderMap: BoarderMappingRoleModel[] =
+                    this.convertCreateBoarderDtoToBoarderMapRoleModel(
+                        boarder.id,
+                        payload.boarder_role_ids as number[],
+                        user.id
+                    )
+                await BoarderMappingRoleDao.bulkCreate(boarderMap)
+            }
+            const projectBunk: ProjectBunkModel =
+                this.convertCreateBoarderDtoToProjectBunkModel(
+                    boarder.id,
+                    payload,
+                    user.id
+                )
+
+            await ProjectDao.createProjectBunk(projectBunk)
+            return true
+        } catch (error: any) {
+            if (error instanceof ForeignKeyConstraintError) {
+                throw new HttpException("此項目不存在", 400)
+            }
+            if (error instanceof UniqueConstraintError) {
+                throw new HttpException("建立失敗，此床位已存在", 400)
+            }
+            throw new HttpException(error.message, 500)
+        }
     }
 
     public async updateBoarder(

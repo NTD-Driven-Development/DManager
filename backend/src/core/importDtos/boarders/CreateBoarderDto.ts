@@ -1,4 +1,5 @@
-export default class CreateProjectBunkDto {
+export default class CreateBoarderDto {
+    public readonly project_id!: number
     public readonly floor!: string
     public readonly room_type!: string
     public readonly room_no!: string
@@ -9,5 +10,4 @@ export default class CreateProjectBunkDto {
     public readonly class_id?: number
     public readonly boarder_status_id!: number
     public readonly boarder_role_ids?: number[]
-
 }

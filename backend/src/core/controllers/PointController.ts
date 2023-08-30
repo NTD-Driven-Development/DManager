@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from "express"
-import PointRuleService from "../services/PointRuleService"
+import PointService from "../services/PointService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import Sequelize from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
-export default new (class PointRuleController {
+export default new (class PointController {
     public async getPointRules(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.getPointRules(req.query as any)
+            const data = await PointService.getPointRules(req.query as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -25,7 +25,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.getPointRuleById(req.params.id)
+            const data = await PointService.getPointRuleById(req.params.id)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -38,7 +38,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.createPointRule(
+            const data = await PointService.createPointRule(
                 req.body as any,
                 req.user as RequestUser
             )
@@ -54,7 +54,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.updatePointRule(
+            const data = await PointService.updatePointRule(
                 req.body as any,
                 req.user as RequestUser
             )
@@ -70,7 +70,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.deletePointRule(
+            const data = await PointService.deletePointRule(
                 req.params.id,
                 req.user as RequestUser
             )
@@ -82,7 +82,7 @@ export default new (class PointRuleController {
 
     public async getPointLogs(req: Request, res: Response, next: NextFunction) {
         try {
-            const data = await PointRuleService.getPointLogs(req.query as any)
+            const data = await PointService.getPointLogs(req.query as any)
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)
@@ -95,7 +95,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.createPointLog(
+            const data = await PointService.createPointLog(
                 req.body as any,
                 req.user as RequestUser
             )
@@ -111,7 +111,7 @@ export default new (class PointRuleController {
         next: NextFunction
     ) {
         try {
-            const data = await PointRuleService.deletePointLog(
+            const data = await PointService.deletePointLog(
                 req.params.id,
                 req.user as RequestUser
             )
