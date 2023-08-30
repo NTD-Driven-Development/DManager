@@ -23,6 +23,19 @@ export default new (class BoarderRoleController {
         }
     }
 
+    public async getBoarderRoleById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await BoarderService.getBoarderRoleById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createBoarderRole(
         req: Request,
         res: Response,

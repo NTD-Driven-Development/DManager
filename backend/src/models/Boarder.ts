@@ -68,6 +68,10 @@ export default (sequelize: any, DataTypes: any) => {
                 foreignKey: "boarder_id",
                 as: "project_bunk",
             })
+            Boarder.hasMany(models.point_log, {
+                foreignKey: "boarder_id",
+                as: "point_logs",
+            })
         }
     }
     Boarder.init(

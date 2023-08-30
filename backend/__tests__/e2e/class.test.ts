@@ -6,6 +6,8 @@ import ClassDao from "../../src/core/daos/ClassDao"
 
 describe("Acceptance test for ClassController.", () => {
     describe("取得班級列表", () => {
+        let testClasses: any
+
         it("取得班級列表", async () => {
             // given
             // when
@@ -26,6 +28,28 @@ describe("Acceptance test for ClassController.", () => {
             const data = res.body?.data
             expect(res.status).toBe(200)
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
+            testClasses = data
+        })
+
+        it("取得單筆", async () => {
+            // given
+            const id = testClasses?.items[0]?.id
+            // when
+            const response = await App.get(`/api/classes/${id}`)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(data?.id).toEqual(id)
+        })
+
+        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+            // given
+            const id = -1
+            // when
+            const response = await App.get(`/api/classes/${id}`)
+            // then
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toBe("查無資料")
         })
     })
 

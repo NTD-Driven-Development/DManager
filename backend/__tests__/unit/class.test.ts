@@ -230,4 +230,32 @@ describe("Unit test for ClassService.", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
+
+    describe("取得單筆", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const id = 1
+
+            // when
+            jest.spyOn(ClassDao, "findOneById").mockResolvedValue(fakeClass)
+            const result = await ClassService.getClassById(id)
+
+            // then
+            expect(result).toEqual(fakeClass)
+            expect(ClassDao.findOneById).toBeCalledTimes(1)
+        })
+        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+
+            // when
+            jest.spyOn(ClassDao, "findOneById").mockResolvedValue(null as any)
+            const result = ClassService.getClassById(id)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
 })

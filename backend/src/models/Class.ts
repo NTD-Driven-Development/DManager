@@ -33,6 +33,10 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            Class.hasMany(models.boarder, {
+                foreignKey: "class_id",
+                as: "boarders",
+            })
         }
     }
     Class.init(

@@ -19,6 +19,19 @@ export default new (class PointRuleController {
         }
     }
 
+    public async getPointRuleById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await PointRuleService.getPointRuleById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createPointRule(
         req: Request,
         res: Response,
@@ -58,6 +71,48 @@ export default new (class PointRuleController {
     ) {
         try {
             const data = await PointRuleService.deletePointRule(
+                req.params.id,
+                req.user as RequestUser
+            )
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getPointLogs(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await PointRuleService.getPointLogs(req.query as any)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    public async createPointLog(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await PointRuleService.createPointLog(
+                req.body as any,
+                req.user as RequestUser
+            )
+            next(HttpResponse.success(data, 201))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async deletePointLog(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await PointRuleService.deletePointLog(
                 req.params.id,
                 req.user as RequestUser
             )

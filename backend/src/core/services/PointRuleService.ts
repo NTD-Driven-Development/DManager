@@ -3,9 +3,11 @@ import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import PointRuleDao from "../daos/PointRuleDao"
+import PointLogDao from "../daos/PointLogDao"
 import { UniqueConstraintError } from "sequelize"
 import { PointRuleModel } from "../../models/PointRule"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import { PointLogModel } from "../../models/PointLog"
 
 export default new (class PointRuleService {
     public async getPointRules(query?: {
@@ -14,6 +16,14 @@ export default new (class PointRuleService {
     }): Promise<IPaginationResultDto<PointRuleModel>> {
         const data = await PointRuleDao.findAll()
         return withPagination(data.length, data, query?.offset, query?.limit)
+    }
+
+    public async getPointRuleById(id: string | number): Promise<PointRuleModel> {
+        const data = await PointRuleDao.findOneById(id as number)
+        if (!data) {
+            throw new HttpException("查無資料", 400)
+        }
+        return data
     }
 
     public async createPointRule(
@@ -73,4 +83,45 @@ export default new (class PointRuleService {
         }
         return true
     }
+
+    public async getPointLogs(query?: {
+        offset: number
+        limit: number
+        project_id?: number
+    }): Promise<IPaginationResultDto<PointLogModel>> {
+        const data = await PointLogDao.findAll()
+        if (!query?.project_id) {
+            return withPagination(data.length, data, query?.offset, query?.limit)
+        }
+
+        const result = _.filter(
+            data,
+            (item) => item.project_id == query?.project_id
+        )
+        return withPagination(result.length, result, query?.offset, query?.limit)
+    }
+
+    public async createPointLog(
+        payload: PointLogModel,
+        user: RequestUser
+    ): Promise<PointLogModel> {
+        const model = {
+            ...payload,
+            created_by: user.id,
+        }
+        const result = await PointLogDao.create(model)
+        return result
+    }
+
+    public async deletePointLog(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await PointLogDao.delete(id as number, user.id)
+        if (result.affectedRows === 0) {
+            throw new HttpException("查無資料", 400)
+        }
+        return true
+    }
+
 })()

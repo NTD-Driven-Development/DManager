@@ -1,6 +1,7 @@
 import PointRuleService from "../../src/core/services/PointRuleService"
 import PointRuleDao from "../../src/core/daos/PointRuleDao"
 import Sequelize, { UniqueConstraintError } from "sequelize"
+import PointLogDao from "../../src/core/daos/PointLogDao"
 
 describe("Unit test for PointRuleService.", () => {
     afterEach(() => {
@@ -15,6 +16,12 @@ describe("Unit test for PointRuleService.", () => {
         reason: "E2eTest",
         point: 1,
         is_actived: true,
+    }
+    const fakePointLog = {
+        id: 1,
+        boarder_id: "1",
+        point_rule_id: 1,
+        project_id: 1,
     }
 
     async function whenGetPointRulesWithPaginatationSucceeded(payload: any) {
@@ -35,7 +42,9 @@ describe("Unit test for PointRuleService.", () => {
     }
 
     async function whenCreatePointRuleRepeated(payload: any) {
-        jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([fakePointRule])
+        jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([
+            fakePointRule,
+        ])
         jest.spyOn(PointRuleDao, "create").mockResolvedValue(true as any)
         const result = await PointRuleService.createPointRule(payload, fakeUser)
         return result
@@ -56,7 +65,9 @@ describe("Unit test for PointRuleService.", () => {
         return result
     }
     async function whenUpdatePointRuleRepeat(payload: any) {
-        jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([fakePointRule] as any)
+        jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([
+            fakePointRule,
+        ] as any)
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
@@ -82,6 +93,70 @@ describe("Unit test for PointRuleService.", () => {
             affectedRows: 1,
         } as any)
         const result = await PointRuleService.deletePointRule(id, fakeUser)
+        return result
+    }
+
+    async function whenGetPointLogsWithPaginatationSucceeded(payload: {
+        project_id?: number
+        offset: number
+        limit: number
+    }) {
+        jest.spyOn(PointLogDao, "findAll").mockResolvedValue([
+            fakePointLog,
+            fakePointLog,
+            fakePointLog,
+            fakePointLog,
+        ])
+        const result = await PointRuleService.getPointLogs(payload)
+        return result
+    }
+    async function whenGetPointLogsWithFilterProject(payload: {
+        project_id?: number
+        offset: number
+        limit: number
+    }) {
+        jest.spyOn(PointLogDao, "findAll").mockResolvedValue([
+            {
+                id: 1,
+                project_id: 1,
+                boarder_id: "1",
+                point_rule_id: 1,
+            },
+            {
+                id: 2,
+                project_id: 2,
+                boarder_id: "2",
+                point_rule_id: 1,
+            },
+            {
+                id: 3,
+                project_id: 2,
+                boarder_id: "3",
+                point_rule_id: 1,
+            },
+            {
+                id: 4,
+                project_id: 3,
+                boarder_id: "4",
+                point_rule_id: 2,
+            },
+        ])
+        const result = await PointRuleService.getPointLogs(payload)
+        return result
+    }
+
+    async function whenDeletePointLogSucceeded(id: number, fakeUser: any) {
+        jest.spyOn(PointLogDao, "delete").mockResolvedValue({
+            affectedRows: 1,
+        })
+        const result = await PointRuleService.deletePointLog(id, fakeUser)
+        return result
+    }
+    async function whenDeletePointLogNotFound(id: number, fakeUser: any) {
+        jest.spyOn(PointLogDao, "delete").mockResolvedValue({
+            affectedRows: 0,
+        })
+        const result = await PointRuleService.deletePointLog(id, fakeUser)
         return result
     }
 
@@ -242,4 +317,146 @@ describe("Unit test for PointRuleService.", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
+
+    describe("取得加扣點紀錄列表", () => {
+        it("呼叫 DAO 與分頁邏輯", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 2,
+            }
+
+            // when
+            const result = await whenGetPointLogsWithPaginatationSucceeded(
+                payload
+            )
+
+            // then
+            expect(result).toEqual({
+                total: 4,
+                from: 1,
+                to: 2,
+                current_page: 1,
+                last_page: 2,
+                per_page: 2,
+                items: [fakePointLog, fakePointLog],
+            })
+            expect(PointLogDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("項目篩選", async () => {
+            // given
+            const payload = {
+                project_id: 2,
+                offset: 1,
+                limit: 2,
+            }
+
+            // when
+            const result = await whenGetPointLogsWithFilterProject(payload)
+
+            // then
+            expect(result).toEqual({
+                total: 2,
+                from: 1,
+                to: 2,
+                current_page: 1,
+                last_page: 1,
+                per_page: 2,
+                items: [
+                    {
+                        id: 2,
+                        project_id: 2,
+                        boarder_id: "2",
+                        point_rule_id: 1,
+                    },
+                    {
+                        id: 3,
+                        project_id: 2,
+                        boarder_id: "3",
+                        point_rule_id: 1,
+                    },
+                ],
+            })
+            expect(PointLogDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("建立住宿生加扣點紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const payload = {
+                boarder_id: "1",
+                point_rule_id: 1,
+                project_id: 1,
+            }
+            // when
+            jest.spyOn(PointLogDao, "create").mockResolvedValue(true as any)
+            const result = await PointRuleService.createPointLog(
+                payload,
+                fakeUser
+            )
+            // then
+            expect(result).toEqual(true)
+            expect(PointLogDao.create).toBeCalledTimes(1)
+        })
+    })
+
+    describe("刪除住宿生加扣點紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const id = 1
+
+            // when
+            const result = await whenDeletePointLogSucceeded(id, fakeUser)
+
+            // then
+            expect(result).toEqual(true)
+            expect(PointLogDao.delete).toBeCalledTimes(1)
+        })
+
+        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+
+            // when
+            const result = whenDeletePointLogNotFound(id, fakeUser)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("取得單筆加扣點規則", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const id = 1
+
+            // when
+            jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(fakePointRule)
+            const result = await PointRuleService.getPointRuleById(id)
+
+            // then
+            expect(result).toEqual(fakePointRule)
+            expect(PointRuleDao.findOneById).toBeCalledTimes(1)
+        })
+
+        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+
+            // when
+            jest.spyOn(PointRuleDao, "findOneById").mockResolvedValue(null as any)
+            const result = PointRuleService.getPointRuleById(id)
+
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
 })
+
+

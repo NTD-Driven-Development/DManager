@@ -172,6 +172,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
 
     describe("取得住宿生身分列表", () => {
         let testProject: any
+        let testBoarderRoles: any
 
         it("預先建立項目", async () => {
             // given
@@ -226,7 +227,30 @@ describe("Acceptance test for BoarderRoleController.", () => {
             const data = response.body?.data
             expect(response.status).toBe(200)
             expect(data?.items?.length ?? 0).toBeLessThanOrEqual(2)
+            testBoarderRoles = data
         })
+
+        it("取得單筆", async () => {
+            // given
+            const id = testBoarderRoles?.items[0]?.id
+            // when
+            const response = await App.get(`/api/boarderRoles/${id}`)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(data?.id).toEqual(id)
+        })
+
+        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+            // given
+            const id = -1
+            // when
+            const response = await App.get(`/api/boarderRoles/${id}`)
+            // then
+            expect(response.status).toBe(400)
+            expect(response.body?.error).toBe("查無資料")
+        })
+
 
         afterAll(async () => {
             await deleteImportData(testProject.id)

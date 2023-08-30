@@ -21,6 +21,19 @@ export default new (class ClassController {
         }
     }
 
+    public async getClassById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await ClassService.getClassById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createClass(
         req: Request,
         res: Response,

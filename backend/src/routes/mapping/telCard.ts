@@ -9,6 +9,7 @@ const router = Router();
 
 router.use(jwtAuth("jwt"));
 router.get('/contacter', TelCardController.getTelCardContacters);
+router.get('/contacter/:id', TelCardController.getTelCardContacterById);
 router.post('/contacter', TelCardController.createTelCardContacter);
 router.put('/contacter', TelCardController.updateTelCardContacter);
 router.delete('/contacter/:id', TelCardController.deleteTelCardContacter);

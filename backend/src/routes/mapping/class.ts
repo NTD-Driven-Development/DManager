@@ -7,6 +7,7 @@ const router = Router()
 
 router.use(jwtAuth("jwt"));
 router.get("", ClassController.getClasses)
+router.get("/:id", ClassController.getClassById)
 router.post("", ClassController.createClass)
 router.put("", ClassController.updateClass)
 router.delete("/:id", ClassController.deleteClass)

@@ -21,6 +21,19 @@ export default new (class TelCardController {
         }
     }
 
+    public async getTelCardContacterById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await TelCardService.getTelCardContacterById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createTelCardContacter(
         req: Request,
         res: Response,

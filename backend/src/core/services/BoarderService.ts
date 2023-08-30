@@ -114,6 +114,16 @@ export default new (class BoarderService {
         )
     }
 
+    public async getBoarderRoleById(
+        id: string | number
+    ): Promise<BoarderRoleModel> {
+        const result = await BoarderRoleDao.findOneById(id as number)
+        if (!result) {
+            throw new HttpException("查無資料", 400)
+        }
+        return result
+    }
+
     public async createBoarderRole(
         payload: BoarderRoleModel,
         user: RequestUser

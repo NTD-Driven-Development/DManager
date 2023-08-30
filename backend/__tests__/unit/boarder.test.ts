@@ -639,6 +639,36 @@ describe("Unit test for BoarderService.", () => {
         })
     })
 
+    describe("取得單筆住宿生身分", () => {
+        it("確實呼叫 DAO", async () => {
+            // given
+            const id = 1
+            const expectResult = fakeBoarderRole
+            // when
+            jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(
+                expectResult as any
+            )
+            const result = await BoarderService.getBoarderRoleById(id)
+            // then
+            expect(result).toEqual(expectResult)
+            expect(BoarderRoleDao.findOneById).toBeCalledTimes(1)
+        })
+
+        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+            // when
+            jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(
+                null as any
+            )
+            const result = await BoarderService.getBoarderRoleById(id)
+            // then
+            expect(result).rejects.toThrow(errorMessage)
+            expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
     describe("建立住宿生身分", () => {
         it("確實呼叫 DAO", async () => {
             // given

@@ -4,7 +4,7 @@ import { Request } from "express"
 import RequestUser from "../src/core/exportDtos/auth/RequestUser"
 
 global.console = require("console")
-jest.spyOn(console, "log").mockImplementation(() => {})
+// jest.spyOn(console, "log").mockImplementation(() => {})
 
 //mocked Request user attribute
 export const mockUser = {

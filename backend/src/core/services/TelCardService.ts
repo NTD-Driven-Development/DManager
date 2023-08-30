@@ -16,6 +16,16 @@ export default new (class TelCardService {
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 
+    public async getTelCardContacterById(
+        id: string | number
+    ): Promise<TelCardContacterModel> {
+        const data = await TelCardContacterDao.findOneById(id as number)
+        if (!data) {
+            throw new HttpException("查無資料", 400)
+        }
+        return data
+    }
+
     public async createTelCardContacter(
         payload: TelCardContacterModel,
         user: RequestUser

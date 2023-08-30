@@ -16,6 +16,14 @@ export default new (class ClassService {
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 
+    public async getClassById(id: string | number): Promise<ClassModel> {
+        const data = await ClassDao.findOneById(id as number)
+        if (!data) {
+            throw new HttpException("查無資料", 400)
+        }
+        return data
+    }
+
     public async createClass(
         payload: ClassModel,
         user: RequestUser

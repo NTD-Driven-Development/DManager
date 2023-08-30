@@ -29,6 +29,15 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            PointLog.belongsTo(models.boarder, {
+                foreignKey: "boarder_id",
+            })
+            PointLog.belongsTo(models.project, {
+                foreignKey: "project_id",
+            })
+            PointLog.belongsTo(models.point_rule, {
+                foreignKey: "point_rule_id",
+            })
         }
     }
     PointLog.init(
