@@ -8,8 +8,10 @@
         </div>
         <!-- 操作 -->
         <div class="flex flex-col gap-2 lg:flex-row">
-            <OptionBoarderRoleCreate :project-id="values?.selectedProjectId!" class="grow-[1] max-w-sm lg:basis-1"
+            <OptionBoarderRoleCreate :project-id="values?.selectedProjectId!" class="grow-[1] lg:basis-1"
             @on-created="boarderRolePaginator?.reload()"></OptionBoarderRoleCreate>
+            <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
+            </div>
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64 border">
