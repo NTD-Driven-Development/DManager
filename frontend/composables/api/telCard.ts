@@ -91,6 +91,16 @@ export const updateTelCardContacter = async (formData: UpdateTelCardContacterFor
     }
 }
 
+export const deleteTelCardContacter = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/contacter/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type TelCard = Model.TelCard & Model.CreateInfo & Model.UpdateInfo
 
 type TelCardContacter = Model.TelCardContacter & Model.CreateInfo & Model.UpdateInfo

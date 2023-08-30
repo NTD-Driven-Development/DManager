@@ -31,14 +31,16 @@
                 <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
                 <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 text-base">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionBoarderRoleEditPopUp?.show(id)"></Icon>
+                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="optionBoarderRoleDeletePopUp?.show(id)"></Icon>
                     </div>
                 </template>
             </OrderTable>
         </div>
         <Paginator :api-paginator="boarderRolePaginator"></Paginator>
         <OptionBoarderRoleEditPopUp ref="optionBoarderRoleEditPopUp" @on-edited="boarderRolePaginator?.reload()"></OptionBoarderRoleEditPopUp>
+        <OptionBoarderRoleDeletePopUp ref="optionBoarderRoleDeletePopUp" @on-deleted="boarderRolePaginator?.reload()"></OptionBoarderRoleDeletePopUp>
     </div>
 </template>
 
@@ -60,6 +62,7 @@
     const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
 
     const optionBoarderRoleEditPopUp = ref();
+    const optionBoarderRoleDeletePopUp = ref();
 
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));

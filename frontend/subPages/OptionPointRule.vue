@@ -27,14 +27,16 @@
                 <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
                 <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 text-base">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionPointRuleEditPopUp?.show(id)"></Icon>
+                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="optionPointRuleDeletePopUp?.show(id)"></Icon>
                     </div>
                 </template>
             </OrderTable>
         </div>
         <Paginator :api-paginator="pointRulePaginator"></Paginator>
         <OptionPointRuleEditPopUp ref="optionPointRuleEditPopUp" @on-edited="pointRulePaginator?.reload()"></OptionPointRuleEditPopUp>
+        <OptionPointRuleDeletePopUp ref="optionPointRuleDeletePopUp" @on-deleted="pointRulePaginator?.reload()"></OptionPointRuleDeletePopUp>
     </div>
 </template>
 
@@ -54,6 +56,7 @@
     ]
 
     const optionPointRuleEditPopUp = ref();
+    const optionPointRuleDeletePopUp = ref();
 
     const pointRulePaginator = new PointRulePaginator();
     const { data: PointRuleList } = pointRulePaginator;

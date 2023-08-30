@@ -25,19 +25,22 @@
                 <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
                 <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 text-base">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionBoarderStatusEditPopUp?.show(id)"></Icon>
+                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="optionBoarderStatusDeletePopUp?.show(id)"></Icon>
                     </div>
                 </template>
             </OrderTable>
         </div>
         <Paginator :api-paginator="boarderStatusPaginator"></Paginator>
         <OptionBoarderStatusEditPopUp ref="optionBoarderStatusEditPopUp" @on-edited="boarderStatusPaginator?.reload()"></OptionBoarderStatusEditPopUp>
+        <OptionBoarderStatusDeletePopUp ref="optionBoarderStatusDeletePopUp" @on-deleted="boarderStatusPaginator?.reload()"></OptionBoarderStatusDeletePopUp>
     </div>
 </template>
 
 <script setup lang="ts">
     import { Icon } from '@iconify/vue';
+import { BoarderDeletePopUp } from '~/.nuxt/components';
     import { BoarderStatusPaginator } from '~/composables/api/boarderStatus';
 
     const headers = [
@@ -50,6 +53,7 @@
     ]
 
     const optionBoarderStatusEditPopUp = ref();
+    const optionBoarderStatusDeletePopUp = ref();
 
     const boarderStatusPaginator = new BoarderStatusPaginator();
     const { data: boarderStatusList } = boarderStatusPaginator;

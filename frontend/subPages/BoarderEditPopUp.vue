@@ -128,7 +128,7 @@
     const emits = defineEmits<Emits>();
 
     const toastNotifier = inject(ToastNotifierKey);
-    const { handleSubmit, setFieldValue, resetForm } = useForm({ validationSchema: schema });
+    const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
 
     const popUp = ref();
     const visible = ref(false);

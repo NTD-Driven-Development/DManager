@@ -25,14 +25,16 @@
                 <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
                 <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 text-base">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionTelCardContacterEditPopUp?.show(id)"></Icon>
+                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="optionTelCardContacterDeletePopUp?.show(id)"></Icon>
                     </div>
                 </template>
             </OrderTable>
         </div>
         <Paginator :api-paginator="telCardContacterPaginator"></Paginator>
         <OptionTelCardContacterEditPopUp ref="optionTelCardContacterEditPopUp" @on-edited="telCardContacterPaginator?.reload()"></OptionTelCardContacterEditPopUp>
+        <OptionTelCardContacterDeletePopUp ref="optionTelCardContacterDeletePopUp" @on-deleted="telCardContacterPaginator?.reload()"></OptionTelCardContacterDeletePopUp>
     </div>
 </template>
 
@@ -50,6 +52,7 @@
     ]
 
     const optionTelCardContacterEditPopUp = ref();
+    const optionTelCardContacterDeletePopUp = ref();
 
     const telCardContacterPaginator = new TelCardContacterPaginator();
     const { data: TelCardContacterList } = telCardContacterPaginator;

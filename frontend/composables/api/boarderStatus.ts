@@ -75,6 +75,16 @@ export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData)
     }
 }
 
+export const deleteBoarderStatus = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type BoarderStatus = Model.BoarderStatus & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseBoarderStatusFormData {

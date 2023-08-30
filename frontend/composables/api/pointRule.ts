@@ -72,6 +72,16 @@ export const updatePointRule = async (formData: UpdatePointRuleFormData) => {
     }
 }
 
+export const deletePointRule = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type PointRule = Model.PointRule & Model.CreateInfo & Model.UpdateInfo
 
 interface BasePointRuleFormData {

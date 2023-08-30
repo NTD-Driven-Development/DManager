@@ -80,6 +80,16 @@ export const updateBoarderRole = async (formData: UpdateBoarderRoleFormData) => 
     }
 }
 
+export const deleteBoarderRole = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type BoarderRole = Model.BoarderRole & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseBoarderRoleFormData {

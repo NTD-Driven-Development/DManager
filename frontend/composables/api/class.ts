@@ -72,6 +72,16 @@ export const updateClass = async (formData: UpdateClassFormData) => {
     }
 }
 
+export const deleteClass = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type Class = Model.Class & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseClassFormData {

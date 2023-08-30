@@ -25,7 +25,7 @@
                 <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
                 <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 text-base">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionBoarderStatusEditPopUp?.show(id)"></Icon>
                     </div>
                 </template>
