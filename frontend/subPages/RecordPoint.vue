@@ -9,7 +9,7 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64">
-            <input placeholder="搜尋名稱" class="text-xs w-full rounded"
+            <input placeholder="搜尋名稱" class="text-xs w-full rounded border"
             @change=""/>
         </div>
         <!-- 列表 -->
