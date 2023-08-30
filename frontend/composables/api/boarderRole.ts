@@ -3,16 +3,16 @@ import { ApiPaginator, ApiResponse, PaginationResponse, PaginationQueries, Optio
 import _ from "lodash";
 import * as Model from "~/src/model";
 
-const PREFIX = '/api/boarderStatuses';
+const PREFIX = '/api/boarderRoles';
 
-export class BoarderStatusPaginator extends ApiPaginator<BoarderStatus, BoarderStatusPaginationQueries> {
+export class BoarderRolePaginator extends ApiPaginator<BoarderRole, BoarderRolePaginationQueries> {
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<BoarderStatus>>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<BoarderRole>>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -25,11 +25,16 @@ export class BoarderStatusPaginator extends ApiPaginator<BoarderStatus, BoarderS
         return axios.get(`${PREFIX}?${searchParams}`);
     }
 
-    withQuery = <K extends keyof BoarderStatusPaginationQueries, V extends BoarderStatusPaginationQueries[K]>(key: K, value: V) => {
+    withQuery = <K extends keyof BoarderRolePaginationQueries, V extends BoarderRolePaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'project_id') {
+            this.projectIdHandler(key, value);
+        }
     }
+
+    protected projectIdHandler = _.throttle(this.setQuery, 800);
 }
 
-export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
+export class BoarderRoleCaller extends ApiCaller<BoarderRole> {
     id?: number;
 
     constructor(id?: number) {
@@ -41,7 +46,7 @@ export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<BoarderStatus>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<BoarderRole>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -55,7 +60,7 @@ export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
     }
 }
 
-export const createBoarderStatus = async (formData: CreateBoarderStatusFormData) => {
+export const createBoarderRole = async (formData: CreateBoarderRoleFormData) => {
     try {
         const response = await axios.post(`${PREFIX}`, formData);
         return response.data;
@@ -65,7 +70,7 @@ export const createBoarderStatus = async (formData: CreateBoarderStatusFormData)
     }
 }
 
-export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData) => {
+export const updateBoarderRole = async (formData: UpdateBoarderRoleFormData) => {
     try {
         const response = await axios.put(`${PREFIX}`, formData);
         return response.data;
@@ -75,17 +80,19 @@ export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData)
     }
 }
 
-type BoarderStatus = Model.BoarderStatus
+type BoarderRole = Model.BoarderRole
 
-interface BaseBoarderStatusFormData {
+interface BaseBoarderRoleFormData {
+    project_id: number,
     name: string,
 }
 
-type CreateBoarderStatusFormData = BaseBoarderStatusFormData
+type CreateBoarderRoleFormData = BaseBoarderRoleFormData
 
-type UpdateBoarderStatusFormData = BaseBoarderStatusFormData & {
+type UpdateBoarderRoleFormData = BaseBoarderRoleFormData & {
     id: number,
 }
 
-interface BoarderStatusPaginationQueries extends PaginationQueries {
+interface BoarderRolePaginationQueries extends PaginationQueries {
+    project_id?: number,
 }

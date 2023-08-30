@@ -3,16 +3,16 @@ import { ApiPaginator, ApiResponse, PaginationResponse, PaginationQueries, Optio
 import _ from "lodash";
 import * as Model from "~/src/model";
 
-const PREFIX = '/api/boarderStatuses';
+const PREFIX = '/api/pointRules';
 
-export class BoarderStatusPaginator extends ApiPaginator<BoarderStatus, BoarderStatusPaginationQueries> {
+export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginationQueries> {
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<BoarderStatus>>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<PointRule>>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -24,12 +24,9 @@ export class BoarderStatusPaginator extends ApiPaginator<BoarderStatus, BoarderS
 
         return axios.get(`${PREFIX}?${searchParams}`);
     }
-
-    withQuery = <K extends keyof BoarderStatusPaginationQueries, V extends BoarderStatusPaginationQueries[K]>(key: K, value: V) => {
-    }
 }
 
-export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
+export class PointRuleCaller extends ApiCaller<PointRule> {
     id?: number;
 
     constructor(id?: number) {
@@ -41,7 +38,7 @@ export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<BoarderStatus>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<PointRule>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -55,7 +52,7 @@ export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
     }
 }
 
-export const createBoarderStatus = async (formData: CreateBoarderStatusFormData) => {
+export const createPointRule = async (formData: CreatePointRuleFormData) => {
     try {
         const response = await axios.post(`${PREFIX}`, formData);
         return response.data;
@@ -65,7 +62,7 @@ export const createBoarderStatus = async (formData: CreateBoarderStatusFormData)
     }
 }
 
-export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData) => {
+export const updatePointRule = async (formData: UpdatePointRuleFormData) => {
     try {
         const response = await axios.put(`${PREFIX}`, formData);
         return response.data;
@@ -75,17 +72,19 @@ export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData)
     }
 }
 
-type BoarderStatus = Model.BoarderStatus
+type PointRule = Model.PointRule
 
-interface BaseBoarderStatusFormData {
-    name: string,
+interface BasePointRuleFormData {
+    code: string,
+    reason: string,
+    point: number,
 }
 
-type CreateBoarderStatusFormData = BaseBoarderStatusFormData
+type CreatePointRuleFormData = BasePointRuleFormData
 
-type UpdateBoarderStatusFormData = BaseBoarderStatusFormData & {
+type UpdatePointRuleFormData = BasePointRuleFormData & {
     id: number,
 }
 
-interface BoarderStatusPaginationQueries extends PaginationQueries {
+interface PointRulePaginationQueries extends PaginationQueries {
 }

@@ -1,12 +1,16 @@
 <template>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
         <!-- 選擇項目 -->
-        <Select name="selectedProjectId" :options="projectList" option-key="id" option-value="name" class="shadow border text-xs"></Select>
+        <div class="flex flex-col gap-1">
+            <div class="text-sm">選擇項目：</div>
+            <Select name="selectedProjectId" class="shadow border text-xs"
+            :options="projectList" option-key="id" option-value="name" ></Select>
+        </div>
         <!-- 內容 -->
         <div class="flex flex-col gap-3">
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
-                <BoarderCreate :project="projectList?.find((v) => v?.id == values?.selectedProjectId)!" class="grow-[1] lg:basis-1"
+                <BoarderCreate :project-id="values?.selectedProjectId!" class="grow-[1] lg:basis-1"
                 @on-created="boarderPaginator?.reload()"></BoarderCreate>
                 <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
                     <div class="grid grid-cols-2 gap-3">

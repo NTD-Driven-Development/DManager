@@ -110,12 +110,11 @@
     import { useForm } from 'vee-validate';
     import { BoarderStatusesCaller, BunksCaller, ClassesCaller } from '~/composables/api/share';
     import { createProjectBunk } from '~/composables/api/project';
-    import { Project } from '~/src/model';
     import * as yup from 'yup';
     import _ from 'lodash';
 
     interface Props {
-        project: Project,
+        projectId: number,
     }
 
     interface Emits {
@@ -177,7 +176,7 @@
 
     const onSubmit = handleSubmit(async (data) => {
         try {            
-            await createProjectBunk(props?.project?.id, {
+            await createProjectBunk(props?.projectId, {
                 floor: data?.floor,
                 room_type: data?.room_type,
                 room_no: data?.room_no,
