@@ -16,6 +16,9 @@ export interface UserModel {
     updated_by?: number
     deleted_at?: Date
     deleted_by?: number
+    creator?: UserModel
+    updater?: UserModel
+    deleter?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -49,6 +52,18 @@ export default (sequelize: any, DataTypes: any) => {
             User.belongsTo(models.boarder, {
                 foreignKey: "sid",
                 as: "boarder",
+            })
+            User.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            User.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
+            User.belongsTo(models.user, {
+                foreignKey: "deleted_by",
+                as: "deleter",
             })
         }
     }

@@ -91,6 +91,18 @@ export default new (class BoarderDao extends BaseDao {
                     as: "project_bunk",
                     required: false,
                 },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
             ],
             where: { id: id, deleted_at: null },
         })

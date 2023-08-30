@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface UserDutyModel {
     id: number
@@ -9,6 +10,7 @@ export interface UserDutyModel {
     end_date: Date
     created_at?: Date
     created_by?: number
+    creator?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -30,6 +32,10 @@ export default (sequelize: any, DataTypes: any) => {
             UserDuty.belongsTo(models.user, {
                 foreignKey: "user_id",
                 as: "user_duties",
+            })
+            UserDuty.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
             })
         }
     }

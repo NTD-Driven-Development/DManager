@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface BoarderModel {
     id: string
@@ -20,6 +21,9 @@ export interface BoarderModel {
     updated_by?: number
     deleted_at?: Date
     deleted_by?: number
+    creator?: UserModel
+    updater?: UserModel
+    deleter?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -71,6 +75,18 @@ export default (sequelize: any, DataTypes: any) => {
             Boarder.hasMany(models.point_log, {
                 foreignKey: "boarder_id",
                 as: "point_logs",
+            })
+            Boarder.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            Boarder.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
+            Boarder.belongsTo(models.user, {
+                foreignKey: "deleted_by",
+                as: "deleter",
             })
         }
     }

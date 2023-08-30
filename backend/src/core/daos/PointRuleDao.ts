@@ -9,6 +9,20 @@ import { Op, Sequelize } from "sequelize"
 export default new (class PointRuleDao extends BaseDao {
     public async findAll(): Promise<PointRuleModel[]> {
         return await Db.point_rule.findAll({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
             where: {
                 deleted_at: null,
             },
@@ -18,6 +32,20 @@ export default new (class PointRuleDao extends BaseDao {
 
     public async findOneById(id: number): Promise<PointRuleModel> {
         return await Db.point_rule.findOne({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
             where: {
                 id: id,
                 deleted_at: null,

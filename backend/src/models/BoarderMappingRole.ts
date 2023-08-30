@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface BoarderMappingRoleModel {
     id?: number
@@ -10,6 +11,8 @@ export interface BoarderMappingRoleModel {
     created_by?: number
     updated_at?: Date
     updated_by?: number
+    creator?: UserModel
+    updater?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -37,6 +40,18 @@ export default (sequelize: any, DataTypes: any) => {
             })
             BoarderMappingRole.belongsTo(models.boarder, {
                 foreignKey: "boarder_id",
+            })
+            BoarderMappingRole.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            BoarderMappingRole.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
+            BoarderMappingRole.belongsTo(models.user, {
+                foreignKey: "deleted_by",
+                as: "deleter",
             })
         }
     }

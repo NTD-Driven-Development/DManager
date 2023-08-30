@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface PointLogModel {
     id?: number
@@ -10,6 +11,7 @@ export interface PointLogModel {
     remark?: string
     created_at?: Date
     created_by?: number
+    creator?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -37,6 +39,10 @@ export default (sequelize: any, DataTypes: any) => {
             })
             PointLog.belongsTo(models.point_rule, {
                 foreignKey: "point_rule_id",
+            })
+            PointLog.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
             })
         }
     }

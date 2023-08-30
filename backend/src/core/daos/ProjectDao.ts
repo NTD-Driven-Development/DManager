@@ -14,6 +14,20 @@ export interface IFindOneProjectResult extends ProjectModel {
 export default new (class ProjectDao extends BaseDao implements Core.IDao {
     public async findAll(): Promise<ProjectModel[]> {
         const projects = await Db.project.findAll({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
             where: { deleted_at: null },
             order: [["id", "DESC"]],
         })
@@ -36,6 +50,18 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
                             required: false,
                         },
                     ],
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
                 },
             ],
             where: { id: id, deleted_at: null },

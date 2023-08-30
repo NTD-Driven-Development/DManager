@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface RolePermissionModel {
     id?: number
@@ -11,6 +12,8 @@ export interface RolePermissionModel {
     created_by?: number
     updated_at?: Date
     updated_by?: number
+    creator?: UserModel
+    updater?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -34,6 +37,14 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            RolePermission.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            RolePermission.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
         }
     }
     RolePermission.init(

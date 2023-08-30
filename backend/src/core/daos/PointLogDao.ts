@@ -37,6 +37,12 @@ export default new (class PointLogDao extends BaseDao {
                     attributes: ["id", "code", "reason", "point"],
                     as: "point_rule",
                 },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
             ],
             // where: {
             //     deleted_at: null,
@@ -47,6 +53,14 @@ export default new (class PointLogDao extends BaseDao {
 
     public async findOneById(id: number): Promise<PointLogModel> {
         return await Db.point_log.findOne({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+            ],
             where: {
                 id: id,
             },

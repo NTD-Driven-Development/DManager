@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface TelCardLogModel {
     id?: number
@@ -10,6 +11,9 @@ export interface TelCardLogModel {
     remark?: string
     created_at?: Date
     created_by?: number
+    creator?: UserModel
+    updater?: UserModel
+    deleter?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -29,6 +33,10 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            TelCardLog.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
         }
     }
     TelCardLog.init(

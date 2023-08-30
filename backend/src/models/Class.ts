@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface ClassModel {
     id?: number
@@ -12,6 +13,9 @@ export interface ClassModel {
     updated_by?: number
     deleted_at?: Date
     deleted_by?: number
+    creator?: UserModel
+    updater?: UserModel
+    deleter?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -36,6 +40,18 @@ export default (sequelize: any, DataTypes: any) => {
             Class.hasMany(models.boarder, {
                 foreignKey: "class_id",
                 as: "boarders",
+            })
+            Class.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            Class.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
+            Class.belongsTo(models.user, {
+                foreignKey: "deleted_by",
+                as: "deleter",
             })
         }
     }

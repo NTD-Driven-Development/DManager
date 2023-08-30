@@ -8,6 +8,20 @@ import _ from "lodash"
 export default new (class BoarderStatusDao extends BaseDao {
     public async findAll(): Promise<BoarderStatusModel[]> {
         return await Db.boarder_status.findAll({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
             where: {
                 deleted_at: null,
             },
@@ -17,6 +31,20 @@ export default new (class BoarderStatusDao extends BaseDao {
 
     public async findOneById(id: number): Promise<BoarderStatusModel> {
         return await Db.boarder_status.findOne({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
             where: {
                 id: id,
                 deleted_at: null,

@@ -1,6 +1,7 @@
 "use strict"
 import moment from "moment"
 import { Model } from "sequelize"
+import { UserModel } from "./User"
 
 export interface ProjectModel {
     id?: number
@@ -12,6 +13,9 @@ export interface ProjectModel {
     updated_by?: number
     deleted_at?: Date
     deleted_by?: number
+    creator?: UserModel
+    updater?: UserModel
+    deleter?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -36,6 +40,18 @@ export default (sequelize: any, DataTypes: any) => {
             Project.hasMany(models.project_bunk, {
                 foreignKey: "project_id",
                 as: "project_bunks",
+            })
+            Project.belongsTo(models.user, {
+                foreignKey: "created_by",
+                as: "creator",
+            })
+            Project.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
+            })
+            Project.belongsTo(models.user, {
+                foreignKey: "deleted_by",
+                as: "deleter",
             })
         }
     }
