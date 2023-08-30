@@ -3,6 +3,7 @@ import BoarderService from "../services/BoarderService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import Sequelize, { Transaction } from "sequelize"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class BoarderController {
     public async getBoardersFromProject(
@@ -42,7 +43,10 @@ export default new (class BoarderController {
     ) {
         try {
             await Db.sequelize.transaction(async (t: Transaction) => {
-                const data = await BoarderService.updateBoarder(req.body as any)
+                const data = await BoarderService.updateBoarder(
+                    req.body as any,
+                    req.user as RequestUser
+                )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data, 200))
                 })
@@ -58,7 +62,10 @@ export default new (class BoarderController {
         next: NextFunction
     ) {
         try {
-            const data = await BoarderService.deleteBoarder(req.params.id)
+            const data = await BoarderService.deleteBoarder(
+                req.params.id,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 200))
         } catch (error) {
             next(error)

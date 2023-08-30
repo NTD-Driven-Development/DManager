@@ -5,7 +5,7 @@ import validate from "../../middlewares/validateRequest"
 
 const router = Router()
 
-// router.use(jwtAuth("jwt"));
+router.use(jwtAuth("jwt"));
 router.get("", PointRuleController.getPointRules)
 router.post("", PointRuleController.createPointRule)
 router.put("", PointRuleController.updatePointRule)

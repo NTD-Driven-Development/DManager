@@ -7,8 +7,9 @@ import validate from '../../middlewares/validateRequest';
 const router = Router();
 
 
-// router.use(jwtAuth("jwt"));
-router.get('', BoarderStatusController.getBoarderStatusesFromProject);
+router.use(jwtAuth("jwt"));
+router.get('', BoarderStatusController.getBoarderStatuses);
+router.get('/:id', BoarderStatusController.getBoarderStatuseById);
 router.post('', BoarderStatusController.createBoarderStatus);
 router.put('', BoarderStatusController.updateBoarderStatus);
 router.delete('/:id', BoarderStatusController.deleteBoarderStatus);

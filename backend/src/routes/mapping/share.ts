@@ -1,8 +1,10 @@
 import { Express, Request, Response, Router } from 'express'
 import ShareController from '../../core/controllers/ShareController';
+import jwtAuth from '../../middlewares/jwtAuth';
 
 const router = Router();
 
+router.use(jwtAuth("jwt"));
 // 取得樓區室床
 router.get('/bunks', ShareController.getBunks);
 // 取得班級

@@ -13,6 +13,9 @@ describe("Unit test for ProjectService.", () => {
         jest.clearAllMocks()
     })
     const now = new Date("August 17, 2023 03:24:00")
+    const fakeUser = {
+        id: 1,
+    } as any
     const fakeProject = {
         id: 1,
         name: "測試",
@@ -59,7 +62,7 @@ describe("Unit test for ProjectService.", () => {
     }
     async function whenCreateProject(payload: any) {
         jest.spyOn(ProjectDao, "create").mockResolvedValue(fakeProject)
-        return await ProjectService.createProject(payload)
+        return await ProjectService.createProject(payload, fakeUser)
     }
 
     function givenUpdateProjectPayload() {
@@ -73,13 +76,13 @@ describe("Unit test for ProjectService.", () => {
         jest.spyOn(ProjectDao, "update").mockResolvedValue({
             affectedRows: 1,
         })
-        return await ProjectService.updateProject(payload)
+        return await ProjectService.updateProject(payload, fakeUser)
     }
     async function whenUpdateNotFoundProject(payload: any) {
         jest.spyOn(ProjectDao, "update").mockResolvedValue({
             affectedRows: 0,
         })
-        return await ProjectService.updateProject(payload)
+        return await ProjectService.updateProject(payload, fakeUser)
     }
 
     function givenDeleteProjectPayload() {
@@ -89,13 +92,13 @@ describe("Unit test for ProjectService.", () => {
         jest.spyOn(ProjectDao, "delete").mockResolvedValue({
             affectedRows: 1,
         })
-        return await ProjectService.deleteProject(payload)
+        return await ProjectService.deleteProject(payload, fakeUser)
     }
     async function whenDeleteNotFoundProject(payload: any) {
         jest.spyOn(ProjectDao, "delete").mockResolvedValue({
             affectedRows: 0,
         })
-        return await ProjectService.deleteProject(payload)
+        return await ProjectService.deleteProject(payload, fakeUser)
     }
 
     function givenImportBoardersPayload() {
@@ -244,7 +247,7 @@ describe("Unit test for ProjectService.", () => {
             true as any as Promise<any>
         )
 
-        return await ProjectService.importBoardersData(payload)
+        return await ProjectService.importBoardersData(payload, fakeUser)
     }
     async function whenImportBoardersNotFoundProject(payload: any) {
         jest.spyOn(ProjectDao, "bulkCreateProjectBunk").mockResolvedValue(
@@ -263,7 +266,7 @@ describe("Unit test for ProjectService.", () => {
             true as any as Promise<any>
         )
 
-        return await ProjectService.importBoardersData(payload)
+        return await ProjectService.importBoardersData(payload, fakeUser)
     }
 
     function expectGetAllProjectsData() {
@@ -383,7 +386,7 @@ describe("Unit test for ProjectService.", () => {
                 id: 1,
             },
         ] as any as Promise<any>)
-        return await ProjectService.createProjectBunk(project_id, payload)
+        return await ProjectService.createProjectBunk(project_id, payload, fakeUser)
     }
     async function whenCreateProjectBunkNotFoundProject(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
@@ -397,7 +400,7 @@ describe("Unit test for ProjectService.", () => {
             true as any as Promise<any>
         )
 
-        return await ProjectService.createProjectBunk(1, payload)
+        return await ProjectService.createProjectBunk(1, payload, fakeUser)
     }
     async function whenCreateProjectBunkRepeat(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
@@ -411,7 +414,7 @@ describe("Unit test for ProjectService.", () => {
             true as any as Promise<any>
         )
 
-        return await ProjectService.createProjectBunk(1, payload)
+        return await ProjectService.createProjectBunk(1, payload, fakeUser)
     }
 
     function givenswapBunkPayload() {
@@ -426,13 +429,13 @@ describe("Unit test for ProjectService.", () => {
         jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 2,
         })
-        return await ProjectService.swapBunk(1, payload)
+        return await ProjectService.swapBunk(1, payload, fakeUser)
     }
     async function whenSwapBunkAffectRowNotEqual2(payload: any) {
         jest.spyOn(ProjectDao, "swapBunk").mockResolvedValue({
             affectedRows: 0,
         })
-        return await ProjectService.swapBunk(1, payload)
+        return await ProjectService.swapBunk(1, payload, fakeUser)
     }
 
     describe("取得項目列表", () => {

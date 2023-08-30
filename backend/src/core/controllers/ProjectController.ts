@@ -3,6 +3,7 @@ import ProjectService from "../services/ProjectService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import Sequelize from "sequelize"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ProjectController {
     public async getAllProjectsData(
@@ -39,7 +40,10 @@ export default new (class ProjectController {
         next: NextFunction
     ) {
         try {
-            const data = await ProjectService.createProject(req.body)
+            const data = await ProjectService.createProject(
+                req.body,
+                req.user as RequestUser
+            )
             next(HttpResponse.success(data, 201))
         } catch (error) {
             next(error)
@@ -56,7 +60,8 @@ export default new (class ProjectController {
                 const project_id = req.params.id
                 const data = await ProjectService.createProjectBunk(
                     project_id,
-                    req.body
+                    req.body,
+                    req.user as RequestUser
                 )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data, 201))
@@ -74,7 +79,10 @@ export default new (class ProjectController {
     ) {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const data = await ProjectService.updateProject(req.body)
+                const data = await ProjectService.updateProject(
+                    req.body,
+                    req.user as RequestUser
+                )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data))
                 })
@@ -91,7 +99,10 @@ export default new (class ProjectController {
     ) {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const data = await ProjectService.deleteProject(req.params.id)
+                const data = await ProjectService.deleteProject(
+                    req.params.id,
+                    req.user as RequestUser
+                )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data))
                 })
@@ -108,7 +119,10 @@ export default new (class ProjectController {
     ) {
         try {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
-                const data = await ProjectService.importBoardersData(req.body)
+                const data = await ProjectService.importBoardersData(
+                    req.body,
+                    req.user as RequestUser
+                )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data))
                 })
@@ -124,7 +138,8 @@ export default new (class ProjectController {
             await Db.sequelize.transaction(async (t: Sequelize.Transaction) => {
                 const data = await ProjectService.swapBunk(
                     project_id as any,
-                    req.body
+                    req.body,
+                    req.user as RequestUser
                 )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data))

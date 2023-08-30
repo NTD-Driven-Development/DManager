@@ -2,7 +2,7 @@ import _ from "lodash"
 import { Request, Response, NextFunction } from "express"
 import Passport from "passport"
 import HttpException from "../exceptions/HttpException"
-import UserModel from "../models/User"
+import { UserModel } from "../models/User"
 import RequestUser from "../core/exportDtos/auth/RequestUser"
 
 const jwtAuth = (type: string) => {

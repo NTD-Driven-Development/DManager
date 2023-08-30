@@ -15,6 +15,15 @@ export default new (class ClassDao extends BaseDao {
         })
     }
 
+    public async findOneById(id: number): Promise<ClassModel> {
+        return await Db.class.findOne({
+            where: {
+                id: id,
+                deleted_at: null,
+            },
+        })
+    }
+
     public async findAllByName(name: string): Promise<ClassModel[]> {
         return await Db.class.findAll({
             where: {
@@ -40,11 +49,15 @@ export default new (class ClassDao extends BaseDao {
         )
     }
 
-    public async deleteById(id: number): Promise<Core.IExecuteResult> {
+    public async delete(
+        id: number,
+        deleted_by: number
+    ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.class.update(
                 {
                     deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
                 },
                 {
                     where: {

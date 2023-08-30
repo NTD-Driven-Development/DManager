@@ -6,6 +6,9 @@ describe("Unit test for PointRuleService.", () => {
     afterEach(() => {
         jest.clearAllMocks()
     })
+    const fakeUser = {
+        id: 1,
+    } as any
     const fakePointRule = {
         id: 1,
         code: "E2eTest",
@@ -34,13 +37,13 @@ describe("Unit test for PointRuleService.", () => {
     async function whenCreatePointRuleRepeated(payload: any) {
         jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([fakePointRule])
         jest.spyOn(PointRuleDao, "create").mockResolvedValue(true as any)
-        const result = await PointRuleService.createPointRule(payload)
+        const result = await PointRuleService.createPointRule(payload, fakeUser)
         return result
     }
     async function whenCreatePointRuleSucceeded(payload: any) {
         jest.spyOn(PointRuleDao, "findAllByCode").mockResolvedValue([] as any)
         jest.spyOn(PointRuleDao, "create").mockResolvedValue(true as any)
-        const result = await PointRuleService.createPointRule(payload)
+        const result = await PointRuleService.createPointRule(payload, fakeUser)
         return result
     }
 
@@ -49,7 +52,7 @@ describe("Unit test for PointRuleService.", () => {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload)
+        const result = await PointRuleService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenUpdatePointRuleRepeat(payload: any) {
@@ -57,28 +60,28 @@ describe("Unit test for PointRuleService.", () => {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload)
+        const result = await PointRuleService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenUpdatePointRuleSucceeded(payload: any) {
         jest.spyOn(PointRuleDao, "update").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await PointRuleService.updatePointRule(payload)
+        const result = await PointRuleService.updatePointRule(payload, fakeUser)
         return result
     }
     async function whenDeletePointRuleNotFound(id: number) {
-        jest.spyOn(PointRuleDao, "deleteById").mockResolvedValue({
+        jest.spyOn(PointRuleDao, "delete").mockResolvedValue({
             affectedRows: 0,
         } as any)
-        const result = await PointRuleService.deletePointRule(id)
+        const result = await PointRuleService.deletePointRule(id, fakeUser)
         return result
     }
     async function whenDeletePointRuleSucceeded(id: number) {
-        jest.spyOn(PointRuleDao, "deleteById").mockResolvedValue({
+        jest.spyOn(PointRuleDao, "delete").mockResolvedValue({
             affectedRows: 1,
         } as any)
-        const result = await PointRuleService.deletePointRule(id)
+        const result = await PointRuleService.deletePointRule(id, fakeUser)
         return result
     }
 
@@ -223,7 +226,7 @@ describe("Unit test for PointRuleService.", () => {
 
             // then
             expect(result).toEqual(true)
-            expect(PointRuleDao.deleteById).toBeCalledTimes(1)
+            expect(PointRuleDao.delete).toBeCalledTimes(1)
         })
 
         it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {

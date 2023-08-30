@@ -115,10 +115,16 @@ export default new (class BoarderDao extends BaseDao {
         )
     }
 
-    public async deleteById(id: string | number): Promise<Core.IExecuteResult> {
+    public async delete(
+        id: string | number,
+        deleted_by: number
+    ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.boarder.update(
-                { deleted_at: moment().toDate() },
+                {
+                    deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
+                },
                 {
                     where: { id: id, deleted_at: null },
                 }

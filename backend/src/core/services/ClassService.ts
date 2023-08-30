@@ -5,6 +5,7 @@ import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import ClassDao from "../daos/ClassDao"
 import { UniqueConstraintError } from "sequelize"
 import { ClassModel } from "../../models/Class"
+import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ClassService {
     public async getClasses(query?: {
@@ -16,11 +17,16 @@ export default new (class ClassService {
     }
 
     public async createClass(
-        Class: ClassModel
+        payload: ClassModel,
+        user: RequestUser
     ): Promise<ClassModel> {
         try {
-            await this.ifNameExistedThenThrow(Class)
-            const result = await ClassDao.create(Class)
+            await this.ifNameExistedThenThrow(payload)
+            const model = {
+                ...payload,
+                created_by: user.id,
+            }
+            const result = await ClassDao.create(model)
             return result
         } catch (error: any) {
             if (error instanceof HttpException) {
@@ -31,15 +37,20 @@ export default new (class ClassService {
     }
 
     public async updateClass(
-        Class: ClassModel
+        payload: ClassModel,
+        user: RequestUser
     ): Promise<boolean> {
         try {
-            await this.ifNameExistedThenThrow(Class)
-            const result = await ClassDao.update(Class)
+            await this.ifNameExistedThenThrow(payload)
+            const model = {
+                ...payload,
+                updated_by: user.id,
+            }
+            const result = await ClassDao.update(model)
             if (result.affectedRows === 0) {
                 throw new HttpException("查無資料", 400)
             }
-        return true
+            return true
         } catch (error: any) {
             if (error instanceof HttpException) {
                 throw error
@@ -48,19 +59,22 @@ export default new (class ClassService {
         }
     }
 
-    private async ifNameExistedThenThrow(Class: ClassModel) {
-        const data = await ClassDao.findAllByName(Class.name)
+    private async ifNameExistedThenThrow(payload: ClassModel) {
+        const data = await ClassDao.findAllByName(payload.name)
         const hasRepeat = _.filter(
             data,
-            (item) => item.name === Class.name && item.id !== Class.id
+            (item) => item.name === payload.name && item.id !== payload.id
         )
         if (hasRepeat.length > 0) {
-            throw new HttpException("名稱重複", 400)
+            throw new HttpException("名稱已存在", 400)
         }
     }
 
-    public async deleteClass(id: string | number): Promise<boolean> {
-        const result = await ClassDao.deleteById(id as number)
+    public async deleteClass(
+        id: string | number,
+        user: RequestUser
+    ): Promise<boolean> {
+        const result = await ClassDao.delete(id as number, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
         }

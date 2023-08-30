@@ -47,21 +47,22 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
         return await Db.project.create(project)
     }
 
-    public async update(
-        id: string | number,
-        project: ProjectModel
-    ): Promise<Core.IExecuteResult> {
+    public async update(project: ProjectModel): Promise<Core.IExecuteResult> {
         project.updated_at = moment().toDate()
         return await this.executeResult(
-            Db.project.update(project, { where: { id: id } })
+            Db.project.update(project, { where: { id: project.id } })
         )
     }
 
-    public async delete(id: string | number): Promise<Core.IExecuteResult> {
+    public async delete(
+        id: string | number,
+        deleted_by: number
+    ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.project.update(
                 {
                     deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
                 },
                 { where: { id: id, deleted_at: null } }
             )

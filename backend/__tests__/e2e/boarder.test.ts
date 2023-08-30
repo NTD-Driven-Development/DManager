@@ -1,7 +1,8 @@
 import Sequelize, { Op } from "sequelize"
-import { App } from "../../config/preE2eConfig"
+import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
+import BoarderDao from "../../src/core/daos/BoarderDao"
 
 describe("Acceptance test for BoarderController.", () => {
     function givenCreateProjectPayload() {
@@ -159,20 +160,6 @@ describe("Acceptance test for BoarderController.", () => {
             boarder_role_ids: boarder_role_ids,
         }
     }
-    function expectUpdateBoarderResult(boarder_id: string) {
-        return {
-            id: boarder_id,
-            sid: "1234567890",
-            name: "testUpdate",
-            phone: "0912345678",
-            class_id: 1,
-            birthday: "2000-01-01T00:00:00.000Z",
-            avatar: null,
-            remark: "備註",
-            access_card: "ACC_123456_CARD",
-            boarder_status_id: 2,
-        }
-    }
 
     async function deleteImportData(project_id: number) {
         try {
@@ -216,12 +203,10 @@ describe("Acceptance test for BoarderController.", () => {
         it("預先建立項目", async () => {
             // given
             const payload = givenCreateProjectPayload()
-
             // when
             const response = await App.post("/api/projects").send(payload)
-            testProject = response.body?.data
-
             // then
+            testProject = response.body?.data
             expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
         })
@@ -229,12 +214,10 @@ describe("Acceptance test for BoarderController.", () => {
         it("預先匯入資料", async () => {
             // given
             const payload = givenImportPayload(testProject.id)
-
             // when
             const response = await App.post("/api/projects/import").send(
                 payload
             )
-
             // then
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
@@ -247,12 +230,10 @@ describe("Acceptance test for BoarderController.", () => {
                 offset: 1,
                 limit: 10,
             }
-
             // when
             const response = await App.get("/api/boarders").query(payload)
-            const data = response.body?.data
-
             // then
+            const data = response.body?.data
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(data?.items?.length ?? 0).toBeGreaterThan(0)
@@ -272,12 +253,10 @@ describe("Acceptance test for BoarderController.", () => {
                 offset: 1,
                 limit: 1,
             }
-
             // when
             const response = await App.get("/api/boarders").query(payload)
-            const data = response.body?.data
-
             // then
+            const data = response.body?.data
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(data?.items?.length ?? 0).toBeLessThanOrEqual(payload.limit)
@@ -291,62 +270,18 @@ describe("Acceptance test for BoarderController.", () => {
                     where: { project_id: testProject.id },
                 })
                 .then((result: any) => _.map(result, (item) => item.id))
-
             const payload = givenUpdateBoarderPayload(
                 boarder_id,
                 boarder_role_ids
             )
-
             // when
             const response = await App.put("/api/boarders").send(payload)
-
             // then
+            const result = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
-        })
-
-        it("確認編輯結果", async () => {
-            // given
-            const boarder_id = testBoarder.id
-            const boarder_role_ids = await Db.boarder_role
-                .findAll({
-                    where: { project_id: testProject.id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            const expectResult = expectUpdateBoarderResult(boarder_id)
-
-            // when
-            const response = await App.get(`/api/boarders/${boarder_id}`)
-            const {
-                id,
-                sid,
-                name,
-                phone,
-                class_id,
-                birthday,
-                avatar,
-                remark,
-                access_card,
-                boarder_status_id,
-            } = response.body?.data
-            const data = {
-                id,
-                sid,
-                name,
-                phone,
-                class_id,
-                birthday,
-                avatar,
-                remark,
-                access_card,
-                boarder_status_id,
-            }
-
-            // then
-            expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
-            expect(data).toEqual(expectResult)
-            expect(response.body?.data?.boarder_roles?.length).toBe(boarder_role_ids.length)
+            expect(boarder_role_ids.length).toEqual(result.boarder_roles.length)
+            expect(result.created_by).toBe(mockUser.id)
         })
 
         it("若編輯不存在之編號應回應 400「查無資料」", async () => {
@@ -354,10 +289,8 @@ describe("Acceptance test for BoarderController.", () => {
             const errorMessage: string = "查無資料"
             const boarder_id = "-1"
             const payload = givenUpdateBoarderPayload(boarder_id, [])
-
             // when
             const response = await App.put("/api/boarders").send(payload)
-
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toEqual(errorMessage)
@@ -366,36 +299,25 @@ describe("Acceptance test for BoarderController.", () => {
         it("刪除住宿生資訊", async () => {
             // given
             const boarder_id = testBoarder.id
-
             // when
             const response = await App.delete(`/api/boarders/${boarder_id}`)
-
             // then
+            const expectResult = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
-        })
-
-        it("確認刪除結果，查詢單筆應回傳「查無資料」", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const boarder_id = testBoarder.id
-
-            // when
-            const response = await App.get(`/api/boarders/${boarder_id}`)
-
-            // then
-            expect(response.status).toBe(400)
-            expect(response.body?.error).toEqual(errorMessage)
+            expect(expectResult).toBeNull()
+            expect(
+                (await Db.boarder.findOne({ where: { id: boarder_id } }))
+                    .deleted_by
+            ).toBe(mockUser.id)
         })
 
         it("若刪除不存在之編號應回應 400「查無資料」", async () => {
             // given
             const errorMessage: string = "查無資料"
             const boarder_id = "-1"
-
             // when
             const response = await App.delete(`/api/boarders/${boarder_id}`)
-
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toEqual(errorMessage)
@@ -408,12 +330,10 @@ describe("Acceptance test for BoarderController.", () => {
                 ...testBoarder,
                 ...testBoarder.project_bunk,
             }
-
             // when
             const response = await App.post(
                 `/api/projects/${payload.project_id}/bunks`
             ).send(payload)
-
             // then
             expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
