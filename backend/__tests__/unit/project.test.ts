@@ -61,6 +61,7 @@ describe("Unit test for ProjectService.", () => {
         }
     }
     async function whenCreateProject(payload: any) {
+        jest.spyOn(ProjectDao, "findAll").mockResolvedValue([] as any as Promise<any>)
         jest.spyOn(ProjectDao, "create").mockResolvedValue(fakeProject)
         return await ProjectService.createProject(payload, fakeUser)
     }

@@ -464,7 +464,7 @@ describe("Unit test for BoarderService.", () => {
         return result
     }
 
-        function givenCreateProjectBunkPayload() {
+    function givenCreateProjectBunkPayload() {
         return {
             project_id: 1,
             floor: "9",
@@ -521,6 +521,12 @@ describe("Unit test for BoarderService.", () => {
         )
 
         return await BoarderService.createBoarder(payload, fakeUser)
+    }
+
+    async function whenGetBoarderRoleByIdNotFound(id: number) {
+        jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(null as any)
+        const result = await BoarderService.getBoarderRoleById(id)
+        return result
     }
 
     describe("取得某項目住宿生資訊", () => {
@@ -592,18 +598,20 @@ describe("Unit test for BoarderService.", () => {
             // then
             expect(createdResult).toBe(true)
             expect(BoarderDao.create).toBeCalledWith({
+                id: uuid.v4(),
                 name: payload.name,
                 project_id: project_id,
                 class_id: payload.class_id,
                 sid: payload.sid,
                 boarder_status_id: payload.boarder_status_id,
                 remark: payload.remark,
-                id: uuid.v4(),
+                created_by: fakeUser.id,
             })
             expect(BoarderMappingRoleDao.bulkCreate).toBeCalledWith([
                 {
                     boarder_id: 1,
                     boarder_role_id: payload.boarder_role_ids[0],
+                    created_by: fakeUser.id,
                 },
             ])
             expect(ProjectDao.createProjectBunk).toBeCalledWith({
@@ -614,6 +622,7 @@ describe("Unit test for BoarderService.", () => {
                 room_no: payload.room_no,
                 bed: payload.bed,
                 remark: payload.remark,
+                created_by: fakeUser.id,
             })
         })
 
@@ -787,10 +796,7 @@ describe("Unit test for BoarderService.", () => {
             const errorMessage: string = "查無資料"
             const id = 1
             // when
-            jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(
-                null as any
-            )
-            const result = await BoarderService.getBoarderRoleById(id)
+            const result = whenGetBoarderRoleByIdNotFound(id)
             // then
             expect(result).rejects.toThrow(errorMessage)
             expect(result).rejects.toHaveProperty("statusCode", 400)
@@ -810,9 +816,9 @@ describe("Unit test for BoarderService.", () => {
             expect(BoarderRoleDao.create).toBeCalledTimes(1)
         })
 
-        it("重複建立應擲出例外「資料已重複」，設定狀態碼 400。", async () => {
+        it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "資料已重複"
+            const errorMessage: string = "名稱已存在"
             const payload = givenCreateBoarderRolePayload()
 
             // when
@@ -926,9 +932,9 @@ describe("Unit test for BoarderService.", () => {
             expect(BoarderStatusDao.create).toBeCalledTimes(1)
         })
 
-        it("重複建立應擲出例外「資料已重複」，設定狀態碼 400。", async () => {
+        it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
             // given
-            const errorMessage: string = "資料已重複"
+            const errorMessage: string = "名稱已存在"
             const payload = {
                 name: "E2eTest",
             }
