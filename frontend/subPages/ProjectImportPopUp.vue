@@ -1,6 +1,6 @@
 <template>
     <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-full h-4/5 max-w-[80%] bg-white rounded">
-        <div class="flex-1 flex flex-col w-full p-4 gap-2 lg:p-6 overflow-auto">
+        <div class="flex-1 flex flex-col w-full p-3 gap-2 lg:p-5 overflow-auto">
             <div class="flex flex-col p-2 gap-1 border shadow text-sm">
                 <div class="flex flex-col">
                     <div>

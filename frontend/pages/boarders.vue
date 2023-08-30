@@ -10,9 +10,9 @@
         <div class="flex flex-col gap-3">
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
-                <BoarderCreate :project-id="values?.selectedProjectId!" class="grow-[1] lg:basis-1"
+                <BoarderCreate :project-id="values?.selectedProjectId ?? NaN" class="grow-[1] lg:basis-1"
                 @on-created="boarderPaginator?.reload()"></BoarderCreate>
-                <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
+                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
                     <div class="grid grid-cols-2 gap-3">
                         <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
                     </div>
@@ -20,7 +20,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋住宿生姓名、班級、樓寢床" class="text-xs w-full rounded"
+                <input placeholder="搜尋住宿生姓名、班級、樓寢床" class="text-xs w-full rounded border"
                 @change=""/>
             </div>
             <!-- 列表 -->
@@ -38,7 +38,7 @@
                                     <span>{{ it?.name }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(it?.id)"></Icon>
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(values?.selectedProjectId, it?.id)"></Icon>
                                     <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
                             </div>

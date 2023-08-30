@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { BoarderStatusCaller, updateBoarderStatus } from '~/composables/api/boarderStatus';
+    import { BoarderRoleCaller, updateBoarderRole } from '~/composables/api/boarderRole';
     import * as yup from 'yup';
     import _ from 'lodash';
 
@@ -40,14 +40,14 @@
     const popUp = ref();
     const visible = ref(false);
 
-    const boarderStatusCaller = new BoarderStatusCaller();
+    const boarderRoleCaller = new BoarderRoleCaller();
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const boarderStatus = boarderStatusCaller?.data?.value;
+            const boarderRole = boarderRoleCaller?.data?.value;
 
-            await updateBoarderStatus({
-                id: boarderStatus?.id!,
+            await updateBoarderRole({
+                id: boarderRole?.id!,
                 name: data?.name,
             });
 
@@ -62,12 +62,12 @@
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
 
-    const show = async (boarderStatusId: number) => {
-        boarderStatusCaller.id = boarderStatusId;
-        boarderStatusCaller?.reload();
+    const show = async (boarderRoleId: number) => {
+        boarderRoleCaller.id = boarderRoleId;
+        boarderRoleCaller?.reload();
 
-        await boarderStatusCaller?.wait();
-        const boarderStatus = boarderStatusCaller?.data?.value;
+        await boarderRoleCaller?.wait();
+        const boarderStatus = boarderRoleCaller?.data?.value;
 
         setFieldValue('name', boarderStatus?.name);
 

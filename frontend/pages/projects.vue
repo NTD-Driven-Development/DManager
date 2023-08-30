@@ -5,16 +5,15 @@
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
                 <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"></ProjectCreate>
-                <div class="grow-[1] bg-white h-auto border rounded p-3 text-sm lg:basis-1">
+                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
                     <div class="grid grid-cols-2 gap-3">
                         <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入</button>
-                        <!-- <button class="px-8 py-2 text-white bg-gray-600 rounded">複製自</button> -->
                     </div>
                 </div>
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋項目名稱" class="text-xs w-full rounded"
+                <input placeholder="搜尋項目名稱" class="text-xs w-full rounded border"
                 @change=""/>
             </div>
             <!-- 列表 -->

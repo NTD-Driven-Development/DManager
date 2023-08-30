@@ -113,7 +113,7 @@ export class ClassesCaller extends ApiCaller<Class[]> {
     }
 }
 
-export class BoarderRolesCaller extends ApiCaller<BoarderRole[]> {
+export class BoarderRolesCaller extends ApiCaller<BoarderRole[], BoarderRolesQueries> {
     constructor() {
         super();
         this.startQueriesWatcher();
@@ -131,6 +131,14 @@ export class BoarderRolesCaller extends ApiCaller<BoarderRole[]> {
 
         return axios.get(`${PREFIX}/boarderRoles?${searchParams}`);
     }
+
+    withQuery = <K extends keyof BoarderRolesQueries, V extends BoarderRolesQueries[K]>(key: K, value: V) => {
+        if (key === 'project_id') {
+            this.projectIdHandler(key, value);
+        }
+    };
+
+    protected projectIdHandler = _.throttle(this.setQuery, 800);
 }
 
 export class PointRulesCaller extends ApiCaller<PointRule[]> {
@@ -206,5 +214,9 @@ interface Floor {
 }
 
 interface BoardersQueries extends Queries {
+    project_id?: number,
+}
+
+interface BoarderRolesQueries extends Queries {
     project_id?: number,
 }

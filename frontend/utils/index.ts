@@ -1,3 +1,4 @@
+import { WatchOptions } from 'vue';
 import { Bunk } from '~/src/model';
 import ToastNotifier from '~/components/ToastNotifier.vue';
 import _ from 'lodash';
@@ -146,7 +147,7 @@ export const toQueryString = <T extends object>(value: T) => {
     });
 }
 
-export const queryStringInspecter = <T extends object>(ref: Ref<T>) => {
+export const queryStringInspecter = <T extends object>(ref: Ref<T>, options?: WatchOptions) => {
     const stopHandler = watch(() => ref.value, (n) => {
         const router = useRouter();
         const queries = toQueryString(n);
@@ -154,7 +155,7 @@ export const queryStringInspecter = <T extends object>(ref: Ref<T>) => {
         router.replace({
             query: queries,
         });
-    }, { deep: true, immediate: false });
+    }, options);
 
     onBeforeRouteLeave(() => {
         stopHandler();

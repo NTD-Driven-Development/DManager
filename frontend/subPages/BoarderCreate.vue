@@ -1,102 +1,102 @@
 <template>
-    <div class="flex flex-col bg-gray-500 overflow-hidden rounded text-sm">
-        <form class="flex flex-1 flex-col p-3 gap-1">
+    <div class="flex flex-col overflow-hidden rounded text-sm bg-white">
+        <form class="flex flex-1 flex-col p-3 gap-2 border border-gray-300 lg:p-5">
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>樓層：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="floor" placeholder="樓層"
                         :options="floorList" :option-key="'floor'" :option-value="'floor'"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>房型：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="room_type" placeholder="房型"
                         :options="roomTypeList" :option-key="'type'" :option-value="'type'"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>房別：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="room_no" placeholder="房別"
                         :options="roomNoList" :option-key="'no'" :option-value="'no'"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>床號：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="bed" placeholder="床號"
                         :options="bedList"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
             </div>
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>姓名：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="name" placeholder="請輸入姓名" class="w-full rounded"/>
+                        <Input name="name" placeholder="請輸入姓名" class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span>學號：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="sid" placeholder="請輸入學號" class="w-full rounded"/>
+                        <Input name="sid" placeholder="請輸入學號" class="w-full rounded border"/>
                     </div>
                 </div>
                 
             </div>
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>班級：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="class_id" placeholder="請選擇班級"
                         :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" init-value="0"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
-                    <div class="flex gap-0.5 shrink-0 text-white">
+                    <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>住宿狀態：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="boarder_status_id" placeholder="請選擇住宿狀態"
                         :options="boarderStatusList" :option-key="'id'" :option-value="'name'"
-                        class="w-full rounded"/>
+                        class="w-full rounded border"/>
                     </div>
                 </div>
             </div>
             <div class="flex flex-col justify-center w-full gap-0.5">
-                <div class="flex gap-0.5 shrink-0 text-white">
+                <div class="flex gap-0.5 shrink-0">
                     <span>備註：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">
-                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[80px] max-h-[160px]"/>
+                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[80px] max-h-[160px] border"/>
                 </div>
             </div>
         </form>

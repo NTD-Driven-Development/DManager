@@ -1,25 +1,25 @@
 <template>
-    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] bg-gray-500 rounded">
-        <div class="flex-1 flex flex-col w-full p-4 gap-2 lg:p-6 overflow-auto">
+    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] text-sm bg-white rounded">
+        <div class="flex-1 flex flex-col w-full p-3 gap-2 lg:p-5 overflow-auto">
             <div class="flex flex-col justify-center w-full gap-0.5">
-                <div class="flex gap-0.5 shrink-0 text-white">
+                <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>名稱：</span>
                     </div>
                 <div class="flex-1 text-black text-xs">
-                    <Input name="name" placeholder="請輸入名稱" class="w-full rounded"/>
+                    <Input name="name" placeholder="請輸入名稱" class="w-full rounded border"/>
                 </div>
             </div>
             <div class="flex flex-col justify-center w-full gap-0.5">
-                <div class="flex gap-0.5 shrink-0 text-white">
+                <div class="flex gap-0.5 shrink-0">
                     <span>備註：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">
-                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[100px] max-h-[200px]"/>
+                    <TextArea name="remark" placeholder="請輸入備註" class="w-full rounded h-full min-h-[100px] max-h-[200px] border"/>
                 </div>
             </div>
         </div>
-        <button class="shrink-0 text-sm w-full p-2 text-white bg-gray-600" @click="onSubmit">
+        <button class="shrink-0 w-full p-2 text-white bg-gray-600" @click="onSubmit">
             儲存
         </button>
     </PopUp>

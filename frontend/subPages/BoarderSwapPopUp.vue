@@ -1,49 +1,49 @@
 <template>
-    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] bg-gray-500 rounded">
-        <div class="flex-1 flex flex-col w-full p-4 gap-2 lg:p-6 lg:flex-row overflow-auto">
+    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] text-sm bg-white rounded">
+        <div class="flex-1 flex flex-col w-full p-3 gap-2 lg:p-5 lg:flex-row overflow-auto">
             <div class="flex flex-col justify-center w-full gap-1.5">
-                <div class="flex gap-0.5 shrink-0 text-sm text-white">
+                <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
                         <span>床位1：</span>
                 </div>
                 <div class="flex-1 text-black text-xs">
-                    <Input name="bunk1" placeholder="請輸入床位1" class="w-full rounded"/>
+                    <Input name="bunk1" placeholder="請輸入床位1" class="w-full rounded border"/>
                 </div>
-                <div class="flex flex-col gap-1 text-xs text-white">
+                <div class="flex flex-col gap-1 text-xs">
                     <div>
                         <span>姓名：</span>
-                        <span>{{ boarder1?.name }}</span>
+                        <span>{{ !_.isEmpty(boarder1?.name) ? boarder1?.name : '--' }}</span>
                     </div>
                     <div>
                         <span>班級：</span>
-                        <span>{{ boarder1?.class?.name }}</span>
+                        <span>{{ !_.isEmpty(boarder1?.class?.name) ? boarder1?.class?.name : '--' }}</span>
                     </div>
                     <div>
                         <span>學號：</span>
-                        <span>{{ boarder1?.sid }}</span>
+                        <span>{{ !_.isEmpty(boarder1?.sid) ? boarder1?.sid : '--' }}</span>
                     </div>
                 </div>
             </div>
             <div class="flex flex-col justify-center w-full gap-1.5">
-                <div class="flex gap-0.5 shrink-0 text-sm text-white">
+                <div class="flex gap-0.5 shrink-0">
                     <span class="text-red-500">*</span>
                     <span>床位2：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">
-                    <Input name="bunk2" placeholder="請輸入床位2" class="w-full rounded"/>
+                    <Input name="bunk2" placeholder="請輸入床位2" class="w-full rounded border"/>
                 </div>
-                <div class="flex flex-col gap-1 text-xs text-white">
+                <div class="flex flex-col gap-1 text-xs">
                     <div>
                         <span>姓名：</span>
-                        <span>{{ boarder2?.name }}</span>
+                        <span>{{ !_.isEmpty(boarder2?.name) ? boarder2?.name : '--' }}</span>
                     </div>
                     <div>
                         <span>班級：</span>
-                        <span>{{ boarder2?.class?.name }}</span>
+                        <span>{{ !_.isEmpty(boarder2?.class?.name) ? boarder2?.class?.name : '--' }}</span>
                     </div>
                     <div>
                         <span>學號：</span>
-                        <span>{{ boarder2?.sid }}</span>
+                        <span>{{ !_.isEmpty(boarder2?.sid) ? boarder2?.sid : '--' }}</span>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
     const emits = defineEmits<Emits>();
 
     const toastNotifier = inject(ToastNotifierKey);
-    const { values, handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
+    const { values, handleSubmit } = useForm({ validationSchema: schema });
 
     const popUp = ref();
     const visible = ref(false);

@@ -6,12 +6,12 @@
             @on-created="telCardContacterPaginator?.reload()"></OptionTelCardContacterCreate>
         </div>
         <!-- 搜尋 -->
-        <div class="w-full lg:w-64">
+        <div class="w-full lg:w-64 border">
             <input placeholder="搜尋名稱" class="text-xs w-full rounded"
             @change=""/>
         </div>
         <!-- 列表 -->
-        <div class="w-full overflow-auto">
+        <div class="w-full overflow-auto bg-white">
             <OrderTable id="id" :headers="headers" :rows="TelCardContacterList">
                 <template #名稱="{ data }">
                     <div class="px-2 py-1">

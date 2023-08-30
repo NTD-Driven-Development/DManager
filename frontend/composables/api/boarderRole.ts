@@ -89,8 +89,9 @@ interface BaseBoarderRoleFormData {
 
 type CreateBoarderRoleFormData = BaseBoarderRoleFormData
 
-type UpdateBoarderRoleFormData = BaseBoarderRoleFormData & {
+interface UpdateBoarderRoleFormData {
     id: number,
+    name: string,
 }
 
 interface BoarderRolePaginationQueries extends PaginationQueries {

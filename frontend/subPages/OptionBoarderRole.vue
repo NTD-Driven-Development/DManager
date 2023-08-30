@@ -12,12 +12,12 @@
             @on-created="boarderRolePaginator?.reload()"></OptionBoarderRoleCreate>
         </div>
         <!-- 搜尋 -->
-        <div class="w-full lg:w-64">
+        <div class="w-full lg:w-64 border">
             <input placeholder="搜尋名稱" class="text-xs w-full rounded"
             @change=""/>
         </div>
         <!-- 列表 -->
-        <div class="w-full overflow-auto">
+        <div class="w-full overflow-auto bg-white">
             <OrderTable id="id" :headers="headers" :rows="boarderRoleList">
                 <template #名稱="{ data }">
                     <div class="px-2 py-1">
@@ -36,7 +36,7 @@
             </OrderTable>
         </div>
         <Paginator :api-paginator="boarderRolePaginator"></Paginator>
-        <!-- <OptionBoarderRoleEditPopUp ref="optionBoarderRoleEditPopUp"></OptionBoarderRoleEditPopUp> -->
+        <OptionBoarderRoleEditPopUp ref="optionBoarderRoleEditPopUp"></OptionBoarderRoleEditPopUp>
     </div>
 </template>
 

@@ -40,10 +40,10 @@
                     v-show="$route.path.startsWith('/boarders')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
-                @click="navigateTo('/records/point'); isMenuOpen = false;">
-                    <div :class="[{ 'font-bold': $route.path.startsWith('/records/point') }]">紀錄管理</div>
+                @click="navigateTo('/records'); isMenuOpen = false;">
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/records') }]">紀錄管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
-                    v-show="$route.path.startsWith('/records/point')"></Icon>
+                    v-show="$route.path.startsWith('/records')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/notes'); isMenuOpen = false;">
