@@ -81,16 +81,6 @@ export const updateProject = async (formData: UpdateProjectFormData) => {
     }
 }
 
-export const createProjectBunk =async (id: number, formData: CreateProjectBunkFormData) => {
-    try {
-        const response = await axios.post(`${PREFIX}/${id}/bunks`, formData);
-        return response.data;
-    }
-    catch(error) {
-        throw error;
-    }
-}
-
 export const swapProjectBunk =async (id: number, formData: SwapProjectBunkFormData) => {
     try {
         const response = await axios.post(`${PREFIX}/${id}/swapBunk`, formData);
@@ -142,18 +132,6 @@ interface ImportProjectFormData {
 interface UpdateProjectFormData {
     id: number,
     name: string,
-    remark?: string,
-}
-
-interface CreateProjectBunkFormData {
-    floor: number,
-    room_type: string,
-    room_no: number,
-    bed: number,
-    name: string,
-    sid?: string,
-    class_id?: number,
-    boarder_status_id: number,
     remark?: string,
 }
 

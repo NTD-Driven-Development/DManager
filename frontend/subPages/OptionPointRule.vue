@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
     import { Icon } from '@iconify/vue';
-    import { PointRulePaginator } from '~/composables/api/pointRule';
+    import { PointRulePaginator } from '~/composables/api/point';
 
     const headers = [
         { title: '代號', values: ['code'] },

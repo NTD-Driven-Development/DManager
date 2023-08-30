@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { PointRuleCaller, updatePointRule } from '~/composables/api/pointRule';
+    import { PointRuleCaller, updatePointRule } from '~/composables/api/point';
     import * as yup from 'yup';
     import _ from 'lodash';
 

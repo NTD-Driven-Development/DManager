@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-    import { PointRuleCaller, deletePointRule } from '~/composables/api/pointRule';
+    import { PointRuleCaller, deletePointRule } from '~/composables/api/point';
     import _ from 'lodash';
 
     interface Emits {

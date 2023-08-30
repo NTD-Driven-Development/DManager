@@ -157,7 +157,7 @@ export class PointRulesCaller extends ApiCaller<PointRule[]> {
             });
         }
 
-        return axios.get(`${PREFIX}/pointRules?${searchParams}`);
+        return axios.get(`${PREFIX}/points/rule?${searchParams}`);
     }
 }
 
@@ -177,7 +177,7 @@ export class TelCardContractersCaller extends ApiCaller<TelCardContracter[]> {
             });
         }
 
-        return axios.get(`${PREFIX}/telCardContracters?${searchParams}`);
+        return axios.get(`${PREFIX}/telCards/contracter?${searchParams}`);
     }
 }
 

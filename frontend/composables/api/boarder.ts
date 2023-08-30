@@ -60,6 +60,16 @@ export class BoarderCaller extends ApiCaller<Boarder> {
     }
 }
 
+export const createBoarder =async (formData: CreateBoarderFormData) => {
+    try {
+        const response = await axios.post(`${PREFIX}`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 export const updateBoarder = async (formData: UpdateBoarderFormData) => {
     try {
         const response = await axios.put(`${PREFIX}`, formData);
@@ -85,6 +95,19 @@ type Boarder = Model.Boarder & Model.CreateInfo & Model.UpdateInfo & {
     boarder_status: Model.BoarderStatus,
     boarder_roles: Model.BoarderRole[],
     project: Model.Project,
+}
+
+interface CreateBoarderFormData {
+    project_id: number,
+    floor: number,
+    room_type: string,
+    room_no: number,
+    bed: number,
+    name: string,
+    sid?: string,
+    class_id?: number,
+    boarder_status_id: number,
+    remark?: string,
 }
 
 interface UpdateBoarderFormData {
