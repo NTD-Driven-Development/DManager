@@ -72,6 +72,7 @@ export default new (class ShareDao extends BaseDao {
             ],
             where: {
                 deleted_at: null,
+                project_id: project_id,
             },
         })
     }

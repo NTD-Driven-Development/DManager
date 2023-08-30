@@ -113,4 +113,13 @@ describe("Acceptance test for ShareController.", () => {
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
     })
+
+    it("取得某項目住宿生清單，只能查詢單一項目", async () => {
+        const payload = {
+            project_id: -1,
+        }
+        const response = await App.get("/api/share/boarders").query(payload)
+        expect(response.status).toBe(200)
+        expect(response.body?.data?.length ?? 0).toBe(0)
+    })
 })

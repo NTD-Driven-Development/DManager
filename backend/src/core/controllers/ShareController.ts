@@ -3,7 +3,7 @@ import ShareService from "../services/ShareService"
 import HttpResponse from "../../utils/httpResponse"
 
 export default new (class ShareController {
-    public async getBunks (req: Request, res: Response, next: NextFunction) {
+    public async getBunks(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await ShareService.getBunks()
             next(HttpResponse.success(data))
@@ -12,7 +12,7 @@ export default new (class ShareController {
         }
     }
 
-    public async getClasses (req: Request, res: Response, next: NextFunction) {
+    public async getClasses(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await ShareService.getClasses()
             next(HttpResponse.success(data))
@@ -21,7 +21,11 @@ export default new (class ShareController {
         }
     }
 
-    public async getBoarderStatuses (req: Request, res: Response, next: NextFunction) {
+    public async getBoarderStatuses(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const data = await ShareService.getBoarderStatuses()
             next(HttpResponse.success(data))
@@ -30,7 +34,11 @@ export default new (class ShareController {
         }
     }
 
-    public async getBoarderRoles (req: Request, res: Response, next: NextFunction) {
+    public async getBoarderRoles(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const project_id = req.query?.project_id as string
             const data = await ShareService.getBoarderRoles(project_id)
@@ -40,7 +48,11 @@ export default new (class ShareController {
         }
     }
 
-    public async getTelCardContacters (req: Request, res: Response, next: NextFunction) {
+    public async getTelCardContacters(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const data = await ShareService.getTelCardContacters()
             next(HttpResponse.success(data))
@@ -49,7 +61,11 @@ export default new (class ShareController {
         }
     }
 
-    public async getPointRules (req: Request, res: Response, next: NextFunction) {
+    public async getPointRules(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const data = await ShareService.getPointRules()
             next(HttpResponse.success(data))
@@ -58,7 +74,7 @@ export default new (class ShareController {
         }
     }
 
-    public async getProjects (req: Request, res: Response, next: NextFunction) {
+    public async getProjects(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await ShareService.getProjects()
             next(HttpResponse.success(data))
@@ -67,7 +83,11 @@ export default new (class ShareController {
         }
     }
 
-    public async getBoardersFromProject (req: Request, res: Response, next: NextFunction) {
+    public async getBoardersFromProject(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const project_id = req.query?.project_id as string
             const data = await ShareService.getBoardersFromProject(project_id)
