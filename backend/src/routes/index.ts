@@ -8,7 +8,7 @@ import boarderRouters from './mapping/boarder';
 import boarderRoleRouters from './mapping/boarderRole';
 import boarderStatusRouters from './mapping/boarderStatus';
 import classRouters from './mapping/class';
-import pointRuleRouters from './mapping/pointRule';
+import pointRouters from './mapping/point';
 import telCardRouters from './mapping/telCard';
 
 const router = Router();
@@ -22,7 +22,7 @@ router.use('/boarders', boarderRouters);
 router.use('/boarderRoles', boarderRoleRouters);
 router.use('/boarderStatuses', boarderStatusRouters);
 router.use('/classes', classRouters);
-router.use('/points', pointRuleRouters);
+router.use('/points', pointRouters);
 router.use('/telCards', telCardRouters);
 
 export default router;

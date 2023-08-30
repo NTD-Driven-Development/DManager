@@ -86,13 +86,13 @@ describe("Acceptance test for ShareController.", () => {
     })
 
     it("取得電話卡聯絡人清單", async () => {
-        const response = await App.get("/api/share/telCardContacters")
+        const response = await App.get("/api/share/telCards/contacter")
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
     })
 
     it("取得加扣點規則清單", async () => {
-        const response = await App.get("/api/share/points")
+        const response = await App.get("/api/share/points/rule")
         const testData = _.find(response.body?.data, { id: testPointRuleId })
 
         expect(response.status).toBe(200)
