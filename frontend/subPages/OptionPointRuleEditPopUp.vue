@@ -1,9 +1,9 @@
 <template>
-    <div class="flex flex-col overflow-hidden rounded text-sm bg-white">
-        <form class="flex flex-1 flex-col p-3 gap-2 border border-gray-300 lg:p-5">
+    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] bg-white rounded">
+        <div class="flex-1 flex flex-col w-full p-4 gap-2 lg:p-6 overflow-auto">
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-col justify-center w-full gap-0.5">
-                    <div class="flex gap-0.5 shrink-0">
+                    <div class="flex gap-0.5 shrink-0 text-sm">
                         <span class="text-red-500">*</span>
                         <span>編號：</span>
                     </div>
@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col justify-center w-full gap-0.5">
-                    <div class="flex gap-0.5 shrink-0">
+                    <div class="flex gap-0.5 shrink-0 text-sm">
                         <span class="text-red-500">*</span>
                         <span>點數：</span>
                     </div>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="flex flex-col justify-center w-full gap-0.5">
-                <div class="flex gap-0.5 shrink-0">
+                <div class="flex gap-0.5 shrink-0 text-sm">
                     <span class="text-red-500">*</span>
                     <span>事由：</span>
                 </div>
@@ -30,21 +30,21 @@
                     <TextArea name="reason" placeholder="請輸入事由" class="w-full rounded h-full min-h-[80px] max-h-[160px] border"/>
                 </div>
             </div>
-        </form>
-        <button class="flex items-center justify-center p-2 bg-gray-600 text-white" @click="onSubmit">
-            新增加扣點規則
+        </div>
+        <button class="shrink-0 text-sm w-full p-2 text-white bg-gray-600" @click="onSubmit">
+            儲存
         </button>
-    </div>
+    </PopUp>
 </template>
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { createPointRule } from '~/composables/api/pointRule';
+    import { PointRuleCaller, updatePointRule } from '~/composables/api/pointRule';
     import * as yup from 'yup';
     import _ from 'lodash';
 
     interface Emits {
-        (e: 'onCreated'): void,
+        (e: 'onEdited'): void;
     }
 
     const schema = yup.object().shape({
@@ -55,20 +55,28 @@
 
     const emits = defineEmits<Emits>();
 
-    const { handleSubmit, resetForm } = useForm({ validationSchema: schema });
     const toastNotifier = inject(ToastNotifierKey);
+    const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
+
+    const popUp = ref();
+    const visible = ref(false);
+
+    const pointRuleCaller = new PointRuleCaller();
 
     const onSubmit = handleSubmit(async (data) => {
-        try {            
-            await createPointRule({
+        try {
+            const pointRule = pointRuleCaller?.data?.value;
+
+            await updatePointRule({
+                id: pointRule?.id!,
                 code: data?.code,
                 reason: data?.reason,
                 point: data?.point,
             });
-            
-            toastNotifier?.success('新增成功');
-            emits('onCreated');
-            resetForm();
+
+            toastNotifier?.success('儲存成功');
+            emits('onEdited');
+            close();
         }
         catch(error) {
             showParseError(toastNotifier, error);
@@ -76,4 +84,26 @@
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
+
+    const show = async (pointRuleId: number) => {
+        pointRuleCaller.id = pointRuleId;
+        pointRuleCaller?.reload();
+
+        await pointRuleCaller?.wait();
+        const pointRule = pointRuleCaller?.data?.value;
+
+        setFieldValue('code', pointRule?.code);
+        setFieldValue('reason', pointRule?.reason);
+        setFieldValue('point', pointRule?.point);
+
+        popUp.value?.show();
+        visible.value = true;
+    };
+
+    const close = () => {
+        popUp.value?.close();
+        visible.value = false;
+    };
+
+    defineExpose({ show, close });
 </script>

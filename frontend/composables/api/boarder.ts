@@ -70,10 +70,21 @@ export const updateBoarder = async (formData: UpdateBoarderFormData) => {
     }
 }
 
-type Boarder = Model.Boarder & {
+export const deleteBoarder = async (id: string) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+type Boarder = Model.Boarder & Model.CreateInfo & Model.UpdateInfo & {
     class: Model.Class,
     boarder_status: Model.BoarderStatus,
     boarder_roles: Model.BoarderRole[],
+    project: Model.Project,
 }
 
 interface UpdateBoarderFormData {

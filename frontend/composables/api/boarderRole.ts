@@ -80,7 +80,7 @@ export const updateBoarderRole = async (formData: UpdateBoarderRoleFormData) => 
     }
 }
 
-type BoarderRole = Model.BoarderRole
+type BoarderRole = Model.BoarderRole & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseBoarderRoleFormData {
     project_id: number,

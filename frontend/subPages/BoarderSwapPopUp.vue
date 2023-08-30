@@ -12,15 +12,15 @@
                 <div class="flex flex-col gap-1 text-xs">
                     <div>
                         <span>姓名：</span>
-                        <span>{{ !_.isEmpty(boarder1?.name) ? boarder1?.name : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder1?.name) }}</span>
                     </div>
                     <div>
                         <span>班級：</span>
-                        <span>{{ !_.isEmpty(boarder1?.class?.name) ? boarder1?.class?.name : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder1?.class?.name) }}</span>
                     </div>
                     <div>
                         <span>學號：</span>
-                        <span>{{ !_.isEmpty(boarder1?.sid) ? boarder1?.sid : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder1?.sid) }}</span>
                     </div>
                 </div>
             </div>
@@ -35,15 +35,15 @@
                 <div class="flex flex-col gap-1 text-xs">
                     <div>
                         <span>姓名：</span>
-                        <span>{{ !_.isEmpty(boarder2?.name) ? boarder2?.name : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder2?.name) }}</span>
                     </div>
                     <div>
                         <span>班級：</span>
-                        <span>{{ !_.isEmpty(boarder2?.class?.name) ? boarder2?.class?.name : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder2?.class?.name) }}</span>
                     </div>
                     <div>
                         <span>學號：</span>
-                        <span>{{ !_.isEmpty(boarder2?.sid) ? boarder2?.sid : '--' }}</span>
+                        <span>{{ checkValueEmpty(boarder2?.sid) }}</span>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,13 @@
     }
 
     const show = async (projectId: number) => {
-        boardersCaller.withQuery('project_id', projectId);
+        if (projectId != boardersCaller?.queries?.value?.project_id) {
+            boardersCaller.withQuery('project_id', projectId);
+        }
+        else {
+            boardersCaller?.reload();
+        }
+        await boardersCaller?.wait();
 
         popUp.value?.show();
         visible.value = true;

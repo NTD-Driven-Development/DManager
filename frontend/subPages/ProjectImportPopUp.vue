@@ -66,7 +66,7 @@
                     <tr v-for="it, index in editedData" :class="[{ 'bg-gray-100': index % 2 == 1 }]">
                         <td><div class="px-2 py-1">{{ index + 1 }}</div></td>
                         <td v-for="cs in columnSchema">
-                            <div class="px-2 py-1"> {{ !_.isEmpty(it[cs?.key]) ? it[cs?.key] : '--' }}</div>
+                            <div class="px-2 py-1"> {{ checkValueEmpty(it[cs?.key]) }}</div>
                         </td>
                     </tr>
                 </table>
@@ -76,32 +76,32 @@
                     <div class="flex flex-1 flex-col p-2 border shadow">
                         <div>識別為空床位，但非必填欄位有值者</div>
                         <div>
-                            <div>{{ noticeLists?.notice1List.length ? noticeLists?.notice1List?.join('、') : '無' }}</div>
+                            <div>{{ checkValueEmpty(noticeLists?.notice1List, (v) => v?.join('、'), '無') }}</div>
                         </div>
                     </div>
                     <div class="flex flex-1 flex-col p-2 border shadow">
                         <div>學號長度不符合者</div>
                         <div>
-                            <div>{{ noticeLists?.notice2List.length ? noticeLists?.notice2List?.join('、') : '無' }}</div>
+                            <div>{{ checkValueEmpty(noticeLists?.notice2List, (v) => v?.join('、'), '無')}}</div>
                         </div>
                     </div>
                     <div class="flex flex-1 flex-col p-2 border shadow">
                         <div>電話格式不符合者</div>
                         <div>
-                            <div>{{ noticeLists?.notice3List.length ? noticeLists?.notice3List?.join('、') : '無' }}</div>
+                            <div>{{ checkValueEmpty(noticeLists?.notice3List, (v) => v?.join('、'), '無') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-col w-full p-2 border shadow">
                     <div>預期建立的班級</div>
                     <div>
-                        <div>{{ allNewClasses.join('、') }}</div>
+                        <div>{{ checkValueEmpty(allNewClasses, (v) => v?.join('、'), '無') }}</div>
                     </div>
                 </div>
                 <div class="flex flex-col w-full p-2 border shadow">
                     <div>預期建立的身份別</div>
                     <div>
-                        <div>{{ allNewBoarderRoles.join('、') }}</div>
+                        <div>{{ checkValueEmpty(allNewBoarderRoles, (v) => v?.join('、'), '無') }}</div>
                     </div>
                 </div>
             </div>

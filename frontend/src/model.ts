@@ -1,11 +1,25 @@
-export interface Created {
-    created_at: Date,
-    creator: any,
+export interface CreateInfo {
+    creator: {
+        id: number,
+        name: string,
+    },
+    Created_at: string,
 }
 
-export interface Updated {
+export interface UpdateInfo {
+    updater: {
+        id: number,
+        name: string,
+    },
     updated_at: Date,
-    updater: any,
+}
+
+export interface DeleteInfo {
+    deleter: {
+        id: number,
+        name: string,
+    },
+    deleted_at: Date,
 }
 
 export interface Project {

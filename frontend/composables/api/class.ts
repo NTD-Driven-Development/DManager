@@ -72,7 +72,7 @@ export const updateClass = async (formData: UpdateClassFormData) => {
     }
 }
 
-type Class = Model.Class
+type Class = Model.Class & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseClassFormData {
     name: string,

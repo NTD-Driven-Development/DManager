@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { BoarderStatusCaller, updateBoarderStatus } from '~/composables/api/boarderStatus';
+    import { ClassCaller, updateClass } from '~/composables/api/class';
     import * as yup from 'yup';
     import _ from 'lodash';
 
@@ -40,14 +40,14 @@
     const popUp = ref();
     const visible = ref(false);
 
-    const boarderStatusCaller = new BoarderStatusCaller();
+    const classCaller = new ClassCaller();
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const boarderStatus = boarderStatusCaller?.data?.value;
+            const _class = classCaller?.data?.value;
 
-            await updateBoarderStatus({
-                id: boarderStatus?.id!,
+            await updateClass({
+                id: _class?.id!,
                 name: data?.name,
             });
 
@@ -62,14 +62,14 @@
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
 
-    const show = async (boarderStatusId: number) => {
-        boarderStatusCaller.id = boarderStatusId;
-        boarderStatusCaller?.reload();
+    const show = async (classId: number) => {
+        classCaller.id = classId;
+        classCaller?.reload();
 
-        await boarderStatusCaller?.wait();
-        const boarderStatus = boarderStatusCaller?.data?.value;
+        await classCaller?.wait();
+        const _class = classCaller?.data?.value;
 
-        setFieldValue('name', boarderStatus?.name);
+        setFieldValue('name', _class?.name);
 
         popUp.value?.show();
         visible.value = true;

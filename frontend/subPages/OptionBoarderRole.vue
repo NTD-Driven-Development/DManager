@@ -8,7 +8,7 @@
         </div>
         <!-- 操作 -->
         <div class="flex flex-col gap-2 lg:flex-row">
-            <OptionBoarderRoleCreate :project-id="values?.selectedProjectId!" class="grow-[1] lg:basis-1"
+            <OptionBoarderRoleCreate :project-id="values?.selectedProjectId ?? NaN" class="grow-[1] lg:basis-1"
             @on-created="boarderRolePaginator?.reload()"></OptionBoarderRoleCreate>
             <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
             </div>
@@ -23,13 +23,13 @@
             <OrderTable id="id" :headers="headers" :rows="boarderRoleList">
                 <template #名稱="{ data }">
                     <div class="px-2 py-1">
-                        {{ data?.name }}
+                        {{ checkValueEmpty(data?.name) }}
                     </div>
                 </template>
-                <template #建立時間="{ data }">{{ toSimpleDate(data?.created_at) ?? '--' }}</template>
-                <template #建立者="{ data }">{{ data?.created_by ?? '--' }}</template>
-                <template #更新時間="{ data }">{{ toSimpleDate(data?.created_at) ?? '--' }}</template>
-                <template #更新者="{ data }">{{ data?.created_by ?? '--' }}</template>
+                <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => toSimpleDate(v)) }}</template>
+                <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
+                <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
+                <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
                     <div class="flex gap-2">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionBoarderRoleEditPopUp?.show(id)"></Icon>
@@ -38,7 +38,7 @@
             </OrderTable>
         </div>
         <Paginator :api-paginator="boarderRolePaginator"></Paginator>
-        <OptionBoarderRoleEditPopUp ref="optionBoarderRoleEditPopUp"></OptionBoarderRoleEditPopUp>
+        <OptionBoarderRoleEditPopUp ref="optionBoarderRoleEditPopUp" @on-edited="boarderRolePaginator?.reload()"></OptionBoarderRoleEditPopUp>
     </div>
 </template>
 
@@ -51,9 +51,9 @@
     const headers = [
         { title: '名稱', values: ['name'] },
         { title: '建立時間', values: ['created_at'] },
-        { title: '建立者', values: ['created_by'] },
-        { title: '更新時間', values: ['created_at'] },
-        { title: '更新者', values: ['created_by'] },
+        { title: '建立者', values: ['creator'] },
+        { title: '更新時間', values: ['updated_at'] },
+        { title: '更新者', values: ['updater'] },
         { title: '操作', values: [] }
     ]
 

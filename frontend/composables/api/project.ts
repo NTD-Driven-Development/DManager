@@ -46,7 +46,7 @@ export class ProjectCaller extends ApiCaller<Project> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<Model.Project>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<Project>, any>> {
         return axios.get(`${PREFIX}/${this.id}`);
     }
 }
@@ -111,7 +111,7 @@ export const deleteProject = async (id: number) => {
     }
 }
 
-type Project = Model.Project
+type Project = Model.Project & Model.CreateInfo & Model.UpdateInfo
 
 export interface ProjectImportItem {
     floor: string,
@@ -152,7 +152,7 @@ interface CreateProjectBunkFormData {
     bed: number,
     name: string,
     sid?: string,
-    class?: number,
+    class_id?: number,
     boarder_status_id: number,
     remark?: string,
 }

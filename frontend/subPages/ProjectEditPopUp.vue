@@ -32,7 +32,7 @@
     import _ from 'lodash';
 
     interface Emits {
-        (e: 'onSaved'): void;
+        (e: 'onEdited'): void;
     }
 
     const schema = yup.object().shape({
@@ -60,7 +60,7 @@
         });
 
         toastNotifier?.success('儲存成功');
-        emits('onSaved');
+        emits('onEdited');
         close();
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');

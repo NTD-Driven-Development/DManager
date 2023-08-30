@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-h-full gap-1 p-3 sm:p-7 lg:py-10 lg:gap-3 bg-gray-50">
+    <div class="flex flex-col min-h-full gap-2 p-3 sm:p-7 lg:py-10 bg-gray-50">
         <!-- 選擇選項種類 -->
         <div class="flex flex-col gap-1">
             <div class="text-sm">選擇選單種類：</div>

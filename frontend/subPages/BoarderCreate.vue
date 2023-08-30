@@ -75,7 +75,7 @@
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="class_id" placeholder="請選擇班級"
-                        :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" init-value="0"
+                        :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" :init-value="0"
                         class="w-full rounded border"/>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
     const props = defineProps<Props>();
     const emits = defineEmits<Emits>();
 
-    const { handleSubmit, values, setFieldValue, resetForm } = useForm({ validationSchema: schema });
+    const { handleSubmit, values, setFieldValue } = useForm({ validationSchema: schema });
     const toastNotifier = inject(ToastNotifierKey);
 
     const bunksCaller = new BunksCaller();
@@ -183,8 +183,9 @@
                 bed: data?.bed,
                 name: data?.name,
                 sid: data?.sid,
-                class: data?.class,
+                class_id: data?.class_id != 0 ? data?.class_id : null,
                 boarder_status_id: data?.boarder_status_id,
+                remark: data?.remark,
             });
 
             toastNotifier?.success('新增成功');

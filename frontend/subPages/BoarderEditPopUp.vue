@@ -1,5 +1,5 @@
 <template>
-    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] max-h-[80%] text-sm bg-white rounded">
+    <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-6/12 max-w-[80%] max-h-[80%] text-sm bg-white rounded">
         <form class="flex w-full flex-col p-3 gap-2 overflow-auto lg:p-5">
             <div class="flex justify-center w-full gap-2">
                 <div class="aspect-video w-full bg-gray-100"></div>
@@ -110,7 +110,7 @@
     import _ from 'lodash';
 
     interface Emits {
-        (e: 'onSaved'): void;
+        (e: 'onEdited'): void;
     }
 
     const schema = yup.object().shape({
@@ -149,7 +149,7 @@
             id: boader?.id!,
             name: data?.name,
             sid: data?.sid,
-            class_id: data?.class_id,
+            class_id: data?.class_id != 0 ? data?.class_id : null,
             boarder_status_id: data?.boarder_status_id,
             phone: data?.phone,
             birthday: data?.birthday,
@@ -159,7 +159,7 @@
         });
 
         toastNotifier?.success('儲存成功');
-        emits('onSaved');
+        emits('onEdited');
         close();
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
@@ -181,7 +181,7 @@
 
             setFieldValue('name', boader?.name);
             setFieldValue('sid', boader?.sid);
-            setFieldValue('class_id', boader?.class?.id);
+            setFieldValue('class_id', boader?.class?.id ?? 0);
             setFieldValue('boarder_status_id', boader?.boarder_status?.id);
             setFieldValue('phone', boader?.phone);
             setFieldValue('birthday', boader?.birthday ? toSimpleDate(boader?.birthday) : undefined);

@@ -25,4 +25,4 @@ export class SemesterPaginator extends ApiPaginator<User> {
     }
 }
 
-type User = Model.User
+type User = Model.User & Model.CreateInfo & Model.UpdateInfo

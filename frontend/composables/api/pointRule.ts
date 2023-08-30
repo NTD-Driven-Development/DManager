@@ -72,7 +72,7 @@ export const updatePointRule = async (formData: UpdatePointRuleFormData) => {
     }
 }
 
-type PointRule = Model.PointRule
+type PointRule = Model.PointRule & Model.CreateInfo & Model.UpdateInfo
 
 interface BasePointRuleFormData {
     code: string,

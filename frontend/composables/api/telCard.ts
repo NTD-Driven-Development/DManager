@@ -57,7 +57,7 @@ export class TelCardContacterCaller extends ApiCaller<TelCardContacter> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<Model.BoarderStatus>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<TelCardContacter>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -91,9 +91,9 @@ export const updateTelCardContacter = async (formData: UpdateTelCardContacterFor
     }
 }
 
-type TelCard = Model.TelCard
+type TelCard = Model.TelCard & Model.CreateInfo & Model.UpdateInfo
 
-type TelCardContacter = Model.TelCardContacter
+type TelCardContacter = Model.TelCardContacter & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseTelCardContacterFormData {
     name: string,

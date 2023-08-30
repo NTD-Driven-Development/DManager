@@ -38,8 +38,9 @@
                                     <span>{{ it?.name }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(values?.selectedProjectId, it?.id)"></Icon>
-                                    <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer text-sky-600" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(values?.selectedProjectId, it?.id)"></Icon>
+                                    <Icon icon="ic:round-delete" class="w-5 h-5 duration-300 cursor-pointer text-red-600" @mousedown.stop @mouseup.stop="boarderDeletePopUp?.show(it?.id)"></Icon>
+                                    <Icon icon="ic:round-keyboard-arrow-down" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
                             </div>
                         </template>
@@ -48,43 +49,43 @@
                                 <div class="flex">
                                     <div class="basis-0 grow">
                                         <span>學號：</span>
-                                        <span>{{ !_.isEmpty(it?.sid) ? it?.sid : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.sid) }}</span>
                                     </div>
                                     <div class="basis-0 grow">
                                         <span>班級：</span>
-                                        <span>{{ !_.isEmpty(it?.class?.name) ? it?.class?.name : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.class?.name)}}</span>
                                     </div>
                                 </div>
                                 <div class="flex">
                                     <div class="basis-0 grow">
                                         <span>電話：</span>
-                                        <span>{{ !_.isEmpty(it?.phone) ? it?.phone : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.phone) }}</span>
                                     </div>
                                     <div class="basis-0 grow">
                                         <span>生日：</span>
-                                        <span>{{ !_.isEmpty(it?.birthday) ? new Date(it?.birthday ?? '').toISOString().split('T')[0] : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.birthday, (v) => toSimpleDate(v)) }}</span>
                                     </div>
                                 </div>
                                 <div class="flex">
                                     <div class="basis-0 grow">
                                         <span>門禁卡號：</span>
-                                        <span>{{ !_.isEmpty(it?.access_card) ? it?.access_card : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.access_card) }}</span>
                                     </div>
                                     <div class="basis-0 grow">  
                                         <span>住宿狀態：</span>
-                                        <span>{{ !_.isEmpty(it?.boarder_status?.name) ? it?.boarder_status?.name : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.boarder_status?.name) }}</span>
                                     </div>
                                 </div>
                                 <div class="flex">
                                     <div class="basis-0 grow">
                                         <span>身份別：</span>
-                                        <span>{{ it?.boarder_roles?.length ? it?.boarder_roles?.filter((v) => !_.isEmpty(v))?.map((v) => v?.name)?.join('、') : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.boarder_roles, (v) => v?.map((v) => v?.name)?.join('、')) }}</span>
                                     </div>
                                 </div>
                                 <div class="flex">
                                     <div class="basis-0 grow">
                                         <span>備註：</span>
-                                        <span>{{ !_.isEmpty(it?.remark) ? it?.remark : '--' }}</span>
+                                        <span>{{ checkValueEmpty(it?.remark) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +96,8 @@
             <Paginator :api-paginator="boarderPaginator"></Paginator>
         </div>
         <BoarderSwapPopUp ref="boarderSwapPopUp" @on-swapped="boarderPaginator?.reload()"></BoarderSwapPopUp>
-        <BoarderEditPopUp ref="boarderEditPopUp" @on-saved="boarderPaginator?.reload()"></BoarderEditPopUp>
+        <BoarderEditPopUp ref="boarderEditPopUp" @on-edited="boarderPaginator?.reload()"></BoarderEditPopUp>
+        <BoarderDeletePopUp ref="boarderDeletePopUp" @on-deleted="boarderPaginator?.reload()"></BoarderDeletePopUp>
     </div>
 </template>
 
@@ -110,6 +112,7 @@
 
     const boarderSwapPopUp = ref();
     const boarderEditPopUp = ref();
+    const boarderDeletePopUp = ref();
 
     const boarderPaginator = new BoarderPaginator({ immediate: false });
     const { data: boarderList } = boarderPaginator;

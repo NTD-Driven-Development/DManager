@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { BoarderStatusCaller, updateBoarderStatus } from '~/composables/api/boarderStatus';
+    import { TelCardContacterCaller, updateTelCardContacter } from '~/composables/api/telCard';
     import * as yup from 'yup';
     import _ from 'lodash';
 
@@ -40,14 +40,14 @@
     const popUp = ref();
     const visible = ref(false);
 
-    const boarderStatusCaller = new BoarderStatusCaller();
+    const telCardContacterCaller = new TelCardContacterCaller();
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const boarderStatus = boarderStatusCaller?.data?.value;
+            const telCardContacter = telCardContacterCaller?.data?.value;
 
-            await updateBoarderStatus({
-                id: boarderStatus?.id!,
+            await updateTelCardContacter({
+                id: telCardContacter?.id!,
                 name: data?.name,
             });
 
@@ -62,14 +62,14 @@
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
 
-    const show = async (boarderStatusId: number) => {
-        boarderStatusCaller.id = boarderStatusId;
-        boarderStatusCaller?.reload();
+    const show = async (telCardContacterId: number) => {
+        telCardContacterCaller.id = telCardContacterId;
+        telCardContacterCaller?.reload();
 
-        await boarderStatusCaller?.wait();
-        const boarderStatus = boarderStatusCaller?.data?.value;
+        await telCardContacterCaller?.wait();
+        const telCardContacter = telCardContacterCaller?.data?.value;
 
-        setFieldValue('name', boarderStatus?.name);
+        setFieldValue('name', telCardContacter?.name);
 
         popUp.value?.show();
         visible.value = true;

@@ -1,5 +1,6 @@
 <template>
-    <div tabindex="0" :class="visible ? 'fixed top-0 left-0 w-full h-full bg-black/30 z-40 cursor-default': 'hidden'"
+    <div tabindex="0" :class="visible ? 'fixed top-0 left-0 w-full h-full bg-black/30 z-40 cursor-default' : 'hidden'"
+    v-if="type == 'v-show' || (type == 'v-if' && visible)"
     @mouseup.stop="onEdgeClick()">
         <div class="fixed translate-x-1/2 translate-y-1/2 bottom-1/2 right-1/2 z-50 min-w-[320px]"
         :class="props.containerClass" @mouseup.stop @click.stop @mousedown.stop>
@@ -14,11 +15,13 @@
         onAfterShow?: Function,
         onBeforeClose?: Function,
         containerClass?: string,
+        type?: 'v-show' | 'v-if',
     }
 
     const props = withDefaults(defineProps<Props>(), {
         closeWhenEdgeClick: true,
         containerClass: '',
+        type: 'v-show',
     });
 
     const onEdgeClick = () => {

@@ -31,13 +31,13 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"></Icon>
-                                    <Icon icon="ic:round-keyboard-arrow-up" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
+                                    <Icon icon="ic:round-keyboard-arrow-down" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
                             </div>
                         </template>
                         <template #content>
                             <div class="text-sm">
-                                {{ !_.isEmpty(it?.remark) ? it?.remark : '尚無備註' }}
+                                {{ checkValueEmpty(it?.remark, undefined, '尚無備註') }}
                             </div>
                         </template>
                     </Detail>
@@ -46,7 +46,7 @@
             <Paginator :api-paginator="projectPaginator"></Paginator>
         </div>
         <ProjectImportPopUp ref="projectImportPopUp" @on-imported="projectPaginator?.reload()"></ProjectImportPopUp>
-        <ProjectEditPopUp ref="projectEditPopUp" @on-saved="projectPaginator?.reload()"></ProjectEditPopUp>
+        <ProjectEditPopUp ref="projectEditPopUp" @on-edited="projectPaginator?.reload()"></ProjectEditPopUp>
     </div>
 </template>
 

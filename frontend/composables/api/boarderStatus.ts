@@ -75,7 +75,7 @@ export const updateBoarderStatus = async (formData: UpdateBoarderStatusFormData)
     }
 }
 
-type BoarderStatus = Model.BoarderStatus
+type BoarderStatus = Model.BoarderStatus & Model.CreateInfo & Model.UpdateInfo
 
 interface BaseBoarderStatusFormData {
     name: string,

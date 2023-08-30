@@ -2,6 +2,7 @@ import { WatchOptions } from 'vue';
 import { Bunk } from '~/src/model';
 import ToastNotifier from '~/components/ToastNotifier.vue';
 import _ from 'lodash';
+import { string } from 'yup';
 
 export const useUrl = (options?: UrlOptions): string => {
     const config = useRuntimeConfig();
@@ -133,6 +134,21 @@ export const toSimpleDate = (stringlishDate: string) => {
     }
     catch(error) {
         return null;
+    }
+}
+
+export const checkValueEmpty = <V, O>(value: V, transformer?: (v: NonNullable<V>) => O, returnIfEmpty: string = '--') => {
+    if (_.isNaN(value)) {
+        return returnIfEmpty;
+    }
+    else if (_.isNumber(value)) {
+        return transformer ? transformer(value as NonNullable<V>) : value;
+    }
+    else if (!_.isEmpty(value)) {
+        return transformer ? transformer(value as NonNullable<V>) : value;
+    }
+    else {
+        return returnIfEmpty;
     }
 }
 

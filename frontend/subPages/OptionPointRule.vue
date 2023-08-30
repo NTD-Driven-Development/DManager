@@ -17,15 +17,15 @@
             <OrderTable id="id" :headers="headers" :rows="PointRuleList">
                 <template #代號="{ data }">
                     <div class="px-2 py-1">
-                        {{ data?.code }}
+                        {{ checkValueEmpty(data?.code) }}
                     </div>
                 </template>
-                <template #事由="{ data }">{{ data?.reason ?? '--' }}</template>
-                <template #點數="{ data }">{{ data?.point ?? '--' }}</template>
-                <template #建立時間="{ data }">{{ toSimpleDate(data?.created_at) ?? '--' }}</template>
-                <template #建立者="{ data }">{{ data?.created_by ?? '--' }}</template>
-                <template #更新時間="{ data }">{{ toSimpleDate(data?.created_at) ?? '--' }}</template>
-                <template #更新者="{ data }">{{ data?.created_by ?? '--' }}</template>
+                <template #事由="{ data }">{{ checkValueEmpty(data?.reason) }}</template>
+                <template #點數="{ data }">{{ checkValueEmpty(data?.point) }}</template>
+                <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => toSimpleDate(v)) }}</template>
+                <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
+                <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
+                <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                 <template #操作="{ id }">
                     <div class="flex gap-2">
                         <Icon icon="ic:round-mode-edit" class="cursor-pointer" @click="optionPointRuleEditPopUp?.show(id)"></Icon>
@@ -34,7 +34,7 @@
             </OrderTable>
         </div>
         <Paginator :api-paginator="pointRulePaginator"></Paginator>
-        <!-- <OptionPointRuleEditPopUp ref="optionPointRuleEditPopUp"></OptionPointRuleEditPopUp> -->
+        <OptionPointRuleEditPopUp ref="optionPointRuleEditPopUp" @on-edited="pointRulePaginator?.reload()"></OptionPointRuleEditPopUp>
     </div>
 </template>
 
@@ -47,9 +47,9 @@
         { title: '事由', values: ['reason'] },
         { title: '點數', values: ['point'] },
         { title: '建立時間', values: ['created_at'] },
-        { title: '建立者', values: ['created_by'] },
-        { title: '更新時間', values: ['created_at'] },
-        { title: '更新者', values: ['created_by'] },
+        { title: '建立者', values: ['creator'] },
+        { title: '更新時間', values: ['updated_at'] },
+        { title: '更新者', values: ['updater'] },
         { title: '操作', values: [] }
     ]
 

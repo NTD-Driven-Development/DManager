@@ -25,4 +25,4 @@ export class ProjectPaginator extends ApiPaginator<Point> {
     }
 }
 
-type Point = Model.Point
+type Point = Model.Point & Model.CreateInfo & Model.UpdateInfo
