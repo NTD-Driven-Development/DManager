@@ -8,8 +8,8 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class BoarderNoteService {
     public async getBoarderNotes(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
         project_id?: number
         search?: string
     }): Promise<IPaginationResultDto<BoarderNoteModel>> {

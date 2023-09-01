@@ -7,6 +7,8 @@ import { ProjectBunkModel } from "./ProjectBunk"
 import { BoarderStatusModel } from "./BoarderStatus"
 import { ClassModel } from "./Class"
 import { BoarderRoleModel } from "./BoarderRole"
+import { PointLogModel } from "./PointLog"
+import { TelCardLogModel } from "./TelCardLog"
 
 export interface BoarderModel {
     id: string
@@ -34,6 +36,8 @@ export interface BoarderModel {
     boarder_status?: BoarderStatusModel
     class?: ClassModel
     boarder_roles?: BoarderRoleModel[]
+    point_logs?: PointLogModel[]
+    tel_card_logs?: TelCardLogModel[]
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -85,6 +89,10 @@ export default (sequelize: any, DataTypes: any) => {
             Boarder.hasMany(models.point_log, {
                 foreignKey: "boarder_id",
                 as: "point_logs",
+            })
+            Boarder.hasMany(models.tel_card_log, {
+                foreignKey: "boarder_id",
+                as: "tel_card_logs",
             })
             Boarder.belongsTo(models.user, {
                 foreignKey: "created_by",

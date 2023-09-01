@@ -11,6 +11,7 @@ import classRouters from './mapping/class';
 import pointRouters from './mapping/point';
 import telCardRouters from './mapping/telCard';
 import noteRouters from './mapping/note';
+import exportRouters from './mapping/export';
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use('/classes', classRouters);
 router.use('/points', pointRouters);
 router.use('/telCards', telCardRouters);
 router.use('/notes', noteRouters);
+router.use('/exports', exportRouters);
 
 export default router;

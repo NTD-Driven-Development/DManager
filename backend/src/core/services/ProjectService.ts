@@ -21,8 +21,8 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ProjectService {
     public async getProjects(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
     }): Promise<PaginationResultDto<ProjectModel>> {
         const projects = await ProjectDao.findAll()
         return withPagination(

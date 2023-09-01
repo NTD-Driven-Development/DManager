@@ -10,8 +10,8 @@ import { PointLogModel } from "../../models/PointLog"
 
 export default new (class PointService {
     public async getPointRules(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<PointRuleModel>> {
         const data = await PointRuleDao.findAll()
         return withPagination(data.length, data, query?.offset, query?.limit)
@@ -84,8 +84,8 @@ export default new (class PointService {
     }
 
     public async getPointLogs(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
         project_id?: number
     }): Promise<IPaginationResultDto<PointLogModel>> {
         let result = await PointLogDao.findAll()

@@ -8,8 +8,8 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ClassService {
     public async getClasses(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<ClassModel>> {
         const data = await ClassDao.findAll()
         return withPagination(data.length, data, query?.offset, query?.limit)

@@ -288,8 +288,8 @@ export default new (class BoarderService {
     }
 
     public async getBoarderStatuses(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<BoarderStatusModel>> {
         const data = await BoarderStatusDao.findAll()
         return withPagination(data.length, data, query?.offset, query?.limit)

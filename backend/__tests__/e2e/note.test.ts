@@ -381,6 +381,10 @@ describe("Acceptance test for NoteController.", () => {
             // then
             expect(res.status).toBe(201)
             expect(res.body?.data?.id).toBeTruthy()
+            expect(res.body?.data?.title).toBe(payload.title)
+            expect(res.body?.data?.description).toBe(payload.description)
+            expect(res.body?.data?.boarder_id).toBe(payload.boarder_id)
+            expect(res.body?.data?.created_by).toBe(mockUser.id)
             testBoarderNote = res.body?.data
         })
 

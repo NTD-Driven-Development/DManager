@@ -10,8 +10,8 @@ import { TelCardLogModel } from "../../models/TelCardLog"
 
 export default new (class TelCardService {
     public async getTelCardContacters(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<TelCardContacterModel>> {
         const data = await TelCardContacterDao.findAll()
         return withPagination(data.length, data, query?.offset, query?.limit)
@@ -93,8 +93,8 @@ export default new (class TelCardService {
     }
 
     public async getTelCardLogs(query?: {
-        offset: number
-        limit: number
+        offset?: number
+        limit?: number
         project_id?: number
     }): Promise<IPaginationResultDto<TelCardLogModel>> {
         let result = await TelCardLogDao.findAll()
