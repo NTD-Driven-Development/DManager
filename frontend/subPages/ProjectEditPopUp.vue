@@ -51,17 +51,22 @@
     const projectCaller = new ProjectCaller();
 
     const onSubmit = handleSubmit(async (data) => {
-        const project = projectCaller?.data?.value;
+        try {
+            const project = projectCaller?.data?.value;
 
-        await updateProject({
-            id: project?.id!,
-            name: data?.name,
-            remark: data?.remark,
-        });
+            await updateProject({
+                id: project?.id!,
+                name: data?.name,
+                remark: data?.remark,
+            });
 
-        toastNotifier?.success('儲存成功');
-        emits('onEdited');
-        close();
+            toastNotifier?.success('儲存成功');
+            emits('onEdited');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });

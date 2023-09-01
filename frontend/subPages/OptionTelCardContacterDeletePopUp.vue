@@ -30,13 +30,18 @@
     const { data: telCardContacter } = telCardContacterCaller;
 
     const onSubmit = async () => {
-        const telCardContacter = telCardContacterCaller?.data?.value;
+        try {
+            const telCardContacter = telCardContacterCaller?.data?.value;
 
-        await deleteTelCardContacter(telCardContacter?.id!);
+            await deleteTelCardContacter(telCardContacter?.id!);
 
-        toastNotifier?.success('刪除成功');
-        emits('onDeleted');
-        close();
+            toastNotifier?.success('刪除成功');
+            emits('onDeleted');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     };
 
     const show = async (telCardContacterId: number) => {

@@ -33,13 +33,18 @@
     const { data: boarder } = boarderCaller;
 
     const onSubmit = async () => {
-        const boader = boarderCaller?.data?.value;
+        try {
+            const boader = boarderCaller?.data?.value;
 
-        await deleteBoarder(boader?.id!);
+            await deleteBoarder(boader?.id!);
 
-        toastNotifier?.success('刪除成功');
-        emits('onDeleted');
-        close();
+            toastNotifier?.success('刪除成功');
+            emits('onDeleted');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     };
 
     const show = async (boarderId: string) => {

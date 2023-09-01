@@ -30,13 +30,18 @@
     const { data: boarderRole } = boarderRoleCaller;
 
     const onSubmit = async () => {
-        const boaderRole = boarderRoleCaller?.data?.value;
+        try {
+            const boaderRole = boarderRoleCaller?.data?.value;
 
-        await deleteBoarderRole(boaderRole?.id!);
+            await deleteBoarderRole(boaderRole?.id!);
 
-        toastNotifier?.success('刪除成功');
-        emits('onDeleted');
-        close();
+            toastNotifier?.success('刪除成功');
+            emits('onDeleted');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     };
 
     const show = async (boarderRoleId: number) => {

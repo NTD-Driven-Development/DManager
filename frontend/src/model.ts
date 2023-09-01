@@ -89,8 +89,9 @@ export interface BoarderContacter {
     remark?: string,
 }
 
-export interface Point {
+export interface PointLog {
     id: number,
+    point: number,
     remark?: string,
 }
 
