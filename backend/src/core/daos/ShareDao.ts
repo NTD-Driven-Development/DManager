@@ -19,21 +19,25 @@ export default new (class ShareDao extends BaseDao {
     public async getClasses(): Promise<ClassModel[]> {
         return await Db.class.findAll({
             attributes: ["id", "name"],
+            deleted_at: null,
         })
     }
     public async getBoarderStatuses(): Promise<BoarderStatusModel[]> {
         return await Db.boarder_status.findAll({
             attributes: ["id", "name"],
+            deleted_at: null,
         })
     }
     public async getBoarderRoles(): Promise<BoarderRoleModel[]> {
         return await Db.boarder_role.findAll({
             attributes: ["id", "name", "project_id"],
+            deleted_at: null,
         })
     }
     public async getTelCardContacters(): Promise<TelCardContacterModel[]> {
         return await Db.tel_card_contacter.findAll({
             attributes: ["id", "name"],
+            deleted_at: null,
         })
     }
     public async getPointRules(): Promise<PointRuleModel[]> {
@@ -41,6 +45,7 @@ export default new (class ShareDao extends BaseDao {
             attributes: ["id", "code", "reason", "point"],
             where: {
                 is_actived: true,
+                deleted_at: null,
             },
         })
     }

@@ -8,6 +8,7 @@ export interface PointLogModel {
     boarder_id: string
     project_id: number
     point_rule_id: number
+    point: number
     remark?: string
     created_at?: Date
     created_by?: number
@@ -20,6 +21,7 @@ export default (sequelize: any, DataTypes: any) => {
         boarder_id!: string
         project_id!: number
         point_rule_id!: number
+        point!: number
         remark?: string
         created_at?: Date
         created_by?: number
@@ -80,6 +82,11 @@ export default (sequelize: any, DataTypes: any) => {
                     model: "point_rule",
                     key: "id",
                 },
+            },
+            point: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: "點數",
             },
             remark: {
                 type: DataTypes.STRING(1024),

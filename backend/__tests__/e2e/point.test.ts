@@ -173,6 +173,7 @@ describe("Acceptance test for PointController.", () => {
                 boarder_id: testBoarder.id,
                 project_id: testProject.id,
                 point_rule_id: testPointRule.id,
+                point: 3,
                 remark: "E2eTest123",
                 created_by: mockUser.id,
             })
@@ -180,6 +181,7 @@ describe("Acceptance test for PointController.", () => {
                 boarder_id: testBoarder.id,
                 project_id: testProject.id,
                 point_rule_id: testPointRule.id,
+                point: 3,
                 remark: "E2eTest123",
                 created_by: mockUser.id,
             })
@@ -205,6 +207,7 @@ describe("Acceptance test for PointController.", () => {
                 project_id: testProject.id,
                 boarder_id: testBoarder.id,
                 point_rule_id: testPointRule.id,
+                point: 3,
                 remark: "E2eTest123",
             }
             // when
@@ -215,6 +218,7 @@ describe("Acceptance test for PointController.", () => {
             expect(testPointLog?.project_id).toBe(payload.project_id)
             expect(testPointLog?.boarder_id).toBe(payload.boarder_id)
             expect(testPointLog?.point_rule_id).toBe(payload.point_rule_id)
+            expect(testPointLog?.point).toBe(payload.point)
             expect(testPointLog?.remark).toBe(payload.remark)
             expect(testPointLog?.created_by).toBe(mockUser.id)
         })
