@@ -8,6 +8,7 @@ export interface TelCardLogModel {
     boarder_id: string
     project_id: number
     tel_card_contacter_id: number
+    contacted_at: Date
     remark?: string
     created_at?: Date
     created_by?: number
@@ -22,6 +23,7 @@ export default (sequelize: any, DataTypes: any) => {
         boarder_id!: string
         project_id!: number
         tel_card_contacter_id!: number
+        contacted_at!: Date
         remark?: string
         created_at?: Date
         created_by?: number
@@ -85,6 +87,11 @@ export default (sequelize: any, DataTypes: any) => {
                     model: "tel_card_contacter",
                     key: "id",
                 },
+            },
+            contacted_at: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                comment: "聯絡時間",
             },
             remark: {
                 type: DataTypes.STRING(1024),

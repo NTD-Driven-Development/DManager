@@ -20,6 +20,7 @@ describe("Unit test for TelCardService.", () => {
         tel_card_contacter_id: 1,
         project_id: 1,
         remark: "E2eTest123",
+        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
         created_by: 1,
     }
 
@@ -130,24 +131,28 @@ describe("Unit test for TelCardService.", () => {
                 project_id: 1,
                 boarder_id: "1",
                 tel_card_contacter_id: 1,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
             },
             {
                 id: 2,
                 project_id: 2,
                 boarder_id: "2",
                 tel_card_contacter_id: 1,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
             },
             {
                 id: 3,
                 project_id: 2,
                 boarder_id: "3",
                 tel_card_contacter_id: 1,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
             },
             {
                 id: 4,
                 project_id: 3,
                 boarder_id: "4",
                 tel_card_contacter_id: 2,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
             },
         ])
         const result = await TelCardService.getTelCardLogs(payload)
@@ -159,6 +164,7 @@ describe("Unit test for TelCardService.", () => {
             boarder_id: string
             tel_card_contacter_id: number
             project_id: number
+            contacted_at: Date
             remark: string
             created_by: number
         },
@@ -194,6 +200,8 @@ describe("Unit test for TelCardService.", () => {
             boarder_id: string
             tel_card_contacter_id: number
             project_id: number
+            contacted_at: Date
+            remark?: string
         },
         fakeUser: any
     ) {
@@ -456,6 +464,7 @@ describe("Unit test for TelCardService.", () => {
                 boarder_id: "1",
                 tel_card_contacter_id: 1,
                 project_id: 1,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
             }
             // when
             const result = await whenCreateTelCardLogSucceeded(

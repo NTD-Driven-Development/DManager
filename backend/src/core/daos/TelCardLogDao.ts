@@ -55,6 +55,33 @@ export default new (class TelCardLogDao extends BaseDao {
         return await Db.tel_card_log.findOne({
             include: [
                 {
+                    model: Db.boarder,
+                    attributes: ["id", "sid", "name"],
+                    include: [
+                        {
+                            model: Db.class,
+                            attributes: ["id", "name"],
+                            as: "class",
+                        },
+                        {
+                            model: Db.project_bunk,
+                            attributes: [
+                                "floor",
+                                "room_type",
+                                "room_no",
+                                "bed",
+                            ],
+                            as: "project_bunk",
+                        },
+                    ],
+                    as: "boarder",
+                },
+                {
+                    model: Db.tel_card_contacter,
+                    attributes: ["id", "name"],
+                    as: "tel_card_contacter",
+                },
+                {
                     model: Db.user,
                     attributes: ["id", "name"],
                     as: "creator",

@@ -55,6 +55,33 @@ export default new (class PointLogDao extends BaseDao {
         return await Db.point_log.findOne({
             include: [
                 {
+                    model: Db.boarder,
+                    attributes: ["id", "sid", "name"],
+                    include: [
+                        {
+                            model: Db.class,
+                            attributes: ["id", "name"],
+                            as: "class",
+                        },
+                        {
+                            model: Db.project_bunk,
+                            attributes: [
+                                "floor",
+                                "room_type",
+                                "room_no",
+                                "bed",
+                            ],
+                            as: "project_bunk",
+                        },
+                    ],
+                    as: "boarder",
+                },
+                {
+                    model: Db.point_rule,
+                    attributes: ["id", "code", "reason", "point"],
+                    as: "point_rule",
+                },
+                {
                     model: Db.user,
                     attributes: ["id", "name"],
                     as: "creator",

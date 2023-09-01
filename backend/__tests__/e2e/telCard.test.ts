@@ -160,6 +160,7 @@ describe("Acceptance test for TelCardController.", () => {
                 boarder_id: testBoarder.id,
                 project_id: testProject.id,
                 tel_card_contacter_id: testTelCardContacter.id,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
                 remark: "E2eTest123",
                 created_by: mockUser.id,
             })
@@ -167,6 +168,7 @@ describe("Acceptance test for TelCardController.", () => {
                 boarder_id: testBoarder.id,
                 project_id: testProject.id,
                 tel_card_contacter_id: testTelCardContacter.id,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
                 remark: "E2eTest123",
                 created_by: mockUser.id,
             })
@@ -204,6 +206,7 @@ describe("Acceptance test for TelCardController.", () => {
                 project_id: testProject.id,
                 boarder_id: testBoarder.id,
                 tel_card_contacter_id: testTelCardContacter.id,
+                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
                 remark: "E2eTest123",
             }
             // when
