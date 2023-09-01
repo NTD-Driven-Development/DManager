@@ -1,6 +1,6 @@
 import BoarderService from "../../src/core/services/BoarderService"
 import BoarderDao from "../../src/core/daos/BoarderDao"
-import Sequelize, { UniqueConstraintError } from "sequelize"
+import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 import ProjectDao from "../../src/core/daos/ProjectDao"
 import BoarderRoleDao from "../../src/core/daos/BoarderRoleDao"
 import BoarderStatusDao from "../../src/core/daos/BoarderStatusDao"
@@ -140,25 +140,29 @@ describe("Unit test for BoarderService.", () => {
         }
         return expectResult
     }
-    async function whenGetBoardersFromProject(project_id: number | string) {
+    async function whenGetBoardersFromProject(payload: {
+        project_id: number | string
+        offset?: number
+        limit?: number
+    }) {
         const rawData = [fakeBoarder]
         jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData as any)
-        return await BoarderService.getBoardersFromProject(project_id)
+        return await BoarderService.getBoarders(payload)
     }
-    async function whenGetBoardersFromProjectWithPagination(
-        project_id: number | string,
-        query: {
-            offset: number
-            limit: number
-        }
-    ) {
+    async function whenGetBoardersFromProjectWithPagination(payload: {
+        project_id: number | string
+        offset?: number
+        limit?: number
+    }) {
         const rawData = [fakeBoarder, fakeBoarder, fakeBoarder, fakeBoarder]
         jest.spyOn(BoarderDao, "findAll").mockResolvedValue(rawData as any)
-        return await BoarderService.getBoardersFromProject(project_id, query)
+        return await BoarderService.getBoarders(payload)
     }
-    async function whenGetBoardersFromProjectWithSortedBunk(
-        project_id: number
-    ) {
+    async function whenGetBoardersFromProjectWithSortedBunk(payload: {
+        project_id: number | string
+        offset?: number
+        limit?: number
+    }) {
         const expect = expectGetBoardersFromProjectWithSortedBunk(fakeBoarder)
         jest.spyOn(BoarderDao, "findAll").mockResolvedValue([
             expect.items[3],
@@ -166,7 +170,7 @@ describe("Unit test for BoarderService.", () => {
             expect.items[0],
             expect.items[1],
         ] as any)
-        const result = await BoarderService.getBoardersFromProject(project_id)
+        const result = await BoarderService.getBoarders(payload)
         return result
     }
 
@@ -272,29 +276,29 @@ describe("Unit test for BoarderService.", () => {
             items: [fakeBoarderRole, fakeBoarderRole],
         }
     }
-    async function whenGetBoarderRolesFromProject(project_id: number) {
+    async function whenGetBoarderRolesFromProject(payload: {
+        project_id: number | string
+        offset?: number
+        limit?: number
+    }) {
         jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
             fakeBoarderRole,
         ])
-        const result = await BoarderService.getBoarderRolesFromProject(
-            project_id
-        )
+        const result = await BoarderService.getBoarderRoles(payload)
         return result
     }
-    async function whenGetBoarderRolesFromProjectWithPagination(
-        project_id: number,
-        query: { offset: number; limit: number }
-    ) {
+    async function whenGetBoarderRolesFromProjectWithPagination(payload: {
+        project_id: number | string
+        offset: number
+        limit: number
+    }) {
         jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
             fakeBoarderRole,
             fakeBoarderRole,
             fakeBoarderRole,
             fakeBoarderRole,
         ])
-        const result = await BoarderService.getBoarderRolesFromProject(
-            project_id,
-            query
-        )
+        const result = await BoarderService.getBoarderRoles(payload)
         return result
     }
 
@@ -497,10 +501,10 @@ describe("Unit test for BoarderService.", () => {
     async function whenCreateProjectBunkNotFoundProject(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
         jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
+            new ForeignKeyConstraintError({})
         )
         jest.spyOn(BoarderDao, "create").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
+            new ForeignKeyConstraintError({})
         )
         jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
             true as any as Promise<any>
@@ -511,7 +515,7 @@ describe("Unit test for BoarderService.", () => {
     async function whenCreateProjectBunkRepeat(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
         jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
-            new Sequelize.UniqueConstraintError({})
+            new UniqueConstraintError({})
         )
         jest.spyOn(BoarderDao, "create").mockResolvedValue(
             true as any as Promise<any>
@@ -535,7 +539,7 @@ describe("Unit test for BoarderService.", () => {
             const payload = givenGetBoardersFromProjectPayload()
 
             // when
-            const result = await whenGetBoardersFromProject(payload.project_id)
+            const result = await whenGetBoardersFromProject(payload)
 
             // then
             expect(result).toEqual(expectGetBoardersFromProjectData())
@@ -544,8 +548,8 @@ describe("Unit test for BoarderService.", () => {
 
         it("有分頁", async () => {
             // given
-            const project_id = 1
             const payload = {
+                project_id: 1,
                 offset: 1,
                 limit: 2,
             }
@@ -557,7 +561,6 @@ describe("Unit test for BoarderService.", () => {
 
             // when
             const result = await whenGetBoardersFromProjectWithPagination(
-                project_id,
                 payload
             )
 
@@ -568,13 +571,15 @@ describe("Unit test for BoarderService.", () => {
 
         it("依照樓區室床遞增排序", async () => {
             // given
-            const project_id = 1
+            const payload = {
+                project_id: 1,
+            }
             const expectResult =
                 expectGetBoardersFromProjectWithSortedBunk(fakeBoarder)
 
             // when
             const result = await whenGetBoardersFromProjectWithSortedBunk(
-                project_id
+                payload
             )
 
             // then
@@ -741,10 +746,12 @@ describe("Unit test for BoarderService.", () => {
     describe("取得某項目住宿生身分列表", () => {
         it("確實呼叫 DAO", async () => {
             // given
-            const project_id = 1
+            const payload = {
+                project_id: 1,
+            }
 
             // when
-            const result = await whenGetBoarderRolesFromProject(project_id)
+            const result = await whenGetBoarderRolesFromProject(payload)
 
             // then
             expect(result).toEqual(expectGetBoarderRolesFromProjectData())
@@ -753,8 +760,8 @@ describe("Unit test for BoarderService.", () => {
 
         it("有分頁", async () => {
             // given
-            const project_id = 1
             const payload = {
+                project_id: 1,
                 offset: 1,
                 limit: 2,
             }
@@ -766,8 +773,7 @@ describe("Unit test for BoarderService.", () => {
 
             // when
             const result = await whenGetBoarderRolesFromProjectWithPagination(
-                project_id,
-                payload
+                payload,
             )
 
             // then

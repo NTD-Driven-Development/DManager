@@ -8,7 +8,7 @@ const router = Router();
 
 
 router.use(jwtAuth("jwt"));
-router.get('', BoarderRoleController.getBoarderRolesFromProject);
+router.get('', BoarderRoleController.getBoarderRoles);
 router.get('/:id', BoarderRoleController.getBoarderRoleById);
 router.post('', BoarderRoleController.createBoarderRole);
 router.put('', BoarderRoleController.updateBoarderRole);

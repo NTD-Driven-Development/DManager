@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express"
 import PointService from "../services/PointService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
-import Sequelize from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class PointController {

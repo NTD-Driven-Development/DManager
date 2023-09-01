@@ -1,4 +1,4 @@
-import Sequelize, { Op } from "sequelize"
+import { Op } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"

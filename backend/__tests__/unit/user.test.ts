@@ -3,7 +3,7 @@ import UserDao from "../../src/core/daos/UserDao"
 import UserRoleDao from "../../src/core/daos/UserRoleDao"
 import strings from "../../src/utils/strings"
 import RoleEnum from "../../src/enumerates/Role"
-import Sequelize from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 
 describe("Unit test for UserService.", () => {
     afterEach(() => {
@@ -41,7 +41,7 @@ describe("Unit test for UserService.", () => {
 
     async function whenCreateSameEmailUser(payload: any) {
         jest.spyOn(UserDao, "create").mockRejectedValue(
-            new Sequelize.UniqueConstraintError({})
+            new UniqueConstraintError({})
         )
         return await UserService.createUser(payload, fakeUser)
     }

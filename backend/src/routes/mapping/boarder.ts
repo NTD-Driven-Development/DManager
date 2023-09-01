@@ -9,7 +9,7 @@ const router = Router();
 
 router.use(jwtAuth("jwt"));
 // 取得住宿生
-router.get('', BoarderController.getBoardersFromProject);
+router.get('', BoarderController.getBoarders);
 // 取得單筆住宿生
 router.get('/:id', BoarderController.getBoarderById);
 // 建立住宿生

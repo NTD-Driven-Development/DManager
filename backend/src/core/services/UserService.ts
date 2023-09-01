@@ -6,7 +6,7 @@ import HttpException from "../../exceptions/HttpException"
 import UpdateUserDto from "../importDtos/users/UpdateUserDto"
 import CreateUserDto from "../importDtos/users/CreateUserDto"
 import strings from "../../utils/strings"
-import Sequelize from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class UserService {
@@ -34,7 +34,7 @@ export default new (class UserService {
             await UserRoleDao.bulkCreateUserRole(result.id as number, data.roles)
             return result
         } catch (error: any) {
-            if (error instanceof Sequelize.UniqueConstraintError) {
+            if (error instanceof UniqueConstraintError) {
                 throw new HttpException("此 Email 已被註冊", 400)
             }
             throw new HttpException(error.message, 500)

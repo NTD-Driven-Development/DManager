@@ -3,7 +3,6 @@ import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import ClassDao from "../daos/ClassDao"
-import { UniqueConstraintError } from "sequelize"
 import { ClassModel } from "../../models/Class"
 import RequestUser from "../exportDtos/auth/RequestUser"
 

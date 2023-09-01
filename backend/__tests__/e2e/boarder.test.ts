@@ -1,4 +1,4 @@
-import Sequelize, { Op } from "sequelize"
+import { ForeignKeyConstraintError, Op } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -209,7 +209,7 @@ describe("Acceptance test for BoarderController.", () => {
             })
         } catch (error: any) {
             console.log(error)
-            if (error instanceof Sequelize.ForeignKeyConstraintError) {
+            if (error instanceof ForeignKeyConstraintError) {
                 await deleteImportData(project_id)
             }
         }
@@ -299,7 +299,7 @@ describe("Acceptance test for BoarderController.", () => {
             const result = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
-            expect(boarder_role_ids.length).toEqual(result.boarder_roles.length)
+            expect(boarder_role_ids.length).toEqual(result.boarder_roles?.length)
             expect(result.created_by).toBe(mockUser.id)
         })
 

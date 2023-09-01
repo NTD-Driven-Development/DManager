@@ -4,7 +4,6 @@ import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import TelCardContacterDao from "../daos/TelCardContacterDao"
 import TelCardLogDao from "../daos/TelCardLogDao"
-import { UniqueConstraintError } from "sequelize"
 import { TelCardContacterModel } from "../../models/TelCardContacter"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { TelCardLogModel } from "../../models/TelCardLog"
@@ -98,15 +97,13 @@ export default new (class TelCardService {
         limit: number
         project_id?: number
     }): Promise<IPaginationResultDto<TelCardLogModel>> {
-        const data = await TelCardLogDao.findAll()
-        if (!query?.project_id) {
-            return withPagination(data.length, data, query?.offset, query?.limit)
+        let result = await TelCardLogDao.findAll()
+        if (query?.project_id) {
+            result = _.filter(
+                result,
+                (item) => item.project_id == query?.project_id
+            )
         }
-
-        const result = _.filter(
-            data,
-            (item) => item.project_id == query?.project_id
-        )
         return withPagination(result.length, result, query?.offset, query?.limit)
     }
 

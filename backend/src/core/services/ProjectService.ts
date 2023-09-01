@@ -4,7 +4,7 @@ import { ProjectModel } from "../../models/Project"
 import HttpException from "../../exceptions/HttpException"
 import ImportBoardersDto from "../importDtos/projects/ImportBoardersDto"
 import { v4 } from "uuid"
-import Sequelize from "sequelize"
+import { ForeignKeyConstraintError } from "sequelize"
 import ClassDao from "../daos/ClassDao"
 import BoarderRoleDao from "../daos/BoarderRoleDao"
 import BoarderMappingRoleDao from "../daos/BoarderMappingRoleDao"
@@ -20,7 +20,7 @@ import { withPagination } from "../../utils/pagination"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ProjectService {
-    public async getAllProjectsData(query?: {
+    public async getProjects(query?: {
         offset: number
         limit: number
     }): Promise<PaginationResultDto<ProjectModel>> {
@@ -46,7 +46,7 @@ export default new (class ProjectService {
         } as FindOneProjectResultDto
     }
 
-    public async getProjectDataById(
+    public async getProjectById(
         id: string | number
     ): Promise<FindOneProjectResultDto> {
         const project = await ProjectDao.findOneById(id)
@@ -215,7 +215,7 @@ export default new (class ProjectService {
 
             return true
         } catch (error: any) {
-            if (error instanceof Sequelize.ForeignKeyConstraintError) {
+            if (error instanceof ForeignKeyConstraintError) {
                 throw new HttpException("此項目不存在", 400)
             }
             throw new HttpException(error.message, 500)
@@ -246,7 +246,7 @@ export default new (class ProjectService {
             if (error instanceof HttpException) {
                 throw error
             }
-            if (error instanceof Sequelize.ForeignKeyConstraintError) {
+            if (error instanceof ForeignKeyConstraintError) {
                 throw new HttpException("交換對象不存在", 400)
             }
             throw new HttpException(error.message, 500)

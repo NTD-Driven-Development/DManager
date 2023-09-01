@@ -7,7 +7,6 @@ import { BoarderRoleModel } from "../../models/BoarderRole"
 import { TelCardContacterModel } from "../../models/TelCardContacter"
 import { PointRuleModel } from "../../models/PointRule"
 import { ProjectModel } from "../../models/Project"
-import HttpException from "../../exceptions/HttpException"
 import BunkResult from "../exportDtos/share/BunkResult"
 import { BoarderModel } from "../../models/Boarder"
 
@@ -79,10 +78,10 @@ export default new (class UserService {
         const result = await ShareDao.getProjects()
         return result
     }
-    public async getBoardersFromProject(
+    public async getBoarders(
         project_id: string | number
     ): Promise<BoarderModel[]> {
-        const result = await ShareDao.getBoardersFromProject(project_id)
+        const result = await ShareDao.getBoarders(project_id)
         return result
     }
 })()

@@ -1,6 +1,6 @@
 import ProjectService from "../../src/core/services/ProjectService"
 import ProjectDao from "../../src/core/daos/ProjectDao"
-import Sequelize from "sequelize"
+import { ForeignKeyConstraintError } from "sequelize"
 import BoarderDao from "../../src/core/daos/BoarderDao"
 import ClassDao from "../../src/core/daos/ClassDao"
 import BoarderRoleDao from "../../src/core/daos/BoarderRoleDao"
@@ -255,13 +255,13 @@ describe("Unit test for ProjectService.", () => {
             true as any as Promise<any>
         )
         jest.spyOn(BoarderDao, "bulkCreate").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
+            new ForeignKeyConstraintError({})
         )
         jest.spyOn(ClassDao, "bulkCreate").mockResolvedValue(
             true as any as Promise<any>
         )
         jest.spyOn(BoarderRoleDao, "bulkCreate").mockRejectedValue(
-            new Sequelize.ForeignKeyConstraintError({})
+            new ForeignKeyConstraintError({})
         )
         jest.spyOn(BoarderMappingRoleDao, "bulkCreate").mockResolvedValue(
             true as any as Promise<any>
@@ -305,7 +305,7 @@ describe("Unit test for ProjectService.", () => {
         jest.spyOn(ProjectDao, "findAll").mockResolvedValue([
             fakeProject,
         ] as any as Promise<any>)
-        return await ProjectService.getAllProjectsData()
+        return await ProjectService.getProjects()
     }
 
     function expectProjectDataByIdData() {
@@ -351,13 +351,13 @@ describe("Unit test for ProjectService.", () => {
         jest.spyOn(ProjectDao, "findOneById").mockResolvedValue(
             fakeProject as any as Promise<any>
         )
-        return await ProjectService.getProjectDataById(id)
+        return await ProjectService.getProjectById(id)
     }
     async function whenGetProjectDataByIdNotFound(id: number) {
         jest.spyOn(ProjectDao, "findOneById").mockResolvedValueOnce(
             null as any as Promise<any>
         )
-        return await ProjectService.getProjectDataById(id)
+        return await ProjectService.getProjectById(id)
     }
 
     function givenswapBunkPayload() {
@@ -406,7 +406,7 @@ describe("Unit test for ProjectService.", () => {
                 )
 
             // when
-            const projectList = await ProjectService.getAllProjectsData(payload)
+            const projectList = await ProjectService.getProjects(payload)
 
             // then
             expect(projectList).toEqual(expectResult)

@@ -4,6 +4,9 @@ import { Model } from "sequelize"
 import { UserModel } from "./User"
 import { ProjectModel } from "./Project"
 import { ProjectBunkModel } from "./ProjectBunk"
+import { BoarderStatusModel } from "./BoarderStatus"
+import { ClassModel } from "./Class"
+import { BoarderRoleModel } from "./BoarderRole"
 
 export interface BoarderModel {
     id: string
@@ -28,6 +31,9 @@ export interface BoarderModel {
     deleter?: UserModel
     project?: ProjectModel
     project_bunk?: ProjectBunkModel
+    boarder_status?: BoarderStatusModel
+    class?: ClassModel
+    boarder_roles?: BoarderRoleModel[]
 }
 
 export default (sequelize: any, DataTypes: any) => {

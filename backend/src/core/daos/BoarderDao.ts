@@ -5,30 +5,8 @@ import moment from "moment"
 import { BoarderModel } from "../../models/Boarder"
 import _ from "lodash"
 
-export interface BoarderData extends BoarderModel {
-    boarder_roles: {
-        id: number
-        name: string
-    }[]
-    class: {
-        id: number
-        name: string
-    }
-    boarder_status: {
-        id: number
-        name: string
-    }
-    project_bunk: {
-        id: number
-        floor: number
-        room_type: string
-        room_no: number
-        bed: number
-    }
-}
-
 export default new (class BoarderDao extends BaseDao {
-    public async findAll(): Promise<BoarderData[]> {
+    public async findAll(): Promise<BoarderModel[]> {
         const boarders = await Db.boarder.findAll({
             include: [
                 {
@@ -63,7 +41,7 @@ export default new (class BoarderDao extends BaseDao {
         return boarders
     }
 
-    public async findOneById(id: string | number): Promise<BoarderData> {
+    public async findOneById(id: string | number): Promise<BoarderModel> {
         const boarder = await Db.boarder.findOne({
             include: [
                 {

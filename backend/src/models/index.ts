@@ -2,7 +2,7 @@
 
 import fs from "fs"
 import path from "path"
-import Sequelize, { Transaction } from "sequelize"
+import { DataTypes, Sequelize, Transaction } from "sequelize"
 import process from "process"
 import cls from "cls-hooked"
 
@@ -12,15 +12,15 @@ const config = require(__dirname + "/../../config/config.js")[env]
 const db: any = {}
 const namespace = cls.createNamespace('my-very-own-namespace');
 
-Sequelize.Sequelize.useCLS(namespace);
-let sequelize: Sequelize.Sequelize
+Sequelize.useCLS(namespace);
+let sequelize: Sequelize
 if (config.use_env_variable) {
-    sequelize = new Sequelize.Sequelize(
+    sequelize = new Sequelize(
         process.env[config.use_env_variable] as any,
         config
     )
 } else {
-    sequelize = new Sequelize.Sequelize(
+    sequelize = new Sequelize(
         config.database,
         config.username,
         config.password,
@@ -55,7 +55,7 @@ fs.readdirSync(__dirname)
         // To ES6
         const model = require(path.join(__dirname, file)).default(
             sequelize,
-            Sequelize.DataTypes
+            DataTypes
         )
         db[model.name] = model
     })

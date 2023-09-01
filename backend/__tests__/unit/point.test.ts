@@ -1,6 +1,6 @@
 import PointService from "../../src/core/services/PointService"
 import PointRuleDao from "../../src/core/daos/PointRuleDao"
-import Sequelize, { UniqueConstraintError } from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 import PointLogDao from "../../src/core/daos/PointLogDao"
 
 describe("Unit test for PointService.", () => {

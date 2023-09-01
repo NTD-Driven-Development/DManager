@@ -195,10 +195,10 @@ describe("Unit test for ShareService.", () => {
     }
     async function whenGetBoardersFromProject(project_id: number) {
         const rawData = expectBoardersData()
-        jest.spyOn(ShareDao, "getBoardersFromProject").mockResolvedValue(
+        jest.spyOn(ShareDao, "getBoarders").mockResolvedValue(
             rawData as any
         )
-        return await ShareService.getBoardersFromProject(project_id)
+        return await ShareService.getBoarders(project_id)
     }
 
     it("取得樓區室床清單", async () => {

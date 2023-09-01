@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express"
 import BoarderService from "../services/BoarderService"
 import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
-import Sequelize from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class BoarderStatusController {

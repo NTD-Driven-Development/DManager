@@ -1,7 +1,7 @@
 import TelCardService from "../../src/core/services/TelCardService"
 import TelCardContacterDao from "../../src/core/daos/TelCardContacterDao"
 import TelCardLogDao from "../../src/core/daos/TelCardLogDao"
-import Sequelize, { UniqueConstraintError } from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 
 describe("Unit test for TelCardService.", () => {
     afterEach(() => {
@@ -422,12 +422,14 @@ describe("Unit test for TelCardService.", () => {
                         project_id: 2,
                         boarder_id: "2",
                         tel_card_contacter_id: 1,
+                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
                     },
                     {
                         id: 3,
                         project_id: 2,
                         boarder_id: "3",
                         tel_card_contacter_id: 1,
+                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
                     },
                 ],
             })

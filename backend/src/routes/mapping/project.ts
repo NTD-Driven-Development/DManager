@@ -9,9 +9,9 @@ const router = Router();
 
 router.use(jwtAuth("jwt"));
 // 取得所有項目
-router.get('', ProjectController.getAllProjectsData);
+router.get('', ProjectController.getProjects);
 // 取得單筆項目資料
-router.get('/:id', ProjectController.getProjectDataById);
+router.get('/:id', ProjectController.getProjectById);
 // 匯入該項目住宿生 & 床位對應資訊
 router.post('/import', [], ProjectController.importBoardersData);
 // 交換床位

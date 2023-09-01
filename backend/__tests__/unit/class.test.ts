@@ -1,6 +1,6 @@
 import ClassService from "../../src/core/services/ClassService"
 import ClassDao from "../../src/core/daos/ClassDao"
-import Sequelize, { UniqueConstraintError } from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 
 describe("Unit test for ClassService.", () => {
     afterEach(() => {

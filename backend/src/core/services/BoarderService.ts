@@ -1,5 +1,5 @@
 import _ from "lodash"
-import BoarderDao, { BoarderData } from "../daos/BoarderDao"
+import BoarderDao from "../daos/BoarderDao"
 import { BoarderModel } from "../../models/Boarder"
 import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
@@ -19,24 +19,22 @@ import { BoarderMappingRoleModel } from "../../models/BoarderMappingRole"
 import { v4 } from "uuid"
 
 export default new (class BoarderService {
-    public async getBoardersFromProject(
-        project_id: string | number,
-        query?: {
-            offset: number
-            limit: number
+    public async getBoarders(query: {
+        project_id: string | number
+        offset?: number
+        limit?: number
+    }): Promise<IPaginationResultDto<BoarderModel>> {
+        let data = await BoarderDao.findAll()
+        if (query?.project_id) {
+            data = _.filter(data, (item) => item.project_id == query.project_id)
         }
-    ): Promise<IPaginationResultDto<BoarderData>> {
-        const data = await BoarderDao.findAll()
-        const dataFromProject = _.filter(
-            data,
-            (item) => item.project_id == project_id
-        )
+
         // sort by floor, room_type, room_no, bed
-        const result = _.sortBy(dataFromProject, [
-            (dataFromProject) => dataFromProject?.project_bunk?.floor,
-            (dataFromProject) => dataFromProject?.project_bunk?.room_type,
-            (dataFromProject) => dataFromProject?.project_bunk?.room_no,
-            (dataFromProject) => dataFromProject?.project_bunk?.bed,
+        const result = _.sortBy(data, [
+            (data) => data?.project_bunk?.floor,
+            (data) => data?.project_bunk?.room_type,
+            (data) => data?.project_bunk?.room_no,
+            (data) => data?.project_bunk?.bed,
         ])
         return withPagination(
             result.length,
@@ -46,7 +44,7 @@ export default new (class BoarderService {
         )
     }
 
-    public async getBoarderById(id: string | number): Promise<BoarderData> {
+    public async getBoarderById(id: string | number): Promise<BoarderModel> {
         const result = await BoarderDao.findOneById(id)
         if (!result) {
             throw new HttpException("查無資料", 400)
@@ -103,10 +101,7 @@ export default new (class BoarderService {
     ): Promise<any> {
         try {
             const boarderData: BoarderModel =
-                this.convertCreateBoarderDtoToBoarderModel(
-                    payload,
-                    user.id
-                )
+                this.convertCreateBoarderDtoToBoarderModel(payload, user.id)
             const boarder: BoarderModel = await BoarderDao.create(boarderData)
 
             if (!_.isEmpty(payload.boarder_role_ids)) {
@@ -185,15 +180,19 @@ export default new (class BoarderService {
         return true
     }
 
-    public async getBoarderRolesFromProject(
-        project_id: string | number,
-        query?: {
-            offset: number
-            limit: number
+    public async getBoarderRoles(query: {
+        project_id: string | number
+        offset?: number
+        limit?: number
+    }): Promise<IPaginationResultDto<BoarderRoleModel>> {
+        let result = await BoarderRoleDao.findAll()
+        if (query?.project_id) {
+            result = _.filter(
+                result,
+                (item) => item.project_id == query.project_id
+            )
         }
-    ): Promise<IPaginationResultDto<BoarderRoleModel>> {
-        const data = await BoarderRoleDao.findAll()
-        const result = _.filter(data, (item) => item.project_id == project_id)
+
         return withPagination(
             result.length,
             result,

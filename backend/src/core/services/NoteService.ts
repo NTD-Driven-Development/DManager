@@ -3,7 +3,6 @@ import HttpException from "../../exceptions/HttpException"
 import { withPagination } from "../../utils/pagination"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import BoarderNoteDao from "../daos/BoarderNoteDao"
-import { UniqueConstraintError } from "sequelize"
 import { BoarderNoteModel } from "../../models/BoarderNote"
 import RequestUser from "../exportDtos/auth/RequestUser"
 

@@ -1,6 +1,6 @@
 import NoteService from "../../src/core/services/NoteService"
 import BoarderNoteDao from "../../src/core/daos/BoarderNoteDao"
-import Sequelize, { UniqueConstraintError } from "sequelize"
+import { UniqueConstraintError } from "sequelize"
 import _ from "lodash"
 
 describe("Unit test for NoteService.", () => {

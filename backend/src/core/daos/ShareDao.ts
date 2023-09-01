@@ -58,7 +58,7 @@ export default new (class ShareDao extends BaseDao {
             order: [["id", "DESC"]],
         })
     }
-    public async getBoardersFromProject(
+    public async getBoarders(
         project_id: number | string
     ): Promise<BoarderModel[]> {
         return await Db.boarder.findAll({
