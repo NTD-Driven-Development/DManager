@@ -83,7 +83,7 @@ export default new (class ExportDao extends BaseDao {
                 },
             ],
             where: { deleted_at: null },
-            order: [["id", "DESC"]],
+            // order: [["id", "DESC"]],
         })
         return boarders
     }
