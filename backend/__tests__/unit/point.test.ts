@@ -22,6 +22,7 @@ describe("Unit test for PointService.", () => {
         boarder_id: "1",
         point_rule_id: 1,
         project_id: 1,
+        point: 1,
     }
 
     async function whenGetPointRulesWithPaginatationSucceeded(payload: any) {
@@ -141,24 +142,28 @@ describe("Unit test for PointService.", () => {
                 project_id: 1,
                 boarder_id: "1",
                 point_rule_id: 1,
+                point: 1,
             },
             {
                 id: 2,
                 project_id: 2,
                 boarder_id: "2",
                 point_rule_id: 1,
+                point: 1,
             },
             {
                 id: 3,
                 project_id: 2,
                 boarder_id: "3",
                 point_rule_id: 1,
+                point: 1,
             },
             {
                 id: 4,
                 project_id: 3,
                 boarder_id: "4",
                 point_rule_id: 2,
+                point: 1,
             },
         ])
         const result = await PointService.getPointLogs(payload)
@@ -170,6 +175,7 @@ describe("Unit test for PointService.", () => {
             boarder_id: string
             point_rule_id: number
             project_id: number
+            point: number,
         },
         fakeUser: any
     ) {
@@ -190,6 +196,17 @@ describe("Unit test for PointService.", () => {
             affectedRows: 0,
         })
         const result = await PointService.deletePointLog(id, fakeUser)
+        return result
+    }
+
+    async function whenGetPointLogByIdSucceeded(id: number) {
+        jest.spyOn(PointLogDao, "findOneById").mockResolvedValue(fakePointLog)
+        const result = await PointService.getPointLogById(id)
+        return result
+    }
+    function whenGetPointLogByIdNotFound(id: number) {
+        jest.spyOn(PointLogDao, "findOneById").mockResolvedValue(null as any)
+        const result = PointService.getPointLogById(id)
         return result
     }
 
@@ -402,16 +419,40 @@ describe("Unit test for PointService.", () => {
                         project_id: 2,
                         boarder_id: "2",
                         point_rule_id: 1,
+                        point: 1,
                     },
                     {
                         id: 3,
                         project_id: 2,
                         boarder_id: "3",
                         point_rule_id: 1,
+                        point: 1,
                     },
                 ],
             })
             expect(PointLogDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("取得單筆加扣點紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const id = 1
+            // when
+            const result = await whenGetPointLogByIdSucceeded(id)
+            // then
+            expect(result).toEqual(fakePointLog)
+            expect(PointLogDao.findOneById).toBeCalledTimes(1)
+        })
+
+        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+            // when
+            const result = whenGetPointLogByIdNotFound(id)
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
         })
     })
 
@@ -422,6 +463,7 @@ describe("Unit test for PointService.", () => {
                 boarder_id: "1",
                 point_rule_id: 1,
                 project_id: 1,
+                point: 1,
             }
             // when
             const result = await whenCreatePointLogSucceeded(payload, fakeUser)
@@ -488,3 +530,5 @@ describe("Unit test for PointService.", () => {
         })
     })
 })
+
+

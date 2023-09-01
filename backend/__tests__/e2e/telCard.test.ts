@@ -139,6 +139,7 @@ describe("Acceptance test for TelCardController.", () => {
         let testProject: any
         let testBoarder: any
         let testTelCardContacter: any
+        let testTelCardLogs: any = []
         let testTelCardLog: any
 
         beforeAll(async () => {
@@ -181,8 +182,20 @@ describe("Acceptance test for TelCardController.", () => {
             // when
             const res = await App.get("/api/telCards/log").query(payload)
             // then
+            testTelCardLogs = res.body?.data?.items
             expect(res.status).toBe(200)
             expect(res.body?.data?.items?.length).toBeLessThanOrEqual(1)
+        })
+
+        it("取得單筆", async () => {
+            // given
+            const id = testTelCardLogs[0]?.id
+            // when
+            const response = await App.get(`/api/telCards/log/${id}`)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(data?.id).toEqual(id)
         })
 
         it("建立住宿生電話卡紀錄", async () => {

@@ -202,6 +202,17 @@ describe("Unit test for TelCardService.", () => {
         return result
     }
 
+    async function whenGetTelCardLogByIdSucceeded(id: number) {
+        jest.spyOn(TelCardLogDao, "findOneById").mockResolvedValue(fakeTelCardLog)
+        const result = await TelCardService.getTelCardLogById(id)
+        return result
+    }
+    function whenGetTelCardLogByIdNotFound(id: number) {
+        jest.spyOn(TelCardLogDao, "findOneById").mockResolvedValue(null as any)
+        const result = TelCardService.getTelCardLogById(id)
+        return result
+    }
+
     describe("取得電話卡聯絡人列表", () => {
         it("確實呼叫 DAO", async () => {
             // given
@@ -413,6 +424,28 @@ describe("Unit test for TelCardService.", () => {
                 ],
             })
             expect(TelCardLogDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("取得單筆電話卡紀錄", () => {
+        it("呼叫 DAO", async () => {
+            // given
+            const id = 1
+            // when
+            const result = await whenGetTelCardLogByIdSucceeded(id)
+            // then
+            expect(result).toEqual(fakeTelCardLog)
+            expect(TelCardLogDao.findOneById).toBeCalledTimes(1)
+        })
+
+        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const id = 1
+            // when
+            const result = whenGetTelCardLogByIdNotFound(id)
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
         })
     })
 

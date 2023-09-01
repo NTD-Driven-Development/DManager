@@ -10,6 +10,8 @@ const router = Router();
 router.use(jwtAuth("jwt"));
 // 取得住宿生電話卡紀錄
 router.get('/log', TelCardController.getTelCardLogs);
+// 取得單筆住宿生電話卡紀錄
+router.get('/log/:id', TelCardController.getTelCardLogById);
 // 新增住宿生電話卡紀錄
 router.post('/log', TelCardController.createTelCardLog);
 // 刪除住宿生電話卡紀錄

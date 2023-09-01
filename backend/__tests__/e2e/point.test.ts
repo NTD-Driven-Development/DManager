@@ -150,6 +150,7 @@ describe("Acceptance test for PointController.", () => {
         let testProject: any
         let testBoarder: any
         let testPointRule: any
+        let testPointLogs: any = []
         let testPointLog: any
 
         beforeAll(async () => {
@@ -197,8 +198,20 @@ describe("Acceptance test for PointController.", () => {
             // when
             const res = await App.get("/api/points/log").query(payload)
             // then
+            testPointLogs = res.body?.data?.items
             expect(res.status).toBe(200)
             expect(res.body?.data?.items?.length).toBeLessThanOrEqual(1)
+        })
+
+        it("取得單筆", async () => {
+            // given
+            const id = testPointLogs[0]?.id
+            // when
+            const response = await App.get(`/api/points/log/${id}`)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(data?.id).toEqual(id)
         })
 
         it("建立住宿生加扣點紀錄", async () => {

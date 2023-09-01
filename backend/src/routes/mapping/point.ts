@@ -8,6 +8,8 @@ const router = Router()
 router.use(jwtAuth("jwt"));
 // 取得加扣點紀錄
 router.get("/log", PointController.getPointLogs)
+// 取得單筆加扣點紀錄
+router.get("/log/:id", PointController.getPointLogById)
 // 新增加扣點紀錄
 router.post("/log", PointController.createPointLog)
 // 刪除加扣點紀錄

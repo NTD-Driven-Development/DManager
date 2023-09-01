@@ -89,6 +89,19 @@ export default new (class PointController {
         }
     }
 
+    public async getPointLogById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await PointService.getPointLogById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createPointLog(
         req: Request,
         res: Response,

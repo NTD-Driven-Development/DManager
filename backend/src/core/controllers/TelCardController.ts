@@ -97,6 +97,19 @@ export default new (class TelCardController {
         }
     }
 
+    public async getTelCardLogById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await TelCardService.getTelCardLogById(req.params.id)
+            next(HttpResponse.success(data, 200))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createTelCardLog(
         req: Request,
         res: Response,

@@ -101,6 +101,14 @@ export default new (class PointService {
         return withPagination(result.length, result, query?.offset, query?.limit)
     }
 
+    public async getPointLogById(id: string | number): Promise<PointLogModel> {
+        const data = await PointLogDao.findOneById(id as number)
+        if (!data) {
+            throw new HttpException("查無資料", 400)
+        }
+        return data
+    }
+
     public async createPointLog(
         payload: PointLogModel,
         user: RequestUser
