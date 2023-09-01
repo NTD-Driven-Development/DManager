@@ -10,6 +10,7 @@ import boarderStatusRouters from './mapping/boarderStatus';
 import classRouters from './mapping/class';
 import pointRouters from './mapping/point';
 import telCardRouters from './mapping/telCard';
+import noteRouters from './mapping/note';
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use('/boarderStatuses', boarderStatusRouters);
 router.use('/classes', classRouters);
 router.use('/points', pointRouters);
 router.use('/telCards', telCardRouters);
+router.use('/notes', noteRouters);
 
 export default router;

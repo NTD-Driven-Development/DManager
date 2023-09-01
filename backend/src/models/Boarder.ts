@@ -3,6 +3,7 @@ import moment from "moment"
 import { Model } from "sequelize"
 import { UserModel } from "./User"
 import { ProjectModel } from "./Project"
+import { ProjectBunkModel } from "./ProjectBunk"
 
 export interface BoarderModel {
     id: string
@@ -26,6 +27,7 @@ export interface BoarderModel {
     updater?: UserModel
     deleter?: UserModel
     project?: ProjectModel
+    project_bunk?: ProjectBunkModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -98,6 +100,7 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.UUID,
                 primaryKey: true,
                 allowNull: false,
+                defaultValue: DataTypes.UUIDV4,
             },
             sid: {
                 type: DataTypes.STRING(20),

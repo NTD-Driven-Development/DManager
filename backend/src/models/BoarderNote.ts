@@ -2,6 +2,7 @@
 import moment from "moment"
 import { Model } from "sequelize"
 import { UserModel } from "./User"
+import { BoarderModel } from "./Boarder"
 
 export interface BoarderNoteModel {
     id?: number
@@ -17,6 +18,7 @@ export interface BoarderNoteModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    boarder?: BoarderModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -42,6 +44,10 @@ export default (sequelize: any, DataTypes: any) => {
          */
         static associate(models: any) {
             // define association here
+            BoarderNote.belongsTo(models.boarder, {
+                foreignKey: "boarder_id",
+                as: "boarder",
+            })
             BoarderNote.belongsTo(models.user, {
                 foreignKey: "created_by",
                 as: "creator",
