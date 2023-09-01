@@ -1,4 +1,4 @@
-import { ForeignKeyConstraintError, Op } from "sequelize"
+import { ForeignKeyConstraintError, Op, Transaction } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -234,26 +234,39 @@ describe("Acceptance test for NoteController.", () => {
         let testBoarderNote: any
 
         beforeAll(async () => {
-            const payload = givenCreateProjectPayload()
-            const response = await App.post("/api/projects").send(payload)
-            testProject = response.body?.data
-            const importPayload = givenImportPayload(testProject.id)
-            await App.post("/api/projects/import").send(importPayload)
-            const boarder = await Db.boarder.findOne({
-                where: { project_id: testProject.id, sid: "1111134023" },
-            })
-            testBoarder = boarder
-            const boarderNote = await Db.boarder_note.create({
-                boarder_id: boarder.id,
-                title: "test",
-                description: "test",
-            })
-            testBoarderNote = boarderNote
-            const boarderNote2 = await Db.boarder_note.create({
-                boarder_id: boarder.id,
-                title: "test2",
-                description: "test2",
-            })
+            try {
+                const payload = givenCreateProjectPayload()
+                const response = await App.post("/api/projects").send(payload)
+                testProject = response.body?.data
+                const importPayload = givenImportPayload(testProject.id)
+                const response2 = await App.post("/api/projects/import").send(
+                    importPayload
+                )
+                expect(response.status).toBe(201)
+                expect(response2.status).toBe(200)
+                await Db.sequelize.transaction(async (t: Transaction) => {
+                    const boarder = await Db.boarder.findOne({
+                        where: {
+                            project_id: testProject.id,
+                            sid: "1111134023",
+                        },
+                    })
+                    testBoarder = boarder
+                    const boarderNote = await Db.boarder_note.create({
+                        boarder_id: boarder.id,
+                        title: "test",
+                        description: "test",
+                    })
+                    testBoarderNote = boarderNote
+                    const boarderNote2 = await Db.boarder_note.create({
+                        boarder_id: boarder.id,
+                        title: "test2",
+                        description: "test2",
+                    })
+                })
+            } catch (error: any) {
+                console.log(error)
+            }
         })
 
         it("取得住宿生記事列表，有分頁", async () => {

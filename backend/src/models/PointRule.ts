@@ -82,6 +82,7 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",
+                defaultValue: true,
             },
             created_at: {
                 type: DataTypes.DATE,

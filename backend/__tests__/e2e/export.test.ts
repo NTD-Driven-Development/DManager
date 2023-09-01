@@ -1,4 +1,4 @@
-import { Op, Transaction } from "sequelize"
+import { ForeignKeyConstraintError, Op, Transaction } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -11,9 +11,19 @@ describe("Acceptance test for ExportController", () => {
                     project_id: project_id,
                 },
             })
+            await Db.point_rule.destroy({
+                where: {
+                    code: "E2eTest",
+                },
+            })
             await Db.tel_card_log.destroy({
                 where: {
                     project_id: project_id,
+                },
+            })
+            await Db.tel_card_contacter.destroy({
+                where: {
+                    name: "E2eTest",
                 },
             })
             await Db.project_bunk.destroy({
@@ -33,7 +43,9 @@ describe("Acceptance test for ExportController", () => {
             })
         } catch (error: any) {
             console.log(error)
-            await deleteImportData(project_id)
+            if (error instanceof ForeignKeyConstraintError) {
+                await deleteImportData(project_id)
+            }
         }
     }
 
@@ -61,16 +73,26 @@ describe("Acceptance test for ExportController", () => {
                         room_no: "1",
                         bed: "1",
                     })
+                    const testTelCardContacter = await Db.tel_card_contacter.create(
+                        {
+                            name: "E2eTest",
+                        }
+                    )
                     await Db.tel_card_log.create({
                         project_id: testProject.id,
                         boarder_id: testBoarder.id,
-                        tel_card_contacter_id: 1,
+                        tel_card_contacter_id: testTelCardContacter.id,
                         contacted_at: new Date(),
+                    })
+                    const testPointRule = await Db.point_rule.create({
+                        code: "E2eTest",
+                        reason: "E2eTest",
+                        point: 1,
                     })
                     await Db.point_log.create({
                         project_id: testProject.id,
                         boarder_id: testBoarder.id,
-                        point_rule_id: 1,
+                        point_rule_id: testPointRule.id,
                         point: 1,
                     })
                 })

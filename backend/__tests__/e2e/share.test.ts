@@ -1,3 +1,4 @@
+import { Transaction } from "sequelize"
 import { App } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -8,40 +9,53 @@ describe("Acceptance test for ShareController.", () => {
     const testBoarderId = "1000000000"
 
     async function happyPathData() {
-        const now = new Date()
-        await Db.project.create({
-            id: testProjectId,
-            name: "E2Etest",
-            remark: "E2Etest",
-            created_at: now,
-        })
-        await Db.point_rule.create({
-            id: testPointRuleId,
-            code: "E2Etest",
-            reason: "E2Etest",
-            point: 1,
-            is_actived: true,
-            created_at: now,
-        })
-        await Db.boarder_role.create({
-            project_id: testProjectId,
-            name: "E2Etest",
-            created_at: now,
-        })
-        await Db.boarder.create({
-            id: testBoarderId,
-            project_id: testProjectId,
-            name: "E2Etest",
-            boarder_status_id: 1,
-            created_at: now,
-        })
+        try {
+            const now = new Date()
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await Db.project.create({
+                    id: testProjectId,
+                    name: "E2Etest",
+                    remark: "E2Etest",
+                    created_at: now,
+                })
+                await Db.point_rule.create({
+                    id: testPointRuleId,
+                    code: "E2Etest",
+                    reason: "E2Etest",
+                    point: 1,
+                    is_actived: true,
+                    created_at: now,
+                })
+                await Db.boarder_role.create({
+                    project_id: testProjectId,
+                    name: "E2Etest",
+                    created_at: now,
+                })
+                await Db.boarder.create({
+                    id: testBoarderId,
+                    project_id: testProjectId,
+                    name: "E2Etest",
+                    boarder_status_id: 1,
+                    created_at: now,
+                })
+            })
+        } catch (error: any) {
+            console.log(error)
+        }
     }
 
     async function deleteHappyPathData() {
-        await Db.boarder_role.destroy({ where: { project_id: testProjectId } })
-        await Db.boarder.destroy({ where: { id: testBoarderId } })
-        await Db.project.destroy({ where: { id: testProjectId } })
-        await Db.point_rule.destroy({ where: { id: testPointRuleId } })
+        try {
+            await Db.boarder_role.destroy({
+                where: { project_id: testProjectId },
+            })
+            await Db.boarder.destroy({ where: { id: testBoarderId } })
+            await Db.project.destroy({ where: { id: testProjectId } })
+            await Db.point_rule.destroy({ where: { id: testPointRuleId } })
+        } catch (error: any) {
+            console.log(error)
+            await deleteHappyPathData()
+        }
     }
 
     async function generateTestData() {

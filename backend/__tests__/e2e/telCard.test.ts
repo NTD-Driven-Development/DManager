@@ -1,4 +1,4 @@
-import { Op } from "sequelize"
+import { ForeignKeyConstraintError, Op, Transaction } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -142,36 +142,80 @@ describe("Acceptance test for TelCardController.", () => {
         let testTelCardLogs: any = []
         let testTelCardLog: any
 
+        async function deleteImportData(
+            testProject: any,
+            testTelCardContacter: any,
+            testBoarder: any
+        ) {
+            try {
+                await Db.tel_card_log.destroy({
+                    where: {
+                        project_id: testProject.id,
+                    },
+                })
+                await Db.tel_card_contacter.destroy({
+                    where: {
+                        id: testTelCardContacter.id,
+                    },
+                })
+                await Db.boarder.destroy({
+                    where: {
+                        id: testBoarder.id,
+                    },
+                })
+                await Db.project.destroy({
+                    where: {
+                        id: testProject.id,
+                    },
+                })
+            } catch (error: any) {
+                console.log(error)
+                if (error instanceof ForeignKeyConstraintError) {
+                    await deleteImportData(
+                        testProject,
+                        testTelCardContacter,
+                        testBoarder
+                    )
+                }
+            }
+        }
+
         beforeAll(async () => {
-            testProject = await Db.project.create({
-                name: "E2eTest",
-                remark: "E2eTest",
-            })
-            testBoarder = await Db.boarder.create({
-                id: "E2eTest",
-                project_id: testProject.id,
-                name: "E2eTest",
-                boarder_status_id: 1,
-            })
-            testTelCardContacter = await Db.tel_card_contacter.create({
-                name: "E2eTest",
-            })
-            await Db.tel_card_log.create({
-                boarder_id: testBoarder.id,
-                project_id: testProject.id,
-                tel_card_contacter_id: testTelCardContacter.id,
-                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
-                remark: "E2eTest123",
-                created_by: mockUser.id,
-            })
-            await Db.tel_card_log.create({
-                boarder_id: testBoarder.id,
-                project_id: testProject.id,
-                tel_card_contacter_id: testTelCardContacter.id,
-                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
-                remark: "E2eTest123",
-                created_by: mockUser.id,
-            })
+            try {
+                await Db.sequelize.transaction(async (t: Transaction) => {
+                    testProject = await Db.project.create({
+                        name: "E2eTest",
+                        remark: "E2eTest",
+                    })
+                    testBoarder = await Db.boarder.create({
+                        id: "E2eTest",
+                        project_id: testProject.id,
+                        name: "E2eTest",
+                        boarder_status_id: 1,
+                    })
+                    testTelCardContacter = await Db.tel_card_contacter.create({
+                        name: "E2eTest",
+                    })
+                    await Db.tel_card_log.create({
+                        boarder_id: testBoarder.id,
+                        project_id: testProject.id,
+                        tel_card_contacter_id: testTelCardContacter.id,
+                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
+                        remark: "E2eTest123",
+                        created_by: mockUser.id,
+                    })
+                    await Db.tel_card_log.create({
+                        boarder_id: testBoarder.id,
+                        project_id: testProject.id,
+                        tel_card_contacter_id: testTelCardContacter.id,
+                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
+                        remark: "E2eTest123",
+                        created_by: mockUser.id,
+                    })
+                })
+            } catch (error: any) {
+                console.log(error)
+            }
         })
 
         it("取得住宿生電話卡紀錄，並且有分頁", async () => {
@@ -216,7 +260,9 @@ describe("Acceptance test for TelCardController.", () => {
             expect(res.status).toBe(201)
             expect(testTelCardLog?.project_id).toBe(payload.project_id)
             expect(testTelCardLog?.boarder_id).toBe(payload.boarder_id)
-            expect(testTelCardLog?.tel_card_contacter_id).toBe(payload.tel_card_contacter_id)
+            expect(testTelCardLog?.tel_card_contacter_id).toBe(
+                payload.tel_card_contacter_id
+            )
             expect(testTelCardLog?.remark).toBe(payload.remark)
             expect(testTelCardLog?.created_by).toBe(mockUser.id)
         })
@@ -233,26 +279,11 @@ describe("Acceptance test for TelCardController.", () => {
         })
 
         afterAll(async () => {
-            await Db.tel_card_log.destroy({
-                where: {
-                    project_id: testProject.id,
-                },
-            })
-            await Db.tel_card_contacter.destroy({
-                where: {
-                    id: testTelCardContacter.id,
-                },
-            })
-            await Db.boarder.destroy({
-                where: {
-                    id: testBoarder.id,
-                },
-            })
-            await Db.project.destroy({
-                where: {
-                    id: testProject.id,
-                },
-            })
+            await deleteImportData(
+                testProject,
+                testTelCardContacter,
+                testBoarder
+            )
         })
     })
 })

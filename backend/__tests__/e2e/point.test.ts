@@ -1,4 +1,4 @@
-import { Op } from "sequelize"
+import { ForeignKeyConstraintError, Op, Transaction } from "sequelize"
 import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
@@ -153,39 +153,83 @@ describe("Acceptance test for PointController.", () => {
         let testPointLogs: any = []
         let testPointLog: any
 
+        async function deleteImportData(
+            testProject: any,
+            testPointRule: any,
+            testBoarder: any
+        ) {
+            try {
+                await Db.point_log.destroy({
+                    where: {
+                        project_id: testProject.id,
+                    },
+                })
+                await Db.point_rule.destroy({
+                    where: {
+                        id: testPointRule.id,
+                    },
+                })
+                await Db.boarder.destroy({
+                    where: {
+                        id: testBoarder.id,
+                    },
+                })
+                await Db.project.destroy({
+                    where: {
+                        id: testProject.id,
+                    },
+                })
+            } catch (error: any) {
+                console.log(error)
+                if (error instanceof ForeignKeyConstraintError) {
+                    await deleteImportData(
+                        testProject,
+                        testPointRule,
+                        testBoarder
+                    )
+                }
+            }
+        }
+
         beforeAll(async () => {
-            testProject = await Db.project.create({
-                name: "E2eTest",
-                remark: "E2eTest",
-            })
-            testBoarder = await Db.boarder.create({
-                id: "E2eTest",
-                project_id: testProject.id,
-                name: "E2eTest",
-                boarder_status_id: 1,
-            })
-            testPointRule = await Db.point_rule.create({
-                code: "E2eTest",
-                reason: "E2eTest",
-                point: 3,
-                is_actived: true,
-            })
-            await Db.point_log.create({
-                boarder_id: testBoarder.id,
-                project_id: testProject.id,
-                point_rule_id: testPointRule.id,
-                point: 3,
-                remark: "E2eTest123",
-                created_by: mockUser.id,
-            })
-            await Db.point_log.create({
-                boarder_id: testBoarder.id,
-                project_id: testProject.id,
-                point_rule_id: testPointRule.id,
-                point: 3,
-                remark: "E2eTest123",
-                created_by: mockUser.id,
-            })
+            try {
+                await Db.sequelize.transaction(async (t: Transaction) => {
+                    testProject = await Db.project.create({
+                        name: "E2eTest",
+                        remark: "E2eTest",
+                    })
+                    testBoarder = await Db.boarder.create({
+                        id: "E2eTest",
+                        project_id: testProject.id,
+                        name: "E2eTest",
+                        boarder_status_id: 1,
+                    })
+                    testPointRule = await Db.point_rule.create({
+                        code: "E2eTest",
+                        reason: "E2eTest",
+                        point: 3,
+                        is_actived: true,
+                    })
+                    await Db.point_log.create({
+                        boarder_id: testBoarder.id,
+                        project_id: testProject.id,
+                        point_rule_id: testPointRule.id,
+                        point: 3,
+                        remark: "E2eTest123",
+                        created_by: mockUser.id,
+                    })
+                    await Db.point_log.create({
+                        boarder_id: testBoarder.id,
+                        project_id: testProject.id,
+                        point_rule_id: testPointRule.id,
+                        point: 3,
+                        remark: "E2eTest123",
+                        created_by: mockUser.id,
+                    })
+                })
+            } catch (error: any) {
+                console.log(error)
+            }
         })
 
         it("取得住宿生加扣點紀錄，並且有分頁", async () => {
@@ -248,26 +292,7 @@ describe("Acceptance test for PointController.", () => {
         })
 
         afterAll(async () => {
-            await Db.point_log.destroy({
-                where: {
-                    project_id: testProject.id,
-                },
-            })
-            await Db.point_rule.destroy({
-                where: {
-                    id: testPointRule.id,
-                },
-            })
-            await Db.boarder.destroy({
-                where: {
-                    id: testBoarder.id,
-                },
-            })
-            await Db.project.destroy({
-                where: {
-                    id: testProject.id,
-                },
-            })
+            await deleteImportData(testProject, testPointRule, testBoarder)
         })
     })
 })
