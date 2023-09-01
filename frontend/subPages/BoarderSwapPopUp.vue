@@ -84,18 +84,23 @@
     const boarder2 = computed(() => getBoarder(values?.bunk2));
 
     const onSubmit = handleSubmit(async (data) => {
-        const projectId = boardersCaller.queries.value?.project_id;
+        try {
+            const projectId = boardersCaller.queries.value?.project_id;
 
-        await swapProjectBunk(projectId!, {
-            origin_bunk_id: boarder1.value?.project_bunk?.id!,
-            origin_boarder_id: boarder1.value?.id!,
-            swap_bunk_id: boarder2.value?.project_bunk?.id!,
-            swap_boarder_id: boarder2.value?.id!,
-        });
+            await swapProjectBunk(projectId!, {
+                origin_bunk_id: boarder1.value?.project_bunk?.id!,
+                origin_boarder_id: boarder1.value?.id!,
+                swap_bunk_id: boarder2.value?.project_bunk?.id!,
+                swap_boarder_id: boarder2.value?.id!,
+            });
 
-        toastNotifier?.success('交換成功');
-        emits('onSwapped');
-        close();
+            toastNotifier?.success('交換成功');
+            emits('onSwapped');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });

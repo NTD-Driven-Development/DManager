@@ -3,7 +3,11 @@
         <div class="flex w-full flex-col p-3 gap-2 overflow-auto lg:p-5">
             <div class="text-base font-bold">確認刪除此筆資料？</div>
             <div class="flex flex-col">
-                <div>{{ `名稱：${checkValueEmpty(boarderStatus?.name)}` }}</div>
+                <div>{{ `床位：${checkValueEmpty(pointLog?.boarder?.project_bunk, (v) => toStringlish(v))}` }}</div>
+                <div>{{ `姓名：${checkValueEmpty(pointLog?.boarder?.name)}` }}</div>
+                <div>{{ `事由：${checkValueEmpty(pointLog?.pointRule, (v) => `${v?.code}.${v?.reason}`)}` }}</div>
+                <div>{{ `點數：${checkValueEmpty(pointLog?.point)}` }}</div>
+                <div>{{ `備註：${checkValueEmpty(pointLog?.remark)}` }}</div>
             </div>
         </div>
         <button class="shrink-0 text-sm w-full p-2 text-white bg-red-500" @click="onSubmit">
@@ -13,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-    import { BoarderStatusCaller, deleteBoarderStatus } from '~/composables/api/boarderStatus';
+    import { PointLogCaller, deletePointLog } from '~/composables/api/point';
     import _ from 'lodash';
 
     interface Emits {
@@ -26,14 +30,14 @@
     const popUp = ref();
     const visible = ref(false);
 
-    const boarderStatusCaller = new BoarderStatusCaller();
-    const { data: boarderStatus } = boarderStatusCaller;
+    const pointLogCaller = new PointLogCaller();
+    const { data: pointLog } = pointLogCaller;
 
     const onSubmit = async () => {
         try {
-            const boaderStatus = boarderStatusCaller?.data?.value;
+            const boader = pointLogCaller?.data?.value;
 
-            await deleteBoarderStatus(boaderStatus?.id!);
+            await deletePointLog(boader?.id!);
 
             toastNotifier?.success('刪除成功');
             emits('onDeleted');
@@ -44,9 +48,9 @@
         }
     };
 
-    const show = async (boarderStatusId: number) => {
-        boarderStatusCaller.id = boarderStatusId;
-        boarderStatusCaller?.reload();
+    const show = async (pointLogId: number) => {
+        pointLogCaller.id = pointLogId;
+        pointLogCaller?.reload();
 
         popUp.value?.show();
         visible.value = true;

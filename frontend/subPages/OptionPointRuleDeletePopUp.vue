@@ -32,13 +32,18 @@
     const { data: pointRule } = pointRuleCaller;
 
     const onSubmit = async () => {
-        const boader = pointRuleCaller?.data?.value;
+        try {
+            const boader = pointRuleCaller?.data?.value;
 
-        await deletePointRule(boader?.id!);
+            await deletePointRule(boader?.id!);
 
-        toastNotifier?.success('刪除成功');
-        emits('onDeleted');
-        close();
+            toastNotifier?.success('刪除成功');
+            emits('onDeleted');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     };
 
     const show = async (pointRuleId: number) => {

@@ -2,7 +2,6 @@ import { WatchOptions } from 'vue';
 import { Bunk } from '~/src/model';
 import ToastNotifier from '~/components/ToastNotifier.vue';
 import _ from 'lodash';
-import { string } from 'yup';
 
 export const useUrl = (options?: UrlOptions): string => {
     const config = useRuntimeConfig();

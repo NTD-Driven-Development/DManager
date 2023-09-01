@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
     import { Icon } from '@iconify/vue';
-import { BoarderDeletePopUp } from '~/.nuxt/components';
     import { BoarderStatusPaginator } from '~/composables/api/boarderStatus';
 
     const headers = [

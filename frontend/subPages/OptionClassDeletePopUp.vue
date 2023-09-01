@@ -30,13 +30,18 @@
     const { data: _class } = classCaller;
 
     const onSubmit = async () => {
-        const boaderClass = classCaller?.data?.value;
+        try {
+            const boaderClass = classCaller?.data?.value;
 
-        await deleteClass(boaderClass?.id!);
+            await deleteClass(boaderClass?.id!);
 
-        toastNotifier?.success('刪除成功');
-        emits('onDeleted');
-        close();
+            toastNotifier?.success('刪除成功');
+            emits('onDeleted');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     };
 
     const show = async (classId: number) => {

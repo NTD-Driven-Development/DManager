@@ -143,24 +143,29 @@
     const { data: boarderRoleList } = boarderRolesCaller;
 
     const onSubmit = handleSubmit(async (data) => {
-        const boader = boarderCaller?.data?.value;
+        try {
+            const boader = boarderCaller?.data?.value;
 
-        await updateBoarder({
-            id: boader?.id!,
-            name: data?.name,
-            sid: data?.sid,
-            class_id: data?.class_id != 0 ? data?.class_id : null,
-            boarder_status_id: data?.boarder_status_id,
-            phone: data?.phone,
-            birthday: data?.birthday,
-            access_card: data?.access_card,
-            remark: data?.remark,
-            boarder_role_ids: data?.boarder_role_ids,
-        });
+            await updateBoarder({
+                id: boader?.id!,
+                name: data?.name,
+                sid: data?.sid,
+                class_id: data?.class_id != 0 ? data?.class_id : null,
+                boarder_status_id: data?.boarder_status_id,
+                phone: data?.phone,
+                birthday: data?.birthday,
+                access_card: data?.access_card,
+                remark: data?.remark,
+                boarder_role_ids: data?.boarder_role_ids,
+            });
 
-        toastNotifier?.success('儲存成功');
-        emits('onEdited');
-        close();
+            toastNotifier?.success('儲存成功');
+            emits('onEdited');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });
