@@ -132,8 +132,9 @@ class App implements IApp {
                             const data = await handle.dataCallback()
                             res.write(`data: ${JSON.stringify(data)}\n\n`)
                         } catch (e) {
-                            clearInterval(interval)
                             console.log(e)
+                            res.end()
+                            clearInterval(interval)
                         }
                     }, handle.intervalTime)
                     res.on("error", (err) => {
