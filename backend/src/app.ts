@@ -40,7 +40,7 @@ class App implements IApp {
         }),
         bodyParser.urlencoded({ extended: false }),
         cookieParser(),
-        compression(),
+        // compression(),
         helmet({
             crossOriginResourcePolicy: { policy: "same-site" },
             contentSecurityPolicy: {

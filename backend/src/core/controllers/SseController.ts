@@ -1,20 +1,19 @@
 import { Request, Response, NextFunction } from "express"
 
-export default new class SseController {
+export default new (class SseController {
     sseTest = (req: Request, res: Response, next: NextFunction) => {
         try {
-            // const retryTime = 10000
             const intervalTime = 3000
             res.writeHead(200, {
                 "Content-Type": "text/event-stream",
                 "Cache-Control": "no-cache",
-                "Access-Control-Allow-Origin": "*",
-                Connection: "keep-alive",
+                "X-Accel-Buffering": "no",
             })
 
             const interval = setInterval(() => {
-                res.write(`data: ${new Date().toLocaleTimeString()}\n\n`)
-                console.log("Sending data")
+                const date = new Date().toLocaleTimeString()
+                res.write(`data: ${date}\n\n`)
+                console.log("Sending data", date)
             }, intervalTime)
             req.on("error", (err) => {
                 console.error(`Error: ${err}`)
@@ -30,4 +29,4 @@ export default new class SseController {
             next(error)
         }
     }
-}
+})()
