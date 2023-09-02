@@ -177,7 +177,7 @@ export class TelCardContractersCaller extends ApiCaller<TelCardContracter[]> {
             });
         }
 
-        return axios.get(`${PREFIX}/telCards/contracter?${searchParams}`);
+        return axios.get(`${PREFIX}/telCards/contacter?${searchParams}`);
     }
 }
 

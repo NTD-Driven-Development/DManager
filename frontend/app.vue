@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 	watch(() => useRoute().path, (n) => {
-		if (n.startsWith('/login')) {
+		if (n.startsWith('/login') || n.startsWith('/summary')) {
 			setPageLayout('');
 		}
 		else {

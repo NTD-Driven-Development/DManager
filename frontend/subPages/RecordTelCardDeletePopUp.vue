@@ -3,12 +3,11 @@
         <div class="flex w-full flex-col p-3 gap-2 overflow-auto lg:p-5">
             <div class="text-base font-bold">確認刪除此筆資料？</div>
             <div class="flex flex-col">
-                <div>{{ `床位：${checkValueEmpty(pointLog?.boarder?.project_bunk, (v) => toStringlish(v))}` }}</div>
-                <div>{{ `姓名：${checkValueEmpty(pointLog?.boarder?.name)}` }}</div>
-                <div>{{ `編號：${checkValueEmpty(pointLog?.point_rule?.code)}` }}</div>
-                <div>{{ `事由：${checkValueEmpty(pointLog?.point_rule?.reason)}` }}</div>
-                <div>{{ `點數：${checkValueEmpty(pointLog?.point)}` }}</div>
-                <div class="whitespace-pre-wrap break-all">{{ `備註：${checkValueEmpty(pointLog?.remark)}` }}</div>
+                <div>{{ `床位：${checkValueEmpty(telCardLog?.boarder?.project_bunk, (v) => toStringlish(v))}` }}</div>
+                <div>{{ `姓名：${checkValueEmpty(telCardLog?.boarder?.name)}` }}</div>
+                <div>{{ `通話對象：${checkValueEmpty(telCardLog?.tel_card_contacter?.name)}` }}</div>
+                <div>{{ `備註：${checkValueEmpty(telCardLog?.remark)}` }}</div>
+                <div>{{ `通話時間：${checkValueEmpty(telCardLog?.contacted_at, (v) => toSimpleDate(v))}` }}</div>
             </div>
         </div>
         <button class="shrink-0 text-sm w-full p-2 text-white bg-red-500" @click="onSubmit">
@@ -18,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-    import { PointLogCaller, deletePointLog } from '~/composables/api/point';
+    import { TelCardLogCaller, deleteTelCardLog } from '~/composables/api/telCard';
     import _ from 'lodash';
 
     interface Emits {
@@ -31,14 +30,14 @@
     const popUp = ref();
     const visible = ref(false);
 
-    const pointLogCaller = new PointLogCaller();
-    const { data: pointLog } = pointLogCaller;
+    const telCardLogCaller = new TelCardLogCaller();
+    const { data: telCardLog } = telCardLogCaller;
 
     const onSubmit = async () => {
         try {
-            const boader = pointLogCaller?.data?.value;
+            const boader = telCardLogCaller?.data?.value;
 
-            await deletePointLog(boader?.id!);
+            await deleteTelCardLog(boader?.id!);
 
             toastNotifier?.success('刪除成功');
             emits('onDeleted');
@@ -49,9 +48,9 @@
         }
     };
 
-    const show = async (pointLogId: number) => {
-        pointLogCaller.id = pointLogId;
-        pointLogCaller?.reload();
+    const show = async (telCardLogId: number) => {
+        telCardLogCaller.id = telCardLogId;
+        telCardLogCaller?.reload();
 
         popUp.value?.show();
         visible.value = true;

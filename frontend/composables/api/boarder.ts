@@ -95,6 +95,7 @@ type Boarder = Model.Boarder & Model.CreateInfo & Model.UpdateInfo & {
     boarder_status: Model.BoarderStatus,
     boarder_roles: Model.BoarderRole[],
     project: Model.Project,
+    project_bunk: Model.Bunk,
 }
 
 interface CreateBoarderFormData {

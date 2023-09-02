@@ -11,25 +11,27 @@ export default defineNuxtPlugin(() => {
     });
 
     axios.interceptors.response.use((response) => response, async (error) => {
-        const authStore = useAuthStore();
-        
-        try {
-            if (error.response && error.response.status == 401) {
-                await authStore.refresh(); // 嘗試刷新token
-                const config = error.config;
+        return new Promise(async (resolve, reject) => {
+            const authStore = useAuthStore();
+            const config = error.config;
 
-                config.headers.Authorization = authStore.getAccessToken();
+            try {
+                if (error.response && error.response.status == 401) {
+                    await authStore.refresh(); // 嘗試刷新token
 
-                return axios(config);
+                    config.headers.Authorization = authStore.getAccessToken();
+
+                    resolve(await axios.request(config));
+                }
+                else {
+                    return reject(error);
+                }
             }
-            else {
-                return Promise.reject(error);
+            catch (refreshError) {
+                authStore.clearAccessToken();
+                
+                return reject(refreshError);
             }
-        }
-        catch (refreshError) {
-            authStore.clearAccessToken();
-            
-            return Promise.reject(refreshError);
-        }
+        });
     });
 })
