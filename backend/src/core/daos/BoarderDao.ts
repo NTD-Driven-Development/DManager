@@ -41,6 +41,24 @@ export default new (class BoarderDao extends BaseDao {
         return boarders
     }
 
+    public async findBoardersByProjectId(
+        project_id: string | number
+    ): Promise<BoarderModel[]> {
+        const boarders = await Db.boarder.findAll({
+            include: [
+                {
+                    model: Db.project_bunk,
+                    attributes: ["id", "floor", "room_type", "room_no", "bed"],
+                    as: "project_bunk",
+                    required: false,
+                },
+            ],
+            attributes: ["id", "name", "boarder_status_id"],
+            where: { project_id: project_id, deleted_at: null },
+        })
+        return boarders
+    }
+
     public async findOneById(id: string | number): Promise<BoarderModel> {
         const boarder = await Db.boarder.findOne({
             include: [
@@ -86,7 +104,7 @@ export default new (class BoarderDao extends BaseDao {
                     attributes: ["id", "name"],
                     as: "project",
                     required: false,
-                }
+                },
             ],
             where: { id: id, deleted_at: null },
         })

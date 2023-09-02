@@ -3,6 +3,6 @@ import SseController from '../../core/controllers/SseController';
 
 const router = Router();
 
-router.get('', SseController.sseTest);
+router.get('/boarders', SseController.getAreaOfBoarderStatus);
 
 export default router;
