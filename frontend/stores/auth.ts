@@ -79,6 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await axios.get(`${PREFIX}/check`);
     
             const session = response.data.data;
+            
             if (process.client) {
                 authUser.value = session;
             }
@@ -89,7 +90,6 @@ export const useAuthStore = defineStore('auth', () => {
             if (process.client) {
                 useAuthStore().$state.authUser = null;
             }
-            
             return null;
         }
     }
