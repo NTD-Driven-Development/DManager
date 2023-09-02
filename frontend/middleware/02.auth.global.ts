@@ -7,6 +7,7 @@ const REDIRECT_PATH = '/dashboard';
 // 驗證是否已登入
 export default defineNuxtRouteMiddleware(async (to, from) => {
     const authStore = useAuthStore();
+    const { authUser } = storeToRefs(authStore);
     const regexp = pathToRegexp(exceptRouteList);
 
     if (process.server) return;
@@ -24,7 +25,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     // 如果未登入 則直接導向登入頁
-    if (!authStore.authUser) {
+    if (!authUser.value) {
         let query = {} as any;
 
         if (from.path != LOGIN_PATH)

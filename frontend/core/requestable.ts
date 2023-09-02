@@ -9,7 +9,6 @@ export abstract class Requestable<T> {
         try {
             this.define()
             .then((fulfilled) => {
-                // console.log(fulfilled);
                 this.onFulfilled(fulfilled);
             })
             .catch((rejected) => {
