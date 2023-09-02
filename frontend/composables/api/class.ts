@@ -3,7 +3,7 @@ import { ApiPaginator, ApiResponse, PaginationResponse, PaginationQueries, Optio
 import _ from "lodash";
 import * as Model from "~/src/model";
 
-const PREFIX = '/api/Classes';
+const PREFIX = '/api/classes';
 
 export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> {
     constructor(options?: Options) {

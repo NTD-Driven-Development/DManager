@@ -6,8 +6,9 @@
             <div class="flex flex-col gap-2 lg:flex-row">
                 <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"></ProjectCreate>
                 <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入</button>
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入</button>
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="projectExportPopUp?.show()">匯出</button>
                     </div>
                 </div>
             </div>
@@ -46,6 +47,7 @@
             <Paginator :api-paginator="projectPaginator"></Paginator>
         </div>
         <ProjectImportPopUp ref="projectImportPopUp" @on-imported="projectPaginator?.reload()"></ProjectImportPopUp>
+        <ProjectExportPopUp ref="projectExportPopUp"></ProjectExportPopUp>
         <ProjectEditPopUp ref="projectEditPopUp" @on-edited="projectPaginator?.reload()"></ProjectEditPopUp>
     </div>
 </template>
@@ -56,6 +58,7 @@
     import _ from 'lodash';
 
     const projectImportPopUp = ref();
+    const projectExportPopUp = ref();
     const projectEditPopUp = ref();
 
     const projectPaginator = new ProjectPaginator();

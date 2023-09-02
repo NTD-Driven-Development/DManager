@@ -23,7 +23,7 @@
             setTimeout(() => {
                 isVisable.value = true;
                 content.value.classList.remove('opacity-0');
-                content.value.style['max-height'] = `${content.value.scrollHeight + 40}px`;
+                content.value.style['max-height'] = `${content.value.scrollHeight + 500}px`;
                 content.value.classList.add('p-3', 'pt-0', 'sm:p-5', 'sm:pt-0');
                 content.value.classList.remove('max-h-0');
             }, 1);

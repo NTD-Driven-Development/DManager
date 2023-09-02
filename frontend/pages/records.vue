@@ -30,9 +30,11 @@
     import { useForm } from 'vee-validate';
     import { ProjectsCaller } from '~/composables/api/share';
     import RecordPoint from '~/subPages/RecordPoint.vue';
+    import RecordTelCard from '~/subPages/RecordTelCard.vue';
 
     const componentList = [
         RecordPoint,
+        RecordTelCard,
     ]
 
     const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();

@@ -3,7 +3,7 @@ export interface CreateInfo {
         id: number,
         name: string,
     },
-    Created_at: string,
+    created_at: string,
 }
 
 export interface UpdateInfo {
@@ -67,7 +67,6 @@ export interface Boarder {
     id: string,
     sid?: string,
     name: string,
-    project_bunk: Bunk,
     avatar?: string,
     remark?: string,
     access_card?: string,
@@ -95,7 +94,7 @@ export interface PointLog {
     remark?: string,
 }
 
-export interface TelCard {
+export interface TelCardLog {
     id: number,
     remark?: string,
     contacted_at: string,

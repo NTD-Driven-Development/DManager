@@ -49,6 +49,7 @@ export default defineNuxtConfig({
         '/projects': { ssr: false },
         '/boarders': { ssr: false },
         '/records': { ssr: false },
+        '/notes': { ssr: false },
         '/options': { ssr: false },
     },
 })

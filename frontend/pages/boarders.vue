@@ -13,8 +13,8 @@
                 <BoarderCreate :project-id="values?.selectedProjectId ?? NaN" class="grow-[1] lg:basis-1"
                 @on-created="boarderPaginator?.reload()"></BoarderCreate>
                 <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="px-8 py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
                     </div>
                 </div>
             </div>
@@ -114,11 +114,11 @@
     const boarderEditPopUp = ref();
     const boarderDeletePopUp = ref();
 
-    const boarderPaginator = new BoarderPaginator({ immediate: false });
-    const { data: boarderList } = boarderPaginator;
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
+    const boarderPaginator = new BoarderPaginator({ immediate: false });
+    const { data: boarderList } = boarderPaginator;
 
     boarderPaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
 </script>

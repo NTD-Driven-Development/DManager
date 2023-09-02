@@ -157,10 +157,14 @@ export const deletePointRule = async (id: number) => {
     }
 }
 
+type Boarder = Model.Boarder & {
+    project_bunk: Model.Bunk,
+}
+
 type PointLog = Model.PointLog & Model.CreateInfo & Model.UpdateInfo & {
-    boarder: Model.Boarder,
+    boarder: Boarder,
     project: Model.Project,
-    pointRule: Model.PointRule,
+    point_rule: Model.PointRule,
 }
 
 type PointRule = Model.PointRule & Model.CreateInfo & Model.UpdateInfo
