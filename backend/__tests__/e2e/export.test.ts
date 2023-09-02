@@ -104,24 +104,27 @@ describe("Acceptance test for ExportController", () => {
         it("每位住宿生皆包含床位、班級、電話卡紀錄、加扣點紀錄", async () => {
             // given
             const payload = {
-                project_id: 1,
+                project_id: testProject.id,
             }
             // when
             const res = await App.get("/api/exports/pointsCheck").query(payload)
             // then
             const data = res.body.data
             expect(res.status).toBe(200)
+            expect(data.length).toBeGreaterThan(0)
             _.forEach(data, (item) => {
                 expect(item).toHaveProperty("boarder")
                 expect(item).toHaveProperty("tel_card_logs")
                 expect(item).toHaveProperty("point_logs")
-                expect(item?.boarder).toHaveProperty("project_bunk")
-                expect(item?.boarder).toHaveProperty("class")
-                _.forEach(item?.tel_card_logs, (tel_card_log) => {
+                expect(item.boarder).toHaveProperty("boarder_status")
+                expect(item.boarder).toHaveProperty("boarder_roles")
+                expect(item.boarder).toHaveProperty("project_bunk")
+                expect(item.boarder).toHaveProperty("class")
+                _.forEach(item.tel_card_logs, (tel_card_log) => {
                     expect(tel_card_log).toHaveProperty("tel_card_contacter")
                     expect(tel_card_log).toHaveProperty("creator")
                 })
-                _.forEach(item?.point_logs, (point_log) => {
+                _.forEach(item.point_logs, (point_log) => {
                     expect(point_log).toHaveProperty("point_rule")
                     expect(point_log).toHaveProperty("creator")
                 })

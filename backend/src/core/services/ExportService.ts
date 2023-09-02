@@ -34,9 +34,16 @@ export default new (class ExportService {
         if (query?.project_id) {
             data = _.filter(data, (item) => item.project_id == query.project_id)
         }
-        const result = await this.convertBoarderPointAndTelCardLogsToExport(
+        const formatData = await this.convertBoarderPointAndTelCardLogsToExport(
             data
         )
+        // sort by bunk
+        const result = _.sortBy(formatData, [
+            (item) => item?.boarder?.project_bunk?.floor,
+            (item) => item?.boarder?.project_bunk?.room_type,
+            (item) => item?.boarder?.project_bunk?.room_no,
+            (item) => item?.boarder?.project_bunk?.bed,
+        ])
         return result
     }
 })()

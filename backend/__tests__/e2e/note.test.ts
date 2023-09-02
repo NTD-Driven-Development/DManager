@@ -359,6 +359,10 @@ describe("Acceptance test for NoteController.", () => {
             // then
             expect(res.status).toBe(200)
             expect(res.body?.data?.id).toBe(id)
+            expect(res.body?.data).toHaveProperty("boarder")
+            expect(res.body?.data?.boarder).toHaveProperty("project_bunk")
+            expect(res.body?.data?.boarder).toHaveProperty("project")
+            expect(res.body?.data?.boarder).toHaveProperty("class")
         })
 
         afterAll(async () => {

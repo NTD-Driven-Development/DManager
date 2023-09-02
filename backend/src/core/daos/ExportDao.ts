@@ -22,6 +22,13 @@ export default new (class ExportDao extends BaseDao {
                     required: false,
                 },
                 {
+                    model: Db.boarder_role,
+                    through: { attributes: [] },
+                    attributes: ["id", "name"],
+                    as: "boarder_roles",
+                    required: false,
+                },
+                {
                     model: Db.project_bunk,
                     attributes: ["id", "floor", "room_type", "room_no", "bed"],
                     as: "project_bunk",

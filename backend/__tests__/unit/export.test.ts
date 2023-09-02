@@ -1,6 +1,7 @@
 import ExportService from "../../src/core/services/ExportService"
 import ExportDao from "../../src/core/daos/ExportDao"
 import { UniqueConstraintError } from "sequelize"
+import _ from "lodash"
 
 describe("Unit test for ExportService.", () => {
     afterEach(() => {
@@ -59,7 +60,7 @@ describe("Unit test for ExportService.", () => {
         ]
     }
     async function whenGetBoarderPointAndTelCardLogs(
-        getBoarderPointAndTelCardLogsFromDaoData: () => {
+        daoData: () => {
             point_logs: {
                 id: number
                 project_id: number
@@ -90,11 +91,84 @@ describe("Unit test for ExportService.", () => {
         jest.spyOn(
             ExportDao,
             "getBoarderPointAndTelCardLogs"
-        ).mockResolvedValue(getBoarderPointAndTelCardLogsFromDaoData())
+        ).mockResolvedValue(daoData())
         const result = await ExportService.getBoarderPointAndTelCardLogs(
             payload
         )
         return result
+    }
+    function getBoarderPointAndTelCardLogsWithUnSortedBunkFromDao() {
+        const fakeBoarder1 = {
+            ...fakeBoarder,
+            tel_card_logs: [fakeTelCardLog],
+            point_logs: [fakePointLog],
+        }
+        const fakeBoarder2 = {
+            ...fakeBoarder,
+            project_bunk: {
+                ...fakeBoarder.project_bunk,
+                bed: "2",
+            } as any,
+            tel_card_logs: [fakeTelCardLog],
+            point_logs: [fakePointLog],
+        }
+        const fakeBoarder3 = {
+            ...fakeBoarder,
+            project_bunk: {
+                ...fakeBoarder.project_bunk,
+                room_no: "2",
+            } as any,
+            tel_card_logs: [fakeTelCardLog],
+            point_logs: [fakePointLog],
+        }
+        const fakeBoarder4 = {
+            ...fakeBoarder,
+            project_bunk: {
+                ...fakeBoarder.project_bunk,
+                room_type: "F",
+            } as any,
+            tel_card_logs: [fakeTelCardLog],
+            point_logs: [fakePointLog],
+        }
+        const fakeBoarder5 = {
+            ...fakeBoarder,
+            project_bunk: {
+                ...fakeBoarder.project_bunk,
+                floor: "2",
+            } as any,
+            tel_card_logs: [fakeTelCardLog],
+            point_logs: [fakePointLog],
+        }
+        return [
+            fakeBoarder4,
+            fakeBoarder2,
+            fakeBoarder1,
+            fakeBoarder3,
+            fakeBoarder5,
+        ]
+    }
+    function expectExportBoarderPointAndTelCardLogsWithSortedBunk() {
+        const expectResult = _.map(getBoarderPointAndTelCardLogsWithUnSortedBunkFromDao(), (item) => {
+            const point_logs = item.point_logs ?? []
+            const tel_card_logs = item.tel_card_logs ?? []
+            const boarder = {
+                ...item,
+                point_logs: undefined,
+                tel_card_logs: undefined,
+            }
+            return {
+                boarder: boarder,
+                point_logs,
+                tel_card_logs,
+            }
+        })
+        return [
+            expectResult[2],
+            expectResult[1],
+            expectResult[3],
+            expectResult[0],
+            expectResult[4],
+        ]
     }
 
     describe("取得某項目住宿生電話卡及加扣點紀錄表", () => {
@@ -132,6 +206,22 @@ describe("Unit test for ExportService.", () => {
             // then
             expect(ExportDao.getBoarderPointAndTelCardLogs).toBeCalledTimes(1)
             expect(result).toEqual([])
+        })
+
+        it("匯出結果要按照樓區室床排序", async () => {
+            // given
+            const payload = {
+                project_id: 1,
+            }
+            const expectResult = expectExportBoarderPointAndTelCardLogsWithSortedBunk()
+            // when
+            const result = await whenGetBoarderPointAndTelCardLogs(
+                getBoarderPointAndTelCardLogsWithUnSortedBunkFromDao,
+                payload
+            )
+            // then
+            expect(ExportDao.getBoarderPointAndTelCardLogs).toBeCalledTimes(1)
+            expect(result).toEqual(expectResult)
         })
     })
 })

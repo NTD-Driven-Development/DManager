@@ -59,6 +59,32 @@ export default new (class BoarderNoteDao extends BaseDao {
         return await Db.boarder_note.findOne({
             include: [
                 {
+                    model: Db.boarder,
+                    include: [
+                        {
+                            model: Db.project_bunk,
+                            attributes: ["floor", "room_type", "room_no", "bed"],
+                            as: "project_bunk",
+                            required: false,
+                        },
+                        {
+                            model: Db.project,
+                            attributes: ["id", "name"],
+                            as: "project",
+                            required: false,
+                        },
+                        {
+                            model: Db.class,
+                            attributes: ["id", "name"],
+                            as: "class",
+                            required: false,
+                        }
+                    ],
+                    attributes: ["id", "name", "sid"],
+                    as: "boarder",
+                    required: false,
+                },
+                {
                     model: Db.user,
                     attributes: ["id", "name"],
                     as: "creator",
