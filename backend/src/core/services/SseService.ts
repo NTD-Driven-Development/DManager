@@ -1,24 +1,13 @@
 import _ from "lodash"
 import BoarderDao from "../daos/BoarderDao"
 import { BoarderModel } from "../../models/Boarder"
-
-interface AreaOfBoarderStatus {
-    floor: number
-    rooms: {
-        type: string
-        boarders: {
-            id: string
-            name: string
-            boarder_status_id: number
-        }[]
-    }[]
-}
+import AreaOfBoarderStatusDto from "../exportDtos/sse/AreaOfBoarderStatusDto"
 
 export default new (class SSeService {
     private convertBoardersToSSEBoardersStatus(
         data: BoarderModel[]
-    ): AreaOfBoarderStatus[] {
-        const result = [] as AreaOfBoarderStatus[]
+    ): AreaOfBoarderStatusDto[] {
+        const result = [] as AreaOfBoarderStatusDto[]
         if (_.isEmpty(data)) return result
         const floors = _.uniqBy(data, (item) => item?.project_bunk?.floor)
         _.forEach(floors, (floor) => {
@@ -30,33 +19,48 @@ export default new (class SSeService {
                 ),
                 (item) => item?.project_bunk?.room_type
             )
-            const roomsResult = [] as AreaOfBoarderStatus["rooms"]
+            const formatRooms = [] as AreaOfBoarderStatusDto["rooms"]
             _.forEach(rooms, (room) => {
-                const boarders = _.filter(
-                    data,
-                    (item) =>
-                        item?.project_bunk?.floor ==
-                            floor?.project_bunk?.floor &&
-                        item?.project_bunk?.room_type ==
+                const numbers = _.uniqBy(
+                    _.filter(
+                        data,
+                        (item) =>
+                            item?.project_bunk?.room_type ==
                             room?.project_bunk?.room_type
+                    ),
+                    (item) => item?.project_bunk?.room_no
                 )
-                const boardersResult =
-                    [] as AreaOfBoarderStatus["rooms"][0]["boarders"]
-                _.forEach(boarders, (boarder) => {
-                    boardersResult.push({
-                        id: boarder?.id,
-                        name: boarder?.name,
-                        boarder_status_id: boarder?.boarder_status_id,
+                const formatNumbers =
+                    [] as AreaOfBoarderStatusDto["rooms"][0]["numbers"]
+                _.forEach(numbers, (number) => {
+                    const boarders = _.filter(
+                        data,
+                        (item) =>
+                            item?.project_bunk?.room_no ==
+                            number?.project_bunk?.room_no
+                    )
+                    const formatBoarders =
+                        [] as AreaOfBoarderStatusDto["rooms"][0]["numbers"][0]["boarders"]
+                    _.forEach(boarders, (boarder) => {
+                        formatBoarders.push({
+                            id: boarder?.id,
+                            name: boarder?.name,
+                            boarder_status_id: boarder?.boarder_status_id,
+                        })
+                    })
+                    formatNumbers.push({
+                        no: _.toInteger(number?.project_bunk?.room_no),
+                        boarders: formatBoarders,
                     })
                 })
-                roomsResult.push({
+                formatRooms.push({
                     type: room?.project_bunk?.room_type as string,
-                    boarders: boardersResult,
+                    numbers: formatNumbers,
                 })
             })
             result.push({
                 floor: _.toInteger(floor?.project_bunk?.floor),
-                rooms: roomsResult,
+                rooms: formatRooms,
             })
         })
         return result
@@ -64,8 +68,10 @@ export default new (class SSeService {
 
     public async getAreaOfBoarderStatus(payload: {
         project_id: number | string
-    }): Promise<AreaOfBoarderStatus[]> {
-        const data = await BoarderDao.findBoardersByProjectId(payload.project_id)
+    }): Promise<AreaOfBoarderStatusDto[]> {
+        const data = await BoarderDao.findBoardersByProjectId(
+            payload.project_id
+        )
         const result = this.convertBoardersToSSEBoardersStatus(data)
         return result
     }

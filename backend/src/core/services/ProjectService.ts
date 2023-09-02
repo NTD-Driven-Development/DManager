@@ -108,13 +108,13 @@ export default new (class ProjectService {
         return true
     }
 
-    private convertImportDtoToBoarderModel(
+    private convertImportDtoToBoarderRoleModel(
         data: any,
         project_id: number
-    ): BoarderModel[] {
+    ): BoarderRoleModel[] {
         return _.map(data, (str) => {
             return { name: str, project_id: project_id }
-        }) as BoarderModel[]
+        }) as BoarderRoleModel[]
     }
 
     private convertImportDtoToBoarderMapRoleModel(
@@ -144,8 +144,17 @@ export default new (class ProjectService {
         data: any,
         boarder_roles: BoarderRoleModel[]
     ): (number | undefined)[] {
+        if (_.isEmpty(data.new_boarder_roles)) return []
+        // 移除不合法的角色 (空字串)
+        _.remove(data.new_boarder_roles, (item) => !item)
+
         return _.map(data.new_boarder_roles, (role) => {
-            return _.find(boarder_roles, (result) => result.name === role)?.id
+            const id = _.find(
+                boarder_roles,
+                (result) => result.name === role
+            )?.id
+            if (id) return id
+            return
         })
     }
 
@@ -163,7 +172,7 @@ export default new (class ProjectService {
             )
             // import new BoarderRole
             const boarderRoleCreatedResult = await BoarderRoleDao.bulkCreate(
-                this.convertImportDtoToBoarderModel(
+                this.convertImportDtoToBoarderRoleModel(
                     data.all_new_boarder_roles,
                     data.project_id
                 )

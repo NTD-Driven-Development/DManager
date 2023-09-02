@@ -11,6 +11,7 @@ import IProvider from "./providers/IProvider"
 import Passport from "./providers/PassportProvider"
 import Routes from "./routes"
 import HttpResponse from "./utils/httpResponse"
+import SseResponse from "./utils/sseResponse"
 import HttpException from "./exceptions/HttpException"
 import ValidationException from "./exceptions/ValidationException"
 import moment from "moment"
@@ -99,11 +100,64 @@ class App implements IApp {
             return next(err)
         })
         // http response handler
-        this.app.use((handle: HttpResponse | any, req: Request, res: Response, next: NextFunction) => {
-            if (handle instanceof HttpResponse) 
-                return res.status(handle.statusCode).json(handle)
-            return next(handle)
-        })
+        this.app.use(
+            (
+                handle: HttpResponse | any,
+                req: Request,
+                res: Response,
+                next: NextFunction
+            ) => {
+                if (handle instanceof HttpResponse)
+                    return res.status(handle.statusCode).json(handle)
+                return next(handle)
+            }
+        )
+        // sse response handler
+        this.app.use(
+            (
+                handle: SseResponse,
+                req: Request,
+                res: Response,
+                next: NextFunction
+            ) => {
+                if (handle instanceof SseResponse) {
+                    res.writeHead(200, {
+                        "Content-Type": "text/event-stream",
+                        "Cache-Control": "no-cache",
+                        "X-Accel-Buffering": "no",
+                    })
+                    res.write(`data: ${JSON.stringify(handle.data)}\n\n`)
+                    const interval = setInterval(async () => {
+                        try {
+                            const data = await handle.dataCallback()
+                            res.write(`data: ${JSON.stringify(data)}\n\n`)
+                        } catch (e) {
+                            clearInterval(interval)
+                            console.log(e)
+                        }
+                    }, handle.intervalTime)
+                    res.on("error", (err) => {
+                        console.error(`Error: ${err}`)
+                        clearInterval(interval)
+                    })
+                    res.on("close", () => {
+                        console.log("sse close")
+                        clearInterval(interval)
+                    })
+                    req.on("error", (err) => {
+                        console.error(`Error: ${err}`)
+                        clearInterval(interval)
+                        res.end()
+                    })
+                    req.on("close", () => {
+                        console.log("Client disconnected")
+                        clearInterval(interval)
+                        res.end()
+                    })
+                }
+                return next(handle)
+            }
+        )
         // error handler
         this.app.use(
             (

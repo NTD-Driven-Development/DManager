@@ -36,11 +36,16 @@ describe("Unit test for SseService.", () => {
                     rooms: [
                         {
                             type: "E",
-                            boarders: [
+                            numbers: [
                                 {
-                                    id: "1",
-                                    name: "UnitTest",
-                                    boarder_status_id: 1,
+                                    no: 1,
+                                    boarders: [
+                                        {
+                                            id: "1",
+                                            name: "UnitTest",
+                                            boarder_status_id: 1,
+                                        },
+                                    ],
                                 },
                             ],
                         },
