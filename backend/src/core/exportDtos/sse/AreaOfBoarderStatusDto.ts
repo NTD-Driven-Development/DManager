@@ -1,20 +1,11 @@
-interface boarders {
+
+
+export default interface AreaOfBoarderStatus {
     id: string
     name: string
     boarder_status_id: number
-}
-
-interface numbers {
-    no: number
-    boarders: boarders[]
-}
-
-interface rooms {
-    type: string
-    numbers: numbers[]
-}
-
-export default interface AreaOfBoarderStatus {
     floor: number
-    rooms: rooms[]
+    room_type: string
+    room_no: number
+    bed: number
 }

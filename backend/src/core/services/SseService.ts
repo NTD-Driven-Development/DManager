@@ -9,59 +9,17 @@ export default new (class SSeService {
     ): AreaOfBoarderStatusDto[] {
         const result = [] as AreaOfBoarderStatusDto[]
         if (_.isEmpty(data)) return result
-        const floors = _.uniqBy(data, (item) => item?.project_bunk?.floor)
-        _.forEach(floors, (floor) => {
-            const rooms = _.uniqBy(
-                _.filter(
-                    data,
-                    (item) =>
-                        item?.project_bunk?.floor == floor?.project_bunk?.floor
-                ),
-                (item) => item?.project_bunk?.room_type
-            )
-            const formatRooms = [] as AreaOfBoarderStatusDto["rooms"]
-            _.forEach(rooms, (room) => {
-                const numbers = _.uniqBy(
-                    _.filter(
-                        data,
-                        (item) =>
-                            item?.project_bunk?.room_type ==
-                            room?.project_bunk?.room_type
-                    ),
-                    (item) => item?.project_bunk?.room_no
-                )
-                const formatNumbers =
-                    [] as AreaOfBoarderStatusDto["rooms"][0]["numbers"]
-                _.forEach(numbers, (number) => {
-                    const boarders = _.filter(
-                        data,
-                        (item) =>
-                            item?.project_bunk?.room_no ==
-                            number?.project_bunk?.room_no
-                    )
-                    const formatBoarders =
-                        [] as AreaOfBoarderStatusDto["rooms"][0]["numbers"][0]["boarders"]
-                    _.forEach(boarders, (boarder) => {
-                        formatBoarders.push({
-                            id: boarder?.id,
-                            name: boarder?.name,
-                            boarder_status_id: boarder?.boarder_status_id,
-                        })
-                    })
-                    formatNumbers.push({
-                        no: _.toInteger(number?.project_bunk?.room_no),
-                        boarders: formatBoarders,
-                    })
-                })
-                formatRooms.push({
-                    type: room?.project_bunk?.room_type as string,
-                    numbers: formatNumbers,
-                })
-            })
-            result.push({
-                floor: _.toInteger(floor?.project_bunk?.floor),
-                rooms: formatRooms,
-            })
+        _.forEach(data, (boarder) => {
+            const boarderStatus = {
+                id: boarder.id,
+                name: boarder.name,
+                boarder_status_id: _.toInteger(boarder.boarder_status_id),
+                floor: _.toInteger(boarder?.project_bunk?.floor),
+                room_type: boarder?.project_bunk?.room_type,
+                room_no: _.toInteger(boarder?.project_bunk?.room_no),
+                bed: _.toInteger(boarder?.project_bunk?.bed),
+            } as AreaOfBoarderStatusDto
+            result.push(boarderStatus)
         })
         return result
     }

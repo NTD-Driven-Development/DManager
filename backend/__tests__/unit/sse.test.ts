@@ -32,24 +32,13 @@ describe("Unit test for SseService.", () => {
             )
             expect(result).toEqual([
                 {
+                    id: "1",
+                    name: "UnitTest",
+                    boarder_status_id: 1,
                     floor: 1,
-                    rooms: [
-                        {
-                            type: "E",
-                            numbers: [
-                                {
-                                    no: 1,
-                                    boarders: [
-                                        {
-                                            id: "1",
-                                            name: "UnitTest",
-                                            boarder_status_id: 1,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    ],
+                    room_type: "E",
+                    room_no: 1,
+                    bed: 1,
                 },
             ])
         })
