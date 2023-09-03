@@ -89,7 +89,7 @@
                     <Icon icon="ic:round-menu" class="w-7 h-7 text-white" @click="isMenuOpen = true"></Icon>
                 </button>
                 <div class="flex items-center justify-center text-white text-sm">
-                    <NuxtLink to="/" class="flex items-center justify-center h-full px-3">人數概況表</NuxtLink>
+                    <NuxtLink to="/summary" target="_blank" class="flex items-center justify-center h-full px-3">人數概況表</NuxtLink>
                 </div>
             </div>
             <!-- PageContent -->
