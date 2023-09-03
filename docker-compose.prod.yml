@@ -62,7 +62,7 @@ services:
 
         working_dir: /var/www
 
-        command: bash -c "npm install && npm run dev"
+        entrypoint: /bin/sh -c "sh entrypoint.sh; sleep infinity"
 
         restart: always
 
