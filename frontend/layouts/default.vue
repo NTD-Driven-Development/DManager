@@ -9,7 +9,7 @@
             <div class="flex items-center justify-between text-white h-12 px-3 shrink-0 relative"
             :class="[sideBarHeaderColor, sideBarWidth]">
                 <div class="w-6 flex items-center justify-center">
-                    <img src="favicon.ico">
+                    <img src="/favicon.ico">
                 </div>
                 <div class="overflow-hidden whitespace-nowrap">後台管理系統</div>
                 <button class="aspect-square hover:rotate-90 duration-200" @click="isMenuOpen = false">
@@ -89,7 +89,7 @@
                     <Icon icon="ic:round-menu" class="w-7 h-7 text-white" @click="isMenuOpen = true"></Icon>
                 </button>
                 <div class="flex items-center justify-center text-white text-sm">
-                    <NuxtLink to="/" class="flex items-center justify-center h-full px-3">人數概況表</NuxtLink>
+                    <NuxtLink to="/summary" target="_blank" class="flex items-center justify-center h-full px-3">人數概況表</NuxtLink>
                 </div>
             </div>
             <!-- PageContent -->
