@@ -26,6 +26,7 @@
             </div>
             <div class="flex flex-col justify-center w-full gap-0.5">
                 <div class="flex gap-0.5 shrink-0">
+                    <span class="text-red-500">*</span>
                     <span>通話日期：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">

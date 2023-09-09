@@ -48,9 +48,10 @@ import { ExportCaller } from '~/composables/api/export';
 
     const onSubmit = handleSubmit(async (data) => {
         const projectId = data?.project_id;
+        const filename = `${projectList?.value?.find((v) => v?.id == projectId)?.name}_${Date.now()}`;
         
         const csv = await exportCSV(projectId);
-        download(csv);
+        download(csv, filename);
 
         toastNotifier?.success('匯出成功');
         emits('onExported');
@@ -83,12 +84,10 @@ import { ExportCaller } from '~/composables/api/export';
             ['樓', '區', '室', '床', '姓名', '班級', '學號', '身分別', '電話', '備註'],
             ...(boarders as [][]),
         ]);
-
-        console.log(boarders);
         return csv;
     }
 
-    const download = (data: string, fileName: string = '測試') => {
+    const download = (data: string, fileName: string) => {
         const link = document.createElement('a');
         const blobData = new Blob([data], {
             type: 'text/csv',

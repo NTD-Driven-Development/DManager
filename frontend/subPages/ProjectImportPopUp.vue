@@ -199,11 +199,11 @@
 
     const allNewClasses = computed(() => {
         const classList = classesCaller.data.value?.map((v) => toDBC(v?.name));
-        const allClassList = _.uniq(editedData.value?.map((v) => toDBC(`${v[keys.class]}`))?.filter((v) => !_.isEmpty(v)));
+        const allClassList = _.uniq(editedData.value?.filter((v) => !_.isEmpty(v[keys?.class]))?.map((v) => toDBC(`${v[keys.class]}`)));
         return _.difference(allClassList, classList ?? []);
     });
     const allNewBoarderRoles = computed(() => {
-        return _.uniq(editedData.value?.map((v) => `${v[keys?.boarder_roles]}`.split('、'))?.flat()?.filter((v) => !_.isEmpty(v)));
+        return _.uniq(editedData.value?.filter((v) => !_.isEmpty(v[keys?.boarder_roles]))?.map((v) => `${v[keys?.boarder_roles]}`.split('、'))?.flat());
     });
     const allowData = computed(() => {
         const result: any[] = [];
@@ -230,7 +230,7 @@
                 bed: item[keys.bed],
                 name: item[keys.name],
                 remark: item[keys.remark],
-                new_boarder_roles: `${item[keys.boarder_roles]}`.split('、'),
+                new_boarder_roles: item[keys.boarder_roles] ? `${item[keys.boarder_roles]}`.split('、') : undefined,
                 new_class: allNewClasses.value?.find((v) => toDBC(v) == toDBC(item[keys.class])),
                 class_id: classList.value?.find((v) => toDBC(v?.name) == toDBC(item[keys.class]))?.id,
             });
@@ -251,27 +251,33 @@
     });
 
     const onSubmit = handleSubmit(async (data) => {
-        const project_name = data?.project_name;
-        const default_boarder_status_id = data?.default_boarder_status_id;
-        const all_new_boarder_roles = allNewBoarderRoles.value;
-        const all_new_classes = allNewClasses.value;
-        const items = transformedAllowData.value;
-        // create
-        const response = await createProject({
-            name: project_name,
-        });
-        // import
-        await importProject({
-            project_id: response?.data?.id,
-            default_boarder_status_id: default_boarder_status_id,
-            all_new_boarder_roles: all_new_boarder_roles,
-            all_new_classes: all_new_classes,
-            items: items,
-        });
+        try {
+            const project_name = data?.project_name;
+            const default_boarder_status_id = data?.default_boarder_status_id;
+            const all_new_boarder_roles = allNewBoarderRoles.value;
+            const all_new_classes = allNewClasses.value;
+            const items = transformedAllowData.value;
+            // create
+            const response = await createProject({
+                name: project_name,
+            });
+            // import
+            await importProject({
+                project_id: response?.data?.id,
+                default_boarder_status_id: default_boarder_status_id,
+                all_new_boarder_roles: all_new_boarder_roles,
+                all_new_classes: all_new_classes,
+                items: items,
+            });
 
-        toastNotifier?.success('匯入成功');
-        emits('onImported');
-        close();
+            toastNotifier?.success('匯入成功');
+            emits('onImported');
+            close();
+        }
+        catch(error) {
+            showParseError(toastNotifier, error);
+        }
+       
     }, (data) => {
         toastNotifier?.error(_.map(data?.errors, (v) => v)?.[0] ?? '');
     });

@@ -37,9 +37,9 @@
                             {{ checkValueEmpty(data?.description) }}
                         </div>
                     </template>
-                    <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => toSimpleDate(v)) }}</template>
+                    <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                     <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
-                    <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => toSimpleDate(v)) }}</template>
+                    <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                     <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                     <template #操作="{ id }">
                         <div class="flex gap-2 text-base">
@@ -59,6 +59,7 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
+    import { format } from 'date-fns';
     import { ProjectsCaller } from '~/composables/api/share';
     import { BoarderNotePaginator } from '~/composables/api/note';
     import _ from 'lodash';

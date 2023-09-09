@@ -63,7 +63,7 @@
                                     </div>
                                     <div class="basis-0 grow">
                                         <span>生日：</span>
-                                        <span>{{ checkValueEmpty(it?.birthday, (v) => toSimpleDate(v)) }}</span>
+                                        <span>{{ checkValueEmpty(it?.birthday, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</span>
                                     </div>
                                 </div>
                                 <div class="flex">
@@ -104,6 +104,7 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
+    import { format } from 'date-fns';
     import { BoarderPaginator } from '~/composables/api/boarder';
     import { ProjectsCaller } from '~/composables/api/share';
     import _ from 'lodash';

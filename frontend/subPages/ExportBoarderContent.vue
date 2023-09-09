@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => toSimpleDate(v)) }}</template>
+                        <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                         <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
                     </OrderTable>
                 </div>
@@ -42,8 +42,8 @@
                                 {{ checkValueEmpty(data?.remark) }}
                             </div>
                         </template>
-                        <template #聯絡時間="{ data }">{{ checkValueEmpty(data?.contacted_at, (v) => toSimpleDate(v)) }}</template>
-                        <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => toSimpleDate(v)) }}</template>
+                        <template #聯絡時間="{ data }">{{ checkValueEmpty(data?.contacted_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
+                        <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                         <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
                     </OrderTable>
                 </div>
@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
     import { ExportItem } from '~/composables/api/export';
+    import { format } from 'date-fns';
 
     interface Props {
         exportItem: ExportItem,

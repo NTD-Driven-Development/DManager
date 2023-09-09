@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "rm -rf /tmp/nitro && nuxt dev",
+    "dev": "rm -rf /tmp/nitro && nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -16,7 +16,7 @@
     "@types/node": "^18.17.1",
     "@types/papaparse": "^5.3.8",
     "autoprefixer": "^10.4.14",
-    "nuxt": "^3.6.5",
+    "nuxt": "^3.7.1",
     "nuxt-tsconfig-relative-paths": "^1.0.6",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3"
@@ -26,6 +26,7 @@
     "axios": "^1.4.0",
     "axios-mock-adapter": "^1.21.5",
     "csv": "^6.3.3",
+    "date-fns": "^2.30.0",
     "event-source-polyfill": "^1.0.31",
     "exceljs": "^4.3.0",
     "papaparse": "^5.4.1",

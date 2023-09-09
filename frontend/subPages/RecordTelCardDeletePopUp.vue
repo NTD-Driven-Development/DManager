@@ -7,7 +7,7 @@
                 <div>{{ `姓名：${checkValueEmpty(telCardLog?.boarder?.name)}` }}</div>
                 <div>{{ `通話對象：${checkValueEmpty(telCardLog?.tel_card_contacter?.name)}` }}</div>
                 <div>{{ `備註：${checkValueEmpty(telCardLog?.remark)}` }}</div>
-                <div>{{ `通話時間：${checkValueEmpty(telCardLog?.contacted_at, (v) => toSimpleDate(v))}` }}</div>
+                <div>{{ `通話時間：${checkValueEmpty(telCardLog?.contacted_at, (v) => format(new Date(v), 'yyyy-MM-dd'))}` }}</div>
             </div>
         </div>
         <button class="shrink-0 text-sm w-full p-2 text-white bg-red-500" @click="onSubmit">
@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+    import { format } from 'date-fns';
     import { TelCardLogCaller, deleteTelCardLog } from '~/composables/api/telCard';
     import _ from 'lodash';
 

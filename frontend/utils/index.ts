@@ -127,15 +127,6 @@ export const toBunk = (stringlishBunk: string) => {
     else return null;
 }
 
-export const toSimpleDate = (stringlishDate: string) => {
-    try {
-        return new Date(stringlishDate)?.toISOString()?.split('T')[0];
-    }
-    catch(error) {
-        return null;
-    }
-}
-
 export const checkValueEmpty = <V, O>(value: V, transformer?: (v: NonNullable<V>) => O, returnIfEmpty: string = '--') => {
     if (_.isNaN(value)) {
         return returnIfEmpty;
@@ -148,6 +139,18 @@ export const checkValueEmpty = <V, O>(value: V, transformer?: (v: NonNullable<V>
     }
     else {
         return returnIfEmpty;
+    }
+}
+
+export const hideMiddle = (value: string) => {
+    if (value?.length == 2) {
+        return value[0] + '○';
+    }
+    else if (value?.length >= 2) {
+        return value[0] + new Array(value?.length - 2).fill('○').join('○') + value[value?.length - 1]
+    }
+    else {
+        return value;
     }
 }
 

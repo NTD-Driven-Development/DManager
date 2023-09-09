@@ -2,7 +2,13 @@
     <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-6/12 max-w-[80%] max-h-[80%] text-sm bg-white rounded">
         <form class="flex w-full flex-col p-3 gap-2 overflow-auto lg:p-5">
             <div class="flex justify-center w-full gap-2">
-                <div class="aspect-video w-full bg-gray-100"></div>
+                <div class="flex items-center justify-center w-full py-8">
+                    <FileUpload name="avatar" accept="image">
+                        <label for="avatar">
+                            <img :src="values?.avatar?.content ?? avatar(values?.name)" class="rounded-full h-32 aspect-square object-cover">
+                        </label>
+                    </FileUpload>
+                </div>
             </div>
             <div class="flex justify-center w-full gap-2">
                 <div class="flex flex-1 flex-col text-sm gap-0.5">
@@ -114,6 +120,9 @@
     }
 
     const schema = yup.object().shape({
+        avatar: yup.object().shape({
+            content: yup.string().required(),
+        }).nullable().default(undefined),
         name: yup.string().required(),
         sid: yup.string().nullable(),
         class_id: yup.number().nullable(),
@@ -128,7 +137,7 @@
     const emits = defineEmits<Emits>();
 
     const toastNotifier = inject(ToastNotifierKey);
-    const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
+    const { values, handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
 
     const popUp = ref();
     const visible = ref(false);
@@ -148,6 +157,7 @@
 
             await updateBoarder({
                 id: boader?.id!,
+                avatar: data?.avatar?.content,
                 name: data?.name,
                 sid: data?.sid,
                 class_id: data?.class_id != 0 ? data?.class_id : null,
@@ -184,6 +194,9 @@
         .then(() => {
             const boader = boarderCaller?.data?.value;
 
+            setFieldValue('avatar', boader?.avatar ? {
+                content: boader?.avatar,
+            } : undefined);
             setFieldValue('name', boader?.name);
             setFieldValue('sid', boader?.sid);
             setFieldValue('class_id', boader?.class?.id ?? 0);

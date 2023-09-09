@@ -1,27 +1,26 @@
 <template>
     <PopUp ref="popUp" container-class="flex flex-col overflow-auto items-center w-2/5 max-w-[80%] text-sm bg-white rounded">
         <div class="flex-1 flex flex-col w-full p-3 gap-2 lg:p-5 lg:flex-row overflow-auto">
-            <div class="flex flex-col justify-center w-full gap-1.5">
+            <div class="flex flex-1 flex-col gap-0.5">
                 <div class="flex gap-0.5 shrink-0">
-                        <span class="text-red-500">*</span>
-                        <span>床位：</span>
+                    <span class="text-red-500">*</span>
+                    <span>樓層：</span>
                 </div>
                 <div class="flex-1 text-black text-xs">
-                    <Input name="bunk" placeholder="請輸入床位" class="w-full rounded border"/>
+                    <Select name="floor" placeholder="樓層"
+                    :options="floorList" :option-key="'floor'" :option-value="'floor'"
+                    class="w-full rounded border"/>
                 </div>
-                <div class="flex flex-col gap-1 text-xs">
-                    <div>
-                        <span>姓名：</span>
-                        <span>{{ checkValueEmpty(boarder?.name) }}</span>
-                    </div>
-                    <div>
-                        <span>班級：</span>
-                        <span>{{ checkValueEmpty(boarder?.class?.name) }}</span>
-                    </div>
-                    <div>
-                        <span>學號：</span>
-                        <span>{{ checkValueEmpty(boarder?.sid) }}</span>
-                    </div>
+            </div>
+            <div class="flex flex-1 flex-col gap-0.5">
+                <div class="flex gap-0.5 shrink-0">
+                    <span class="text-red-500">*</span>
+                    <span>房型：</span>
+                </div>
+                <div class="flex-1 text-black text-xs">
+                    <Select name="room_type" placeholder="房型"
+                    :options="roomTypeList" :option-key="'type'" :option-value="'type'"
+                    class="w-full rounded border"/>
                 </div>
             </div>
         </div>
@@ -33,9 +32,9 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { BoardersCaller } from '~/composables/api/share';
+    import { BoardersCaller, BunksCaller } from '~/composables/api/share';
     import { ExportCaller } from '~/composables/api/export';
-    import { createBoarderSheet } from '~/src/export';
+    import { createAreaSheet } from '~/src/export';
     import * as yup from 'yup';
     import ExcelJS from 'exceljs';
     import _ from 'lodash';
@@ -45,27 +44,33 @@
     }
 
     const schema = yup.object().shape({
-        bunk: yup.string().required(),
+        floor: yup.string().required(),
+        room_type: yup.string().required(),
     });
 
     const emits = defineEmits<Emits>();
 
     const toastNotifier = inject(ToastNotifierKey);
-    const { values, handleSubmit } = useForm({ validationSchema: schema });
+    const { values, handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
 
     const popUp = ref();
     const visible = ref(false);
 
+    const bunksCaller = new BunksCaller();
+    const { data: bunkList } = bunksCaller;
     const boardersCaller = new BoardersCaller({ immediate: false });
 
-    const boarder = computed(() => {
-        const bunk = toBunk(values?.bunk);
-        const boaders = boardersCaller?.data?.value;
+    const floorList = computed(() => {
+        const floorList = bunkList.value ?? [];
+        setFieldValue('floor', floorList?.[0]?.floor);
+        return floorList;
+    });
 
-        if (!bunk) 
-            return null;
-
-        return boaders?.find(({ project_bunk: v }) => v?.floor == bunk?.floor && v?.room_type == bunk?.room_type && v?.room_no == bunk?.room_no && v?.bed == bunk?.bed);
+    const roomTypeList = computed(() => {
+        const floor = values?.floor;
+        const roomTypeList = bunkList.value?.find((v) => v?.floor == floor)?.rooms ?? [];
+        setFieldValue('room_type', roomTypeList?.[0]?.type);
+        return roomTypeList;
     });
 
     const onSubmit = handleSubmit(async (data) => {
@@ -77,11 +82,11 @@
             
             await exportCaller?.wait();
 
-            const exportBoarder = exportList?.value?.find((v) => v?.boarder?.id == boarder?.value?.id);
+            const exportBoarderList = exportList?.value?.filter(({ boarder: { project_bunk: bunk } }) =>bunk ?.floor == values?.floor && bunk?.room_type == values?.room_type);
             const workbook = new ExcelJS.Workbook();
-
-            createBoarderSheet(workbook, exportBoarder!);
-            download(workbook, `${toStringlish(exportBoarder?.boarder?.project_bunk!)}_${exportBoarder?.boarder?.name}_${Date.now()}`);
+            
+            createAreaSheet(workbook, exportBoarderList ?? []);
+            download(workbook, `${values?.floor}${values?.room_type}_${Date.now()}`);
             
             toastNotifier?.success('匯出成功');
             emits('onExported');

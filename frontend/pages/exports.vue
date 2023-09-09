@@ -17,8 +17,8 @@
                 </div>
                 <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <button class="py-2 text-white bg-gray-600 rounded" @click="exportBoarderPopUp?.show(values?.selectedProjectId)">匯出指定住宿生</button>
-                        <button class="py-2 text-white bg-gray-600 rounded" @click="">匯出指定區域</button>
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="exportBoarderPopUp?.show(values?.selectedProjectId)">匯出指定學生紀錄</button>
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="exportAreaPopUp?.show(values?.selectedProjectId)">匯出指定區域紀錄</button>
                     </div>
                 </div>
             </div>
@@ -56,6 +56,7 @@
             </div>
         </div>
         <ExportBoarderPopUp ref="exportBoarderPopUp" @on-exported=""></ExportBoarderPopUp>
+        <ExportAreaPopUp ref="exportAreaPopUp" @on-exported=""></ExportAreaPopUp>
     </div>
 </template>
 
@@ -69,6 +70,7 @@
     const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
 
     const exportBoarderPopUp = ref();
+    const exportAreaPopUp = ref();
 
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));

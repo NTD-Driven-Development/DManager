@@ -24,7 +24,7 @@
         <div class="grid grid-cols-[repeat(9,_minmax(0,_1fr))] grid-rows-[repeat(14,_minmax(0,_1fr))] 
         lg:grid-cols-[repeat(16,_minmax(0,_1fr))] lg:grid-rows-[repeat(9,_minmax(0,_1fr))] flex-col w-full h-full p-3 lg:py-6 lg:px-10">
             <div class="row-span-1 col-span-full flex items-center justify-center lg:row-span-2">
-                <div class="py-2 sm:text-3xl md:text-4xl lg:text-5xl lg:py-6 xl:text-6xl xl:pb-10">國立臺中科技大學男生宿舍人數概況表</div>
+                <div class="py-2 sm:text-3xl md:text-5xl lg:text-6xl lg:py-6 xl:text-7xl xl:pb-10">國立臺中科技大學男生宿舍人數概況表</div>
             </div>
             <div class="flex items-center row-span-4 col-span-full bg-gray-3 p-4 lg:col-span-6">
                 <div class="-outline-offset-1 outline outline-white w-full sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl">
