@@ -13,8 +13,105 @@ import moment from "moment"
 import ip from "../../utils/ip"
 import HttpException from "../../exceptions/HttpException"
 import strings from "../../utils/strings"
+import mail from "../../utils/sendMail"
+import { SysPasswordLogModel } from "../../models/SysPasswordLog"
 
 export default new (class AuthService {
+    public async changePassword(
+        req: Request,
+        email: string,
+        old_password: string,
+        new_password: string
+    ) {
+        const user = await AuthDao.getUserInfoByEmail(email)
+        if (_.isEmpty(user)) {
+            throw new HttpException("查無此帳號", 400)
+        }
+        if (strings.verifyHash(old_password, user.password) === false) {
+            throw new HttpException("舊密碼錯誤", 400)
+        }
+        const hashedNewPassword = strings.hash(new_password)
+        await AuthDao.updateUserPasswordByEmail(email, hashedNewPassword)
+        await this.savingSysPasswordLog(req, { email } as any, "修改密碼成功")
+        return true
+    }
+
+    private async savingSysPasswordLog(
+        req: Request,
+        { ...arg }: SysPasswordLogModel,
+        message: string
+    ) {
+        const clientip = ip.getClientIp(req)
+        const serverip = ip.getServerIp()
+        const user_agent = req.headers["user-agent"] as string
+        const model: SysPasswordLogModel = {
+            clientip: clientip,
+            serverip: serverip,
+            user_agent: user_agent,
+            email: arg?.email,
+            expired_at: arg?.expired_at,
+            token: arg?.token,
+            verified_token: arg?.verified_token,
+            verified_at: arg?.verified_at,
+            detail: message,
+        }
+        await LogDao.saveSysPasswordLog(model)
+    }
+
+    public async resetPassword(req: Request, token: string, password: string) {
+        const sysPasswordLog = await LogDao.findSysPasswordLogByVerifiedToken(
+            token
+        )
+        if (_.isEmpty(sysPasswordLog)) {
+            throw new HttpException("傳送資料錯誤", 400)
+        }
+        const hashedPassword = strings.hash(password)
+        await AuthDao.updateUserPasswordByEmail(
+            sysPasswordLog.email,
+            hashedPassword
+        )
+        await this.savingSysPasswordLog(
+            req,
+            { email: sysPasswordLog.email } as any,
+            "重設密碼成功"
+        )
+        return true
+    }
+
+    public async verifyForgetPasswordToken(email: string, token: string) {
+        const sysPasswordLog = await LogDao.findSysPasswordLogByEmail(email)
+        if (sysPasswordLog?.token !== token) {
+            throw new HttpException("驗證碼錯誤", 400)
+        }
+        const verified_token = v4()
+        const model: SysPasswordLogModel = {
+            ...sysPasswordLog,
+            verified_token: verified_token,
+            verified_at: moment().toDate(),
+        }
+        await LogDao.updateSysPasswordLog(model)
+        return verified_token
+    }
+
+    public async forgetPassword(req: Request, email: string) {
+        // const sysPasswordLog = await LogDao.findSysPasswordLogByEmail(email)
+        const user = await AuthDao.getUserInfoByEmail(email)
+        if (_.isEmpty(user)) {
+            throw new HttpException("查無此帳號", 400)
+        }
+        const expired_at = moment().add(10, "minutes").toDate()
+        const token = strings.random(8, null)
+        await this.savingSysPasswordLog(
+            req,
+            { email: email, expired_at: expired_at, token: token } as any,
+            "忘記密碼"
+        )
+        const subject = "忘記密碼"
+        const content = `您的驗證碼為 ${token}，請於 10 分鐘內使用`
+        await mail.sendEmail(email, subject, content)
+        return true
+    }
+
     public async getUserAuthInfoByEmail(email: string): Promise<RequestUser> {
         const user = await AuthDao.getUserAuthInfoByEmail(email)
         const roles = _.map(user?.roles, (role) => {
@@ -32,6 +129,7 @@ export default new (class AuthService {
         const requestUser: RequestUser = {
             id: user.id as number,
             name: user.name,
+            email: user.email,
             is_admin: user.is_admin,
             is_actived: user.is_actived,
             roles: roles,
@@ -57,6 +155,7 @@ export default new (class AuthService {
         const requestUser: RequestUser = {
             id: user.id as number,
             name: user.name,
+            email: user.email,
             is_admin: user.is_admin,
             is_actived: user.is_actived,
             roles: roles,

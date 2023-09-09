@@ -15,9 +15,7 @@ interface UserAuthInfo extends UserModel {
 }
 
 export default new (class AuthDao extends BaseDao {
-    public async getUserAuthInfoByEmail(
-        email: string
-    ): Promise<UserAuthInfo> {
+    public async getUserAuthInfoByEmail(email: string): Promise<UserAuthInfo> {
         const user: any = await Db.user.findOne({
             include: [
                 {
@@ -45,9 +43,7 @@ export default new (class AuthDao extends BaseDao {
         return user
     }
 
-    public async getUserAuthInfoById(
-        id: number
-    ): Promise<UserAuthInfo> {
+    public async getUserAuthInfoById(id: number): Promise<UserAuthInfo> {
         const user: any = await Db.user.findOne({
             include: [
                 {
@@ -80,8 +76,24 @@ export default new (class AuthDao extends BaseDao {
             where: {
                 email: email,
                 deleted_at: null,
-            }
+            },
         })
         return user
+    }
+
+    public async updateUserPasswordByEmail(
+        email: string,
+        password: string
+    ): Promise<Core.IExecuteResult> {
+        return await this.executeResult(
+            Db.user.update(
+                { password: password },
+                {
+                    where: {
+                        email: email,
+                    },
+                }
+            )
+        )
     }
 })()

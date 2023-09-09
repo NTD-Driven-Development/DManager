@@ -56,4 +56,84 @@ export default new (class AuthController {
             next(error)
         }
     }
+
+    public async forgetPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const { email } = req.body
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await AuthService.forgetPassword(req, email)
+                t.afterCommit(() => {
+                    next(HttpResponse.success("已寄送重設密碼信件至您的信箱"))
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async verifyForgetPasswordToken(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const { email, token } = req.body
+            const verified_token = await AuthService.verifyForgetPasswordToken(
+                email,
+                token
+            )
+            res.cookie("forget_password_token", verified_token, {
+                maxAge: 86400000,
+                httpOnly: true,
+                sameSite: "strict",
+            })
+            next(HttpResponse.success(null))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async resetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { password } = req.body
+            const forget_password_token = req.cookies.forget_password_token
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await AuthService.resetPassword(
+                    req,
+                    password,
+                    forget_password_token
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(null))
+                    res.clearCookie("forget_password_token")
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async changePassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { old_password, new_password } = req.body
+            const { email } = req.user as RequestUser
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await AuthService.changePassword(
+                    req,
+                    email,
+                    old_password,
+                    new_password
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(null))
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 })()
