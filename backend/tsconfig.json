@@ -35,7 +35,7 @@
         "types": [
             "node",
             "jest"
-        ],                                      /* Specify type package names to be included without being referenced in a source file. */
+        ] /* Specify type package names to be included without being referenced in a source file. */,
         // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
         // "moduleSuffixes": [],                             /* List of file name suffixes to search when resolving a module. */
         // "allowImportingTsExtensions": true,               /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */
@@ -109,6 +109,13 @@
         // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
-    "exclude": ["./node_modules", "./build", "./coverage", "./__tests__", "./__mocks__"],
-    "typeAcquisition": { "include": ["jest"] },
+    "include": ["./src"],
+    "exclude": [
+        "./node_modules",
+        "./build",
+        "./coverage",
+        "./__tests__",
+        "./__mocks__"
+    ],
+    "typeAcquisition": { "include": ["jest"] }
 }

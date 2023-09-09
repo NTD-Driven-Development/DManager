@@ -155,7 +155,7 @@ export default (sequelize: any, DataTypes: any) => {
                 comment: "生日",
             },
             avatar: {
-                type: DataTypes.STRING(255),
+                type: DataTypes.TEXT('long'),
                 allowNull: true,
                 comment: "頭像",
             },

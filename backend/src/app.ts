@@ -121,6 +121,7 @@ class App implements IApp {
                 next: NextFunction
             ) => {
                 if (handle instanceof SseResponse) {
+                    console.log(moment().toDate(), "sse connected")
                     res.writeHead(200, {
                         "Content-Type": "text/event-stream",
                         "Cache-Control": "no-cache",
@@ -132,26 +133,26 @@ class App implements IApp {
                             const data = await handle.dataCallback()
                             res.write(`data: ${JSON.stringify(data)}\n\n`)
                         } catch (e) {
-                            console.log(e)
+                            console.log(moment().toDate(), e)
                             res.end()
                             clearInterval(interval)
                         }
                     }, handle.intervalTime)
                     res.on("error", (err) => {
-                        console.error(`Error: ${err}`)
+                        console.error(moment().toDate(), `Error: ${err}`)
                         clearInterval(interval)
                     })
                     res.on("close", () => {
-                        console.log("sse close")
+                        console.log(moment().toDate(), "sse closed")
                         clearInterval(interval)
                     })
                     req.on("error", (err) => {
-                        console.error(`Error: ${err}`)
+                        console.error(moment().toDate(), `Error: ${err}`)
                         clearInterval(interval)
                         res.end()
                     })
                     req.on("close", () => {
-                        console.log("Client disconnected")
+                        console.log(moment().toDate(), "Client disconnected")
                         clearInterval(interval)
                         res.end()
                     })

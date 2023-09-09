@@ -20,7 +20,7 @@ export default new (class SseController {
                 )
                 return data
             }
-            next(SseResponse.success(data, dataCallback, intervalTime))
+            next(SseResponse.send(data, dataCallback, intervalTime))
         } catch (error) {
             next(error)
         }

@@ -47,7 +47,7 @@ module.exports = {
                 comment: "生日",
             },
             avatar: {
-                type: Sequelize.STRING(255),
+                type: Sequelize.TEXT('long'),
                 allowNull: true,
                 comment: "頭像",
             },

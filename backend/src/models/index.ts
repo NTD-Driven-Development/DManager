@@ -41,17 +41,11 @@ fs.readdirSync(__dirname)
         return (
             file.indexOf(".") !== 0 &&
             file !== basename &&
-            file.slice(-3) === ".ts" &&
+            (file.slice(-3) === ".ts" || file.slice(-3) === ".js") &&
             file.indexOf(".test.js") === -1
         )
     })
     .forEach((file: any) => {
-        // const model = require(path.join(__dirname, file))(
-        //     sequelize,
-        //     Sequelize.DataTypes
-        // )
-        // db[model.name] = model
-
         // To ES6
         const model = require(path.join(__dirname, file)).default(
             sequelize,
