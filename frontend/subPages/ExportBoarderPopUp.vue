@@ -103,7 +103,6 @@
             link.download = `${fileName}.xlsx`;
             link.href = URL.createObjectURL(blobData);
             link.click();
-            document.removeChild(link);
         });
     }
 

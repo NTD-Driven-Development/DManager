@@ -57,8 +57,8 @@ export const createBoarderSheet = (workbook: ExcelJS.Workbook, exportItem: Expor
     for(const it of telCardLogs) {
         const row = sheet.addRow(
             _.flatten([
-                Array(2).fill(checkValueEmpty(it?.created_at, (v) => toSimpleDate(v))),
-                Array(2).fill(checkValueEmpty(it?.contacted_at, (v) => toSimpleDate(v))),
+                Array(2).fill(checkValueEmpty(it?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd'))),
+                Array(2).fill(checkValueEmpty(it?.contacted_at, (v) => format(new Date(v), 'yyyy-MM-dd'))),
                 Array(6).fill(checkValueEmpty(it?.tel_card_contacter?.name)),
                 Array(6).fill(checkValueEmpty(it?.remark)),
             ])
@@ -95,7 +95,7 @@ export const createBoarderSheet = (workbook: ExcelJS.Workbook, exportItem: Expor
     for(const it of pointLogs) {
         const row = sheet.addRow(
             _.flatten([
-                Array(2).fill(checkValueEmpty(it?.created_at, (v) => toSimpleDate(v))),
+                Array(2).fill(checkValueEmpty(it?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd'))),
                 Array(1).fill(checkValueEmpty(it?.point)),
                 Array(1).fill(checkValueEmpty(it?.point_rule?.code)),
                 Array(6).fill(checkValueEmpty(it?.point_rule?.reason)),
@@ -110,7 +110,7 @@ export const createBoarderSheet = (workbook: ExcelJS.Workbook, exportItem: Expor
     if (telCardLogs?.[7]) {
         const row = sheet.addRow(
             _.flatten([
-                Array(2).fill(checkValueEmpty(telCardLogs?.[7]?.created_at, (v) => toSimpleDate(v))),
+                Array(2).fill(checkValueEmpty(telCardLogs?.[7]?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd'))),
                 Array(1).fill(1),
                 Array(1).fill('--'),
                 Array(6).fill('電話卡已達8次'),
@@ -124,7 +124,7 @@ export const createBoarderSheet = (workbook: ExcelJS.Workbook, exportItem: Expor
     if (telCardLogs?.[15]) {
         const row = sheet.addRow(
             _.flatten([
-                Array(2).fill(checkValueEmpty(telCardLogs?.[15]?.created_at, (v) => toSimpleDate(v))),
+                Array(2).fill(checkValueEmpty(telCardLogs?.[15]?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd'))),
                 Array(1).fill(1),
                 Array(1).fill('--'),
                 Array(6).fill('電話卡已達16次'),
@@ -220,6 +220,12 @@ export const createBoarderSheet = (workbook: ExcelJS.Workbook, exportItem: Expor
     checkRows[1].height = 40;
     checkRows[1].font = { name: '標楷體', size: 16 };
     checkRows[2].height = 18;
+    checkRows[2].eachCell((v) => {
+        if (!v.border) {
+            v.border = {};
+        }
+        v.border.top = { style: 'thin' };
+    });
 
     addOutterBorder(sheet);
 }
@@ -262,6 +268,7 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
         const boarder = v?.boarder;
         const pointLogs = v?.point_logs;
         const telCardLogs = v?.tel_card_logs;
+        const emptyCount = maxRecordCount - pointLogs?.length - telCardPointList?.length;
         const tatalPoint = _.sumBy(pointLogs, (v) => v?.point) + Math.floor(telCardLogs.length / 8);
 
         if (telCardLogs?.[7]) {
@@ -282,9 +289,10 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
             _.flatten([
                 Array(2).fill(toStringlish(boarder?.project_bunk)),
                 Array(2).fill(hideMiddle(boarder?.name!)),
-                Array(1).fill('加點日期'),
+                Array(1).fill('日期'),
                 pointLogs?.map((v) => format(new Date(v?.created_at), 'MMdd')),
                 telCardPointList?.map((v) => format(new Date(v?.created_at), 'MMdd')),
+                Array(emptyCount).fill(''),
             ])
         );
         // Code
@@ -292,9 +300,10 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
             _.flatten([
                 Array(2).fill(toStringlish(boarder?.project_bunk)),
                 Array(2).fill(''),
-                Array(1).fill('加點編號'),
+                Array(1).fill('編號'),
                 pointLogs?.map((v) => v?.point_rule?.code),
                 telCardPointList?.map((v) => '電話卡'),
+                Array(emptyCount).fill(''),
             ])
         );
         // Point
@@ -305,6 +314,7 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
                 Array(1).fill('點數'),
                 pointLogs?.map((v) => v?.point),
                 telCardPointList?.map((v) => 1),
+                Array(emptyCount).fill(''),
             ])
         );
 
@@ -314,6 +324,20 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
         sheet.mergeCells(dateRow?.number, 3, pointRow?.number, 4);
         sheet.mergeCells(dateRow?.number, 6 + maxRecordCount, pointRow?.number, 6 + maxRecordCount);
         sheet.mergeCells(dateRow?.number, 6 + maxRecordCount + 1, pointRow?.number, 6 + maxRecordCount + 2);
+
+        for (const v of [dateRow, codeRow, pointRow]) {
+            v.eachCell((v) => {
+                if (!v.border) {
+                    v.border = {};
+                }
+                v.border = {
+                    top: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' },
+                    left: { style: 'thin' },
+                };
+            });
+        }
     }
 
     const checkRows = sheet.addRows([
@@ -340,62 +364,30 @@ export const createAreaSheet = (workbook: ExcelJS.Workbook, exportItems: ExportI
     headerRows[0].font = { name: '標楷體', size: 22 };
     headerRows[1].height = 40;
     headerRows[1].font= { name: '標楷體', size: 22 };
-    // boarderRow.height = 34;
-    // boarderRow.eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.top = { style: 'thin' };
-    // });
-    // telCardLogHeaderRows[0].height = 32;
-    // telCardLogHeaderRows[0].font.bold = true;
-    // telCardLogHeaderRows[0].eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.top = { style: 'thin' };
-    // });
-    // telCardLogHeaderRows[1].height = 24;
-    // telCardLogHeaderRows[1].eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.top = { style: 'thin' };
-    // });
-    // telCardLogFooterRow.height = 30;
-    // telCardLogFooterRow.font.bold = true;
-    // telCardLogFooterRow.font.color = { argb: 'FFFF0000' };
-
-    // pointLogHeaderRows[0].height = 32;
-    // pointLogHeaderRows[0].font.bold = true;
-    // pointLogHeaderRows[0].eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.top = { style: 'thin' };
-    // });
-    // pointLogHeaderRows[1].height = 24;
-    // pointLogHeaderRows[1].eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.top = { style: 'thin' };
-    // });
-    // pointLogFooterRow.height = 30;
-    // pointLogFooterRow.font.bold = true;
-    // pointLogFooterRow.font.color = { argb: 'FFFF0000' };
-    // pointLogFooterRow.eachCell((v) => {
-    //     if (!v.border) {
-    //         v.border = {};
-    //     }
-    //     v.border.bottom = { style: 'thin' };
-    // });
+    listHeaderRow.eachCell((v) => {
+        if (!v.border) {
+            v.border = {};
+        }
+        v.border = {
+            top: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+            left: { style: 'thin' },
+        };
+    });
+    
 
     checkRows[0].height = 40;
     checkRows[0].font = { name: '標楷體', size: 16 };
     checkRows[1].height = 40;
     checkRows[1].font = { name: '標楷體', size: 16 };
     checkRows[2].height = 18;
+    checkRows[2].eachCell((v) => {
+        if (!v.border) {
+            v.border = {};
+        }
+        v.border.top = { style: 'thin' };
+    })
 
     addOutterBorder(sheet);
 }

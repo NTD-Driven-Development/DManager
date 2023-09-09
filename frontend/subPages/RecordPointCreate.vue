@@ -9,7 +9,7 @@
                     </div>
                     <div class="flex-1 text-black text-xs">
                         <Select name="point_rule_id" placeholder="請選擇規則" class="w-full rounded border"
-                        :options="pointRuleList" option-key="id" :option-value="(v) => `${v?.code}.${v?.reason}`"/>
+                        :options="pointRuleList" option-key="id" :option-value="(v: PointRule) => `${v?.code}.${v?.reason}`"/>
                     </div>
                 </div>
             </div>

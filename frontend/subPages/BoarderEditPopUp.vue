@@ -110,6 +110,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
+    import { format } from 'date-fns';
     import { BoarderRolesCaller, BoarderStatusesCaller, ClassesCaller } from '~/composables/api/share';
     import { BoarderCaller, updateBoarder } from '~/composables/api/boarder';
     import * as yup from 'yup';
@@ -202,7 +203,7 @@
             setFieldValue('class_id', boader?.class?.id ?? 0);
             setFieldValue('boarder_status_id', boader?.boarder_status?.id);
             setFieldValue('phone', boader?.phone);
-            setFieldValue('birthday', boader?.birthday ? toSimpleDate(boader?.birthday) : undefined);
+            setFieldValue('birthday', boader?.birthday ? format(new Date(boader?.birthday), 'yyyy-MM-dd') : undefined);
             setFieldValue('access_card', boader?.access_card);
             setFieldValue('remark', boader?.remark);
             setFieldValue('boarder_role_ids', boader?.boarder_roles?.map((v) => v?.id))
