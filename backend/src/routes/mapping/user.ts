@@ -9,10 +9,10 @@ const router = Router();
 
 
 router.use(jwtAuth("jwt"));
-// router.get('', UserController.getAllUsersData);
-// router.get('/:id', UserController.getUserDataById);
+router.get('', UserController.getUsers);
+router.get('/:id', UserController.getUserById);
 router.post('', [validate(createUserSchema)], UserController.createUser);
-// router.put('', UserController.updateUser);
-// router.delete('/:id', UserController.deleteUser);
+router.put('', UserController.updateUser);
+router.delete('/:id', UserController.deleteUser);
 
 export default router;

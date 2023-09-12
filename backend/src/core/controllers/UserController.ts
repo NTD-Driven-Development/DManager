@@ -6,12 +6,66 @@ import { Transaction } from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class UserController {
+    public async getUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await UserService.getUsers(req.query as any)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getUserById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await UserService.getUserById(req.params.id)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     public async createUser(req: Request, res: Response, next: NextFunction) {
         try {
             await Db.sequelize.transaction(async (t: Transaction) => {
-                const data = await UserService.createUser(req.body, req.user as RequestUser)
+                const data = await UserService.createUser(
+                    req.body,
+                    req.user as RequestUser
+                )
                 t.afterCommit(() => {
                     next(HttpResponse.success(data, 201))
+                })
+            })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    public async updateUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const data = await UserService.updateUser(
+                    req.body,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async deleteUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await UserService.deleteUser(
+                    req.params.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(null, 200))
                 })
             })
         } catch (error) {

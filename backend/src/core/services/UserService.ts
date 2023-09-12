@@ -8,10 +8,15 @@ import CreateUserDto from "../importDtos/users/CreateUserDto"
 import strings from "../../utils/strings"
 import { UniqueConstraintError } from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import IPaginationResultDto from "../exportDtos/PaginationResultDto"
+import { withPagination } from "../../utils/pagination"
 
 export default new (class UserService {
-    private convertCreateDtoToUserModel(data: CreateUserDto, created_by: number): UserModel {
-        const hashedPwd = strings.hash("password")
+    private convertCreateDtoToUserModel(
+        data: CreateUserDto,
+        created_by: number
+    ): UserModel {
+        const hashedPwd = strings.hash(data?.sid as string)
         const model = {
             sid: data.sid,
             name: data.name,
@@ -24,14 +29,33 @@ export default new (class UserService {
         return model
     }
 
+    public async getUsers(query?: {
+        offset: number
+        limit: number
+    }): Promise<IPaginationResultDto<UserModel>> {
+        const users = await UserDao.findAll()
+        return withPagination(users.length, users, query?.offset, query?.limit)
+    }
+
+    public async getUserById(user_id: string | number): Promise<UserModel> {
+        const result = await UserDao.findOneById(user_id)
+        if (!result) {
+            throw new HttpException("查無資料", 400)
+        }
+        return result
+    }
+
     public async createUser(
         data: CreateUserDto,
         user: RequestUser
-    ): Promise<any> {
+    ): Promise<UserModel> {
         const model = this.convertCreateDtoToUserModel(data, user.id)
         try {
             const result = await UserDao.create(model)
-            await UserRoleDao.bulkCreateUserRole(result.id as number, data.roles)
+            await UserRoleDao.bulkCreateUserRole(
+                result.id as number,
+                data.roles
+            )
             return result
         } catch (error: any) {
             if (error instanceof UniqueConstraintError) {
@@ -39,5 +63,26 @@ export default new (class UserService {
             }
             throw new HttpException(error.message, 500)
         }
+    }
+
+    public async updateUser(
+        data: UpdateUserDto,
+        user: RequestUser
+    ): Promise<true> {
+        const model = _.pick(data, ["id", "sid", "name"]) as UserModel
+        model.updated_by = user.id
+        const result = await UserDao.update(model)
+        if (result.affectedRows === 0) {
+            throw new HttpException("查無資料", 400)
+        }
+        return true
+    }
+
+    public async deleteUser(id: string | number, user: RequestUser): Promise<true> {
+        const result = await UserDao.delete(id, user.id)
+        if (result.affectedRows === 0) {
+            throw new HttpException("查無資料", 400)
+        }
+        return true
     }
 })()

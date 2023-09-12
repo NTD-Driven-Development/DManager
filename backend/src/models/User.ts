@@ -8,8 +8,8 @@ export interface UserModel {
     name: string
     email: string
     password: string
-    is_admin: boolean
-    is_actived: boolean
+    is_admin?: boolean
+    is_actived?: boolean
     created_at?: Date
     created_by?: number
     updated_at?: Date
@@ -104,11 +104,13 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 comment: "是否為管理員",
+                defaultValue: false,
             },
             is_actived: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 comment: "是否啟用",
+                defaultValue: true,
             },
             created_at: {
                 type: DataTypes.DATE,

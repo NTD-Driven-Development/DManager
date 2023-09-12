@@ -26,7 +26,7 @@ module.exports = {
                 allowNull: false,
             },
             detail: {
-                type: DataTypes.STRING(255),
+                type: Sequelize.STRING(255),
                 allowNull: true,
                 comment: "詳細資料",
             },

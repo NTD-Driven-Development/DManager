@@ -9,6 +9,15 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
         const users = await Db.user.findAll({
             include: [
                 {
+                    model: Db.role,
+                    attributes: ["id", "name"],
+                    as: "roles",
+                    required: false,
+                    through: {
+                        attributes: [],
+                    },
+                },
+                {
                     model: Db.user,
                     attributes: ["id", "name"],
                     as: "creator",
@@ -22,13 +31,23 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
                 },
             ],
             attributes: { exclude: ["password", "is_admin"] },
+            where: { deleted_at: null },
         })
         return users
     }
 
     public async findOneById(id: string | number): Promise<UserModel> {
-        const user = await Db.user.findByPk(id, {
+        const user = await Db.user.findOne({
             include: [
+                {
+                    model: Db.role,
+                    attributes: ["id", "name"],
+                    as: "roles",
+                    required: false,
+                    through: {
+                        attributes: [],
+                    },
+                },
                 {
                     model: Db.user,
                     attributes: ["id", "name"],
@@ -43,6 +62,7 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
                 },
             ],
             attributes: { exclude: ["password", "is_admin"] },
+            where: { id: id, deleted_at: null },
         })
         return user
     }
@@ -51,17 +71,37 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
         return await Db.user.create(user)
     }
 
-    public async update(
-        user: UserModel
-    ): Promise<Core.IExecuteResult> {
+    public async update(user: UserModel): Promise<Core.IExecuteResult> {
         user.updated_at = moment().toDate()
         return await this.executeResult(
-            Db.user.update(user, { where: { id: user.id } })
+            Db.user.update(
+                {
+                    sid: user.sid,
+                    name: user.name,
+                    updated_at: user.updated_at,
+                    updated_by: user.updated_by,
+                },
+                { where: { id: user.id, deleted_at: null } }
+            )
         )
     }
 
-    public async delete(id: string | number): Promise<Core.IExecuteResult> {
-        return await this.executeResult(Db.user.destroy({ where: { id: id } }))
+    public async delete(
+        id: string | number,
+        deleted_by: string | number
+    ): Promise<Core.IExecuteResult> {
+        return await this.executeResult(
+            Db.user.update(
+                {
+                    deleted_at: moment().toDate(),
+                    deleted_by: deleted_by,
+                    // is_actived: false,
+                },
+                {
+                    where: { id: id, deleted_at: null },
+                }
+            )
+        )
     }
 
     public async deleteBySid(sid: string): Promise<Core.IExecuteResult> {
