@@ -10,6 +10,7 @@ export interface UserModel {
     password: string
     is_admin?: boolean
     is_actived?: boolean
+    remark?: string
     created_at?: Date
     created_by?: number
     updated_at?: Date
@@ -30,6 +31,7 @@ export default (sequelize: any, DataTypes: any) => {
         password!: string
         is_admin!: boolean
         is_actived!: boolean
+        remark?: string
         created_at?: Date
         created_by?: number
         updated_at?: Date
@@ -111,6 +113,11 @@ export default (sequelize: any, DataTypes: any) => {
                 allowNull: false,
                 comment: "是否啟用",
                 defaultValue: true,
+            },
+            remark: {
+                type: DataTypes.STRING(1024),
+                allowNull: true,
+                comment: "備註",
             },
             created_at: {
                 type: DataTypes.DATE,

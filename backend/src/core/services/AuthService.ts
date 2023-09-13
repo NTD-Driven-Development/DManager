@@ -130,8 +130,8 @@ export default new (class AuthService {
             id: user.id as number,
             name: user.name,
             email: user.email,
-            is_admin: user.is_admin,
-            is_actived: user.is_actived,
+            is_admin: user.is_admin as boolean,
+            is_actived: user.is_actived as boolean,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }
@@ -156,8 +156,8 @@ export default new (class AuthService {
             id: user.id as number,
             name: user.name,
             email: user.email,
-            is_admin: user.is_admin,
-            is_actived: user.is_actived,
+            is_admin: user.is_admin as boolean,
+            is_actived: user.is_actived as boolean,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }

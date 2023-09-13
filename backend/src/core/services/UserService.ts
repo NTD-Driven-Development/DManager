@@ -6,7 +6,7 @@ import HttpException from "../../exceptions/HttpException"
 import UpdateUserDto from "../importDtos/users/UpdateUserDto"
 import CreateUserDto from "../importDtos/users/CreateUserDto"
 import strings from "../../utils/strings"
-import { UniqueConstraintError } from "sequelize"
+import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import { withPagination } from "../../utils/pagination"
@@ -69,16 +69,37 @@ export default new (class UserService {
         data: UpdateUserDto,
         user: RequestUser
     ): Promise<true> {
-        const model = _.pick(data, ["id", "sid", "name"]) as UserModel
-        model.updated_by = user.id
-        const result = await UserDao.update(model)
-        if (result.affectedRows === 0) {
-            throw new HttpException("查無資料", 400)
+        try {
+            const model = _.pick(data, [
+                "id",
+                "sid",
+                "name",
+                "remark",
+            ]) as UserModel
+            model.updated_by = user.id
+            const result = await UserDao.update(model)
+            if (result.affectedRows === 0) {
+                throw new HttpException("查無資料", 400)
+            }
+            const roles = _.pick(data, ["roles"]) as number[]
+            await UserRoleDao.deleteByUserId(data.id)
+            await UserRoleDao.bulkCreateUserRole(data.id, roles)
+            return true
+        } catch (error: any) {
+            if (error instanceof HttpException) {
+                throw error
+            }
+            if (error instanceof ForeignKeyConstraintError) {
+                throw new HttpException("資料錯誤", 400)
+            }
+            throw new HttpException(error.message, 500)
         }
-        return true
     }
 
-    public async deleteUser(id: string | number, user: RequestUser): Promise<true> {
+    public async deleteUser(
+        id: string | number,
+        user: RequestUser
+    ): Promise<true> {
         const result = await UserDao.delete(id, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)

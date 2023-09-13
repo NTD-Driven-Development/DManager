@@ -74,15 +74,7 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
     public async update(user: UserModel): Promise<Core.IExecuteResult> {
         user.updated_at = moment().toDate()
         return await this.executeResult(
-            Db.user.update(
-                {
-                    sid: user.sid,
-                    name: user.name,
-                    updated_at: user.updated_at,
-                    updated_by: user.updated_by,
-                },
-                { where: { id: user.id, deleted_at: null } }
-            )
+            Db.user.update(user, { where: { id: user.id, deleted_at: null } })
         )
     }
 

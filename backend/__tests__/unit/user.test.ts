@@ -3,7 +3,7 @@ import UserDao from "../../src/core/daos/UserDao"
 import UserRoleDao from "../../src/core/daos/UserRoleDao"
 import strings from "../../src/utils/strings"
 import RoleEnum from "../../src/enumerates/Role"
-import { UniqueConstraintError } from "sequelize"
+import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 
 describe("Unit test for UserService.", () => {
     afterEach(() => {
@@ -51,6 +51,16 @@ describe("Unit test for UserService.", () => {
             id: 1,
             sid: "0",
             name: "測試修改",
+            remark: "測試修改",
+        }
+    }
+    function givenUpdateUserRolePayload() {
+        return {
+            id: 1,
+            sid: "0",
+            name: "測試修改",
+            remark: "測試修改",
+            roles: [RoleEnum.編輯者],
         }
     }
 
@@ -94,7 +104,7 @@ describe("Unit test for UserService.", () => {
     })
 
     describe("更新使用者資料", () => {
-        it("給予 id、學號、姓名，更新一位使用者資料。", async () => {
+        it("給予 id、學號、姓、備註，更新一位使用者資料。", async () => {
             // given
             const payload = givenUpdateUserPayload()
 
@@ -114,8 +124,52 @@ describe("Unit test for UserService.", () => {
                 id: payload.id,
                 sid: payload.sid,
                 name: payload.name,
+                remark: payload.remark,
                 updated_by: fakeUser.id,
             })
+        })
+
+        it("要能夠修改角色", async () => {
+            // given
+            const payload = givenUpdateUserRolePayload()
+            // when
+            jest.spyOn(UserDao, "update").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "deleteByUserId").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
+                true as any
+            )
+            const updatedResult = await UserService.updateUser(
+                payload,
+                fakeUser
+            )
+            // then
+            expect(updatedResult).toBe(true)
+            expect(UserDao.update).toBeCalledTimes(1)
+            expect(UserRoleDao.deleteByUserId).toBeCalledTimes(1)
+            expect(UserRoleDao.bulkCreateUserRole).toBeCalledTimes(1)
+        })
+
+        it("若修改時發生外鍵關聯錯誤，應擲出「資料錯誤」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "資料錯誤"
+            const payload = givenUpdateUserRolePayload()
+            jest.spyOn(UserDao, "update").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "deleteByUserId").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockRejectedValue(
+                new ForeignKeyConstraintError({})
+            )
+            const result = UserService.updateUser(payload, fakeUser)
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
 
         it("若更新資料無異動，應拋出「查無資料」，設定狀態碼 400。", async () => {

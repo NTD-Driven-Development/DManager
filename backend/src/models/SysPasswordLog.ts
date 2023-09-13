@@ -100,7 +100,7 @@ export default (sequelize: any, DataTypes: any) => {
         },
         {
             sequelize,
-            modelName: "sys_auth_log",
+            modelName: "sys_password_log",
             timestamps: false,
             freezeTableName: true,
         }
