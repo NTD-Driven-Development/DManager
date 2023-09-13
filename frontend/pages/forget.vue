@@ -2,10 +2,10 @@
     <div class="fixed flex flex-col items-center justify-center min-h-full w-full min-w-[320px] gap-3 p-3 sm:p-7 lg:py-10 xl:py-14 bg-gray-100">
         <div class="text-xl font-bold">重設密碼</div>
         <div class="flex flex-col w-full max-w-md rounded-lg bg-white overflow-hidden">
-            <div class="p-3">
-                <NuxtLink to="/login" class="px-4 py-2 w-fit rounded text-sm bg-gray-600 text-white">回登入頁</NuxtLink>
-            </div>
             <form class="flex flex-col w-full gap-3 p-6">
+                <div class="pb-2">
+                    <NuxtLink to="/login" class="px-3 py-2 w-fit rounded text-xs bg-gray-600 text-white">回登入頁</NuxtLink>
+                </div>
                 <div class="flex items-center gap-2 whitespace-nowrap">
                     <div>電子郵件：</div>
                     <Input name="email" placeholder="請輸入電子郵件" :disabled="step != 0" class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500"/>
