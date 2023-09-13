@@ -123,7 +123,7 @@ export default new (class AuthController {
     ) {
         try {
             const { password } = req.body
-            const forget_password_token = req.cookies.forget_password_token
+            const forget_password_token = req.cookies?.forget_password_token as string
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const result = await AuthService.resetPassword(
                     req,

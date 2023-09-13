@@ -72,12 +72,16 @@ describe("Unit Test for AuthService", () => {
             // when
             jest.spyOn(uuid, "v4").mockReturnValue(verified_token)
             jest.spyOn(LogDao, "findSysPasswordLogByEmail").mockResolvedValue({
+                id: 1,
                 email: payload.email,
                 token: payload.token,
             } as any)
             jest.spyOn(LogDao, "updateSysPasswordLog").mockResolvedValue({
                 affectedRows: 1,
             } as any)
+            jest.spyOn(Date, "now").mockReturnValue(
+                new Date("2021-01-01 00:00:10").getTime()
+            )
             const result = await AuthService.verifyForgetPasswordToken(
                 payload.email,
                 payload.token
@@ -86,6 +90,13 @@ describe("Unit Test for AuthService", () => {
             expect(uuid.v4).toBeCalledTimes(1)
             expect(LogDao.findSysPasswordLogByEmail).toBeCalledTimes(1)
             expect(LogDao.updateSysPasswordLog).toBeCalledTimes(1)
+            expect(LogDao.updateSysPasswordLog).toBeCalledWith({
+                id: 1,
+                email: payload.email,
+                token: payload.token,
+                verified_token: verified_token,
+                verified_at: moment().toDate(),
+            })
             expect(result).toEqual(verified_token)
         })
 
