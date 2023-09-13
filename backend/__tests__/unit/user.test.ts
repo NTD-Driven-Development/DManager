@@ -31,6 +31,13 @@ describe("Unit test for UserService.", () => {
     }
 
     async function whenCreateUser(payload: any) {
+        jest.spyOn(UserDao, "findAll").mockResolvedValue([
+            {
+                id: 1,
+                email: "123456@gmail.com",
+                deleted_at: null,
+            } as any,
+        ])
         jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
         jest.spyOn(strings, "hash").mockReturnValue(hashedPwd)
         jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
@@ -40,9 +47,14 @@ describe("Unit test for UserService.", () => {
     }
 
     async function whenCreateSameEmailUser(payload: any) {
-        jest.spyOn(UserDao, "create").mockRejectedValue(
-            new UniqueConstraintError({})
-        )
+        jest.spyOn(UserDao, "findAll").mockResolvedValue([
+            {
+                id: 1,
+                email: payload.email,
+                deleted_at: null,
+            } as any,
+        ])
+        jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
         return await UserService.createUser(payload, fakeUser)
     }
 
@@ -93,10 +105,8 @@ describe("Unit test for UserService.", () => {
             // given
             const errorMessage: string = "此 Email 已被註冊"
             const payload = givenCreateUserPayload()
-
             // when
             const result = whenCreateSameEmailUser(payload)
-
             // then
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)

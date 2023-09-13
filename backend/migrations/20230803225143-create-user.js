@@ -23,7 +23,6 @@ module.exports = {
                 type: Sequelize.STRING(255),
                 allowNull: false,
                 comment: "帳號",
-                unique: true,
             },
             password: {
                 type: Sequelize.STRING(512),

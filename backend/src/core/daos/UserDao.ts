@@ -30,7 +30,7 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
                     required: false,
                 },
             ],
-            attributes: { exclude: ["password", "is_admin"] },
+            attributes: { exclude: ["password"] },
             where: { deleted_at: null },
         })
         return users
@@ -61,7 +61,7 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
                     required: false,
                 },
             ],
-            attributes: { exclude: ["password", "is_admin"] },
+            attributes: { exclude: ["password"] },
             where: { id: id, deleted_at: null },
         })
         return user
@@ -90,7 +90,7 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
                     // is_actived: false,
                 },
                 {
-                    where: { id: id, deleted_at: null },
+                    where: { id: id, is_admin: false, deleted_at: null },
                 }
             )
         )

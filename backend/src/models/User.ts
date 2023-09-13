@@ -95,7 +95,6 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING(255),
                 allowNull: false,
                 comment: "帳號",
-                unique: true,
             },
             password: {
                 type: DataTypes.STRING(512),

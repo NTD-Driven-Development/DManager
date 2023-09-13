@@ -49,20 +49,15 @@ export default new (class UserService {
         data: CreateUserDto,
         user: RequestUser
     ): Promise<UserModel> {
-        const model = this.convertCreateDtoToUserModel(data, user.id)
-        try {
-            const result = await UserDao.create(model)
-            await UserRoleDao.bulkCreateUserRole(
-                result.id as number,
-                data.roles
-            )
-            return result
-        } catch (error: any) {
-            if (error instanceof UniqueConstraintError) {
-                throw new HttpException("此 Email 已被註冊", 400)
-            }
-            throw new HttpException(error.message, 500)
+        const users = await UserDao.findAll()
+        const isExist = _.find(users, (u) => u.email === data.email && u.deleted_at === null)
+        if (isExist) {
+            throw new HttpException("此 Email 已被註冊", 400)
         }
+        const model = this.convertCreateDtoToUserModel(data, user.id)
+        const result = await UserDao.create(model)
+        await UserRoleDao.bulkCreateUserRole(result.id as number, data.role_ids)
+        return result
     }
 
     public async updateUser(
@@ -81,7 +76,7 @@ export default new (class UserService {
             if (result.affectedRows === 0) {
                 throw new HttpException("查無資料", 400)
             }
-            const roles = _.pick(data, ["roles"]) as number[]
+            const roles = _.pick(data, ["role_ids"]) as number[]
             await UserRoleDao.deleteByUserId(data.id)
             await UserRoleDao.bulkCreateUserRole(data.id, roles)
             return true
