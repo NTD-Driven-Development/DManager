@@ -11,6 +11,7 @@
                     <div>密碼：</div>
                     <Input name="password" type="password" placeholder="請輸入密碼" class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500"/>
                 </div>
+                <NuxtLink to="/forget" class="text-sm text-blue-900 text-right">忘記密碼</NuxtLink>
             </form>
             <button class="flex flex-col items-center w-full px-6 py-2 text-white bg-gray-700" @click="onSubmit">登入</button>
         </div>

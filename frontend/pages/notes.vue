@@ -33,7 +33,7 @@
                     <template #姓名="{ data }">{{ checkValueEmpty(data?.boarder?.name) }}</template>
                     <template #標題="{ data }">{{ checkValueEmpty(data?.title) }}</template>
                     <template #敘述="{ data }">
-                        <div class="whitespace-pre-wrap break-all max-w-[200px] w-full">
+                        <div class="whitespace-pre-wrap break-all max-w-[200px]">
                             {{ checkValueEmpty(data?.description) }}
                         </div>
                     </template>

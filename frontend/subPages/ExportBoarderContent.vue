@@ -11,7 +11,7 @@
                         </template>
                         <template #事由="{ data }">
                             <div class="flex justify-center min-w-[200px]">
-                                <div class="whitespace-pre-wrap break-all w-fit">
+                                <div class="whitespace-pre-wrap break-all">
                                     {{ checkValueEmpty(data?.point_rule, (v) => `${v?.code}.${v?.reason}`) }}
                                 </div>
                             </div>
@@ -19,7 +19,7 @@
                         <template #點數="{ data }">{{ checkValueEmpty(data?.point) }}</template>
                         <template #備註="{ data }">
                             <div class="flex justify-center min-w-[200px]">
-                                <div class="whitespace-pre-wrap break-all w-fit">
+                                <div class="whitespace-pre-wrap break-all">
                                     {{ checkValueEmpty(data?.remark) }}
                                 </div>
                             </div>

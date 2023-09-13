@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { User } from '~/src/model';
+import * as Model from '~/src/model';
 import { UserRole } from '~/src/enum';
 import axios from "axios";
 import _ from 'lodash';
@@ -18,11 +18,6 @@ axiosRefreshTokenInstance.interceptors.request.use((config) => {
 
 export const useAuthStore = defineStore('auth', () => {
     const authUser = ref<User | null>(null);
-
-    const isRole = (role: UserRole) => {
-        return false;
-        // return authUser?.value == role;
-    }
 
     async function login(formData: LoginFormData) {
         try {
@@ -108,9 +103,23 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    async function verifyForget(formData: VerifyForgetFormData) {
+        try {
+            const response = await axios.post(`${PREFIX}/verifyForget`, formData);
+    
+            return response.data;
+        } 
+        catch (error: any) {
+            if (error?.response?.data)
+                throw error.response.data;
+            else
+                throw error;
+        }
+    }
+
     async function resetPassword(formData: ResetPasswordFormData) {
         try {
-            const response = await axios.post(`${PREFIX}/resetPassword`, formData);
+            const response = await axios.patch(`${PREFIX}/resetPassword`, formData);
             const accessToken = response.data.data.access_token;
             
             if (process.client) {
@@ -127,10 +136,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function updatePhoto(formData: UpdatePhotoFormData) {
+    async function changePassword(formData: ChangePasswordFormData) {
         try {
-            const response = await axios.patch(`${PREFIX}/photo`, formData);
-    
+            const response = await axios.patch(`${PREFIX}/changePassword`, formData);
+            
             return response.data;
         } 
         catch (error: any) {
@@ -150,11 +159,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     return { 
-        authUser,isRole, login, logout, 
-        refresh, session, forget, resetPassword, 
-        updatePhoto, getAccessToken, clearAccessToken 
+        authUser, login, logout, refresh, session, 
+        forget, verifyForget, resetPassword, changePassword,
+        getAccessToken, clearAccessToken 
     };
 });
+
+type User = Model.User & {
+    roles: Model.Role[],
+}
 
 interface LoginFormData {
     email: string,
@@ -165,11 +178,16 @@ interface ForgetFormData {
     email: string,
 }
 
-interface ResetPasswordFormData {
-    password: string,
-    random_key: string,
+interface VerifyForgetFormData {
+    email: string,
+    token: string,
 }
 
-interface UpdatePhotoFormData {
-    photo: string,
+interface ResetPasswordFormData {
+    password: string,
+}
+
+interface ChangePasswordFormData {
+    old_password: string,
+    new_password: string,
 }

@@ -55,4 +55,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 const exceptRouteList: string[] = [
     // '/',
     // '/example/(.*)',
+    '/forget',
 ]

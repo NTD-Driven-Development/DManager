@@ -36,6 +36,11 @@ export interface Bunk {
     bed: string,
 }
 
+export interface Role {
+    id: number,
+    name: string,
+}
+
 export interface BoarderStatus {
     id: number,
     name: string,
@@ -76,8 +81,10 @@ export interface Boarder {
 
 export interface User {
     id: number,
+    sid: string,
     name: string,
     email: string,
+    remark?: string,
     is_admin: boolean,
 }
 

@@ -46,6 +46,9 @@ export const showParseError = (notifier: InstanceType<typeof ToastNotifier> | un
     else if (error?.message) {
         messages.push(_.toString(error?.message));
     }
+    else if (error?.error) {
+        messages.push(_.toString(error?.error));
+    }
     else {
         messages.push(_.toString(error));
     }

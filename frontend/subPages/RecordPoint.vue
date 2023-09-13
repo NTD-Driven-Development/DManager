@@ -23,13 +23,13 @@
                 <template #姓名="{ data }">{{ checkValueEmpty(data?.boarder?.name) }}</template>
                 <template #編號="{ data }">{{ checkValueEmpty(data?.point_rule?.code) }}</template>
                 <template #事由="{ data }">
-                    <div class="whitespace-pre-wrap break-all min-w-[200px] w-full">
+                    <div class="whitespace-pre-wrap break-all min-w-[200px]">
                         {{ checkValueEmpty(data?.point_rule?.reason) }}
                     </div>
                 </template>
                 <template #點數="{ data }">{{ checkValueEmpty(data?.point) }}</template>
                 <template #備註="{ data }">
-                    <div class="whitespace-pre-wrap break-all min-w-[200px] w-full max-w-xs">
+                    <div class="flex justify-center whitespace-pre-wrap break-all min-w-[200px] max-w-xs">
                         {{ checkValueEmpty(data?.remark) }}
                     </div>
                 </template>

@@ -20,11 +20,11 @@
             <div class="overflow-auto h-full" :class="[sideBarContentColor, sideBarWidth]">
                 <div class="flex p-4 bg-gray-600">
                     <div>
-                        <img :src="avatar()" class="aspect-square h-full rounded-full object-cover bg-white overflow-hidden">
+                        <img :src="avatar(authUser?.name)" class="aspect-square h-full rounded-full object-cover bg-white overflow-hidden">
                     </div>
                     <div class="text-white flex flex-1 flex-col overflow-hidden px-4 py-2">
-                        <div>{{ '成員名' }}</div>
-                        <div class="text-xs mt-1 truncate">{{ '身份' }}</div>
+                        <div>{{ authUser?.name }}</div>
+                        <div class="text-xs mt-1 truncate">{{ authUser?.roles?.map((v) => v?.name)?.join('、') }}</div>
                     </div>
                 </div>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white"
@@ -52,7 +52,7 @@
                     v-show="$route.path.startsWith('/notes')"></Icon>
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
-                @click="navigateTo('/users'); isMenuOpen = false;">
+                @click="navigateTo('/users'); isMenuOpen = false;" v-if="authUser?.is_admin">
                     <div :class="[{ 'font-bold': $route.path.startsWith('/users') }]">成員管理</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/users')"></Icon>
@@ -111,8 +111,8 @@
     const pageContentColor = 'bg-white';
     const sideBarWidth = `w-[240px]`;
 
-    const { path } = useRoute();
     const authStore = useAuthStore();
+    const { authUser } = storeToRefs(authStore);
     const toastNotifier = inject(ToastNotifierKey);
     const isMenuOpen = ref(false);
 

@@ -73,6 +73,26 @@ export class BoardersCaller extends ApiCaller<Boarder[], BoardersQueries> {
     protected projectIdHandler = _.throttle(this.setQuery, 800);
 }
 
+export class RolesCaller extends ApiCaller<Role[]> {
+    constructor() {
+        super();
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<Role[]>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/roles?${searchParams}`);
+    }
+}
+
 export class BoarderStatusesCaller extends ApiCaller<BoarderStatus[]> {
     constructor() {
         super();
@@ -187,6 +207,8 @@ type Boarder = Model.Boarder & {
     project_bunk: Model.Bunk,
     class: Model.Class,
 }
+
+type Role = Model.Role;
 
 type BoarderStatus = Model.BoarderStatus
 
