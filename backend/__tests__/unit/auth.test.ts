@@ -5,6 +5,7 @@ import mailUtil from "../../src/utils/sendMail"
 import moment from "moment"
 import * as uuid from "uuid"
 import strings from "../../src/utils/strings"
+import jwt from "jsonwebtoken"
 jest.mock("uuid")
 
 describe("Unit Test for AuthService", () => {
@@ -109,13 +110,20 @@ describe("Unit Test for AuthService", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
 
-        it("攜帶驗證成功後的 verified_token 進行重設密碼，並記錄「重設成功」LOG", async () => {
+        it("攜帶驗證成功後的 verified_token 進行重設密碼，並記錄「重設成功」LOG，最後核發 access_token, refresh_token", async () => {
             // given
             const payload = {
                 token: "UnitTest",
                 password: "UnitTest",
             }
+            const fakeAccessToken = "signedToken"
+            const fakeRefreshToken = "signedRefreshToken"
             // when
+            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+                id: 1,
+                email: "abc@gmail.com",
+                roles: null,
+            } as any)
             jest.spyOn(
                 LogDao,
                 "findSysPasswordLogByVerifiedToken"
@@ -131,16 +139,24 @@ describe("Unit Test for AuthService", () => {
             )
             // must be hash password
             jest.spyOn(strings, "hash").mockReturnValue("UnitTest")
-            await AuthService.resetPassword(
+            jest.spyOn(jwt, "sign").mockImplementation(() => fakeAccessToken)
+            jest.spyOn(uuid, "v4").mockReturnValue(fakeRefreshToken)
+            jest.spyOn(LogDao, "saveSysAuthLog").mockResolvedValue({} as any)
+            const result = await AuthService.resetPassword(
                 fakeRequest,
                 payload.token,
                 payload.password
             )
             // then
+            expect(result).toHaveProperty("access_token")
+            expect(result).toHaveProperty("refresh_token")
+            expect(result.access_token).toEqual("Bearer " + fakeAccessToken)
+            expect(result.refresh_token).toEqual(fakeRefreshToken)
             expect(strings.hash).toBeCalledTimes(1)
             expect(LogDao.findSysPasswordLogByVerifiedToken).toBeCalledTimes(1)
             expect(AuthDao.updateUserPasswordByEmail).toBeCalledTimes(1)
             expect(LogDao.saveSysPasswordLog).toBeCalledTimes(1)
+            expect(LogDao.saveSysAuthLog).toBeCalledTimes(1)
         })
 
         it("若攜帶 verified_token 進行重設密碼，但查無此權杖，應擲出例外「傳送資料錯誤」，狀態碼 400", async () => {

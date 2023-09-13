@@ -43,9 +43,7 @@ export default new (class LogDao extends BaseDao {
     ): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.sys_password_log.update(log, {
-                where: {
-                    id: log.id,
-                },
+                where: { id: log.id },
             })
         )
     }

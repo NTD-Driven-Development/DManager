@@ -7,14 +7,29 @@ import Db from "../../models"
 import { Transaction } from "sequelize"
 
 export default new (class AuthController {
+    private async setRefreshToken(res: Response, refresh_token: string) {
+        res.cookie("refresh_token", refresh_token, {
+            maxAge:
+                parseInt(process.env.AUTH_REFRESH_EXPIRESIN_SEC as string) *
+                1000,
+            httpOnly: true,
+            sameSite: "strict",
+        })
+    }
+
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const user = req.user as UserModel
-                const data = await AuthService.login(user, req, res)
+                const result = await AuthService.login(user, req, res)
                 t.afterCommit(() => {
-                    next(HttpResponse.success(data))
+                    this.setRefreshToken(res, result.refresh_token)
+                    next(
+                        HttpResponse.success({
+                            access_token: result.access_token,
+                        })
+                    )
                 })
             })
         } catch (error) {
@@ -36,9 +51,14 @@ export default new (class AuthController {
         try {
             // set transaction
             await Db.sequelize.transaction(async (t: Transaction) => {
-                const data = await AuthService.refreshToken(req, res)
+                const result = await AuthService.refreshToken(req, res)
                 t.afterCommit(() => {
-                    next(HttpResponse.success(data))
+                    this.setRefreshToken(res, result.refresh_token)
+                    next(
+                        HttpResponse.success({
+                            access_token: result.access_token,
+                        })
+                    )
                 })
             })
         } catch (error) {
@@ -88,7 +108,7 @@ export default new (class AuthController {
                 token
             )
             res.cookie("forget_password_token", verified_token, {
-                maxAge: 86400000,
+                maxAge: 10 * 60 * 1000,
                 httpOnly: true,
                 sameSite: "strict",
             })
@@ -98,18 +118,27 @@ export default new (class AuthController {
         }
     }
 
-    public async resetPassword(req: Request, res: Response, next: NextFunction) {
+    public async resetPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const { password } = req.body
             const forget_password_token = req.cookies.forget_password_token
             await Db.sequelize.transaction(async (t: Transaction) => {
-                await AuthService.resetPassword(
+                const result = await AuthService.resetPassword(
                     req,
                     password,
                     forget_password_token
                 )
                 t.afterCommit(() => {
-                    next(HttpResponse.success(null))
+                    this.setRefreshToken(res, result.refresh_token)
+                    next(
+                        HttpResponse.success({
+                            access_token: result.access_token,
+                        })
+                    )
                     res.clearCookie("forget_password_token")
                 })
             })
@@ -118,7 +147,11 @@ export default new (class AuthController {
         }
     }
 
-    public async changePassword(req: Request, res: Response, next: NextFunction) {
+    public async changePassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const { old_password, new_password } = req.body
             const { email } = req.user as RequestUser

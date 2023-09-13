@@ -75,7 +75,17 @@ export default new (class AuthService {
             { email: sysPasswordLog.email } as any,
             "重設密碼成功"
         )
-        return true
+        const user = await this.getUserAuthInfoByEmail(sysPasswordLog.email)
+        const access_token = await this.signJwtById(user.id)
+        const refresh_token = await this.setRefreshToken(
+            user.id as number,
+            RefreshTokenType.登入,
+            req
+        )
+        return {
+            access_token: "Bearer " + access_token,
+            refresh_token: refresh_token,
+        }
     }
 
     public async verifyForgetPasswordToken(email: string, token: string) {
@@ -84,12 +94,9 @@ export default new (class AuthService {
             throw new HttpException("驗證碼錯誤", 400)
         }
         const verified_token = v4()
-        const model: SysPasswordLogModel = {
-            ...sysPasswordLog,
-            verified_token: verified_token,
-            verified_at: moment().toDate(),
-        }
-        await LogDao.updateSysPasswordLog(model)
+        sysPasswordLog.verified_at = moment().toDate()
+        sysPasswordLog.verified_token = verified_token
+        await LogDao.updateSysPasswordLog(sysPasswordLog)
         return verified_token
     }
 
@@ -207,17 +214,6 @@ export default new (class AuthService {
         return refresh_token
     }
 
-    private async setRefreshTokenCookie(res: Response, refresh_token: string) {
-        res.cookie("refresh_token", refresh_token, {
-            maxAge:
-                parseInt(process.env.AUTH_REFRESH_EXPIRESIN_SEC as string) *
-                1000,
-            httpOnly: true,
-            sameSite: "strict",
-            // secure: process.env.NODE_ENV == 'production' ? true : false,
-        })
-    }
-
     public async login(
         user: UserModel,
         req: Request,
@@ -230,9 +226,9 @@ export default new (class AuthService {
             RefreshTokenType.登入,
             req
         )
-        await this.setRefreshTokenCookie(res, refresh_token)
         return {
             access_token: "Bearer " + access_token,
+            refresh_token: refresh_token,
         }
     }
 
@@ -291,9 +287,9 @@ export default new (class AuthService {
             RefreshTokenType.刷新,
             req
         )
-        await this.setRefreshTokenCookie(res, refresh_token_new)
         return {
             access_token: "Bearer " + access_token_new,
+            refresh_token: refresh_token_new,
         }
     }
 })()
