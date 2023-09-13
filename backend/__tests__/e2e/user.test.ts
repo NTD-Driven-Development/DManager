@@ -2,24 +2,26 @@ import _ from "lodash"
 import { App, mockUser } from "../../config/preE2eConfig"
 import UserDao from "../../src/core/daos/UserDao"
 import Db from "../../src/models"
+import RoleEnum from "../../src/enumerates/Role"
 
 describe("Acceptance test for UserController.", () => {
     describe("取得使用者列表", () => {
         let testUsers: any
 
-        const createUserPayload = [{
-            name: "test",
-            email: "test_e2e@gmail.com",
-            sid: "S1234567890test_e2e",
-            roles: [1],
-        },
-        {
-            name: "test22",
-            email: "test_e2e22@gmail.com",
-            sid: "S12345test_e2e+123",
-            roles: [1],
-        }
-    ]
+        const createUserPayload = [
+            {
+                name: "test",
+                email: "test_e2e@gmail.com",
+                sid: "S1234567890test_e2e",
+                role_ids: [RoleEnum.檢視者],
+            },
+            {
+                name: "test22",
+                email: "test_e2e22@gmail.com",
+                sid: "S12345test_e2e+123",
+                role_ids: [RoleEnum.檢視者],
+            },
+        ]
         beforeAll(async () => {
             // 測試前新增測資
             const res1 = await App.post("/api/users").send(createUserPayload[0])
@@ -92,7 +94,7 @@ describe("Acceptance test for UserController.", () => {
             name: "test",
             email: "test_e2e@gmail.com",
             sid: "S1234567890test_e2e",
-            roles: [1],
+            role_ids: [RoleEnum.檢視者],
         }
 
         it("不符合輸入格式應回傳 400.", async () => {
@@ -102,13 +104,13 @@ describe("Acceptance test for UserController.", () => {
                     name: "test_e2e",
                     email: "test_e2egmail.com",
                     sid: "S1234567890test_e2e",
-                    roles: [1],
+                    role_ids: [RoleEnum.檢視者],
                 },
                 {
                     name: "test_e2e",
                     email: "test_e2e@gmail.com",
                     sid: "S1234567890test_e2e",
-                    roles: [],
+                    role_ids: [],
                 },
                 {
                     name: "",
@@ -157,6 +159,7 @@ describe("Acceptance test for UserController.", () => {
                 id: createdUser?.id,
                 name: "test_e2e_updated",
                 sid: "test_e2e_updated",
+                role_ids: [],
             }
             // when
             const response = await App.put("/api/users").send(payload)

@@ -9,6 +9,7 @@ import { PointRuleModel } from "../../models/PointRule"
 import { ProjectModel } from "../../models/Project"
 import BunkResult from "../exportDtos/share/BunkResult"
 import { BoarderModel } from "../../models/Boarder"
+import { RoleModel } from "../../models/Role"
 
 export default new (class UserService {
     private convertBunksToBunkResult(bunks: BunkModel[]): BunkResult[] {
@@ -82,6 +83,10 @@ export default new (class UserService {
         project_id: string | number
     ): Promise<BoarderModel[]> {
         const result = await ShareDao.getBoarders(project_id)
+        return result
+    }
+    public async getRoles(): Promise<RoleModel[]> {
+        const result = await ShareDao.getRoles()
         return result
     }
 })()

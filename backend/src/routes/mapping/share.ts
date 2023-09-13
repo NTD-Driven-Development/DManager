@@ -21,4 +21,6 @@ router.get('/points/rule', ShareController.getPointRules);
 router.get('/projects', ShareController.getProjects);
 // 取得某項目住宿生
 router.get('/boarders', ShareController.getBoarders);
+// 取得角色
+router.get('/roles', ShareController.getRoles);
 export default router;

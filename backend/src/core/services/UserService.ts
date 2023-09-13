@@ -50,7 +50,10 @@ export default new (class UserService {
         user: RequestUser
     ): Promise<UserModel> {
         const users = await UserDao.findAll()
-        const isExist = _.find(users, (u) => u.email === data.email && u.deleted_at === null)
+        const isExist = _.find(
+            users,
+            (u) => u.email === data.email && u.deleted_at === null
+        )
         if (isExist) {
             throw new HttpException("此 Email 已被註冊", 400)
         }
@@ -76,9 +79,10 @@ export default new (class UserService {
             if (result.affectedRows === 0) {
                 throw new HttpException("查無資料", 400)
             }
-            const roles = _.pick(data, ["role_ids"]) as number[]
             await UserRoleDao.deleteByUserId(data.id)
-            await UserRoleDao.bulkCreateUserRole(data.id, roles)
+            if (data?.role_ids?.length !== 0) {
+                await UserRoleDao.bulkCreateUserRole(data.id, data?.role_ids as number[])
+            }
             return true
         } catch (error: any) {
             if (error instanceof HttpException) {

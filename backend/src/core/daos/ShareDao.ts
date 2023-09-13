@@ -11,6 +11,7 @@ import { PointRuleModel } from "../../models/PointRule"
 import { ProjectModel } from "../../models/Project"
 import _ from "lodash"
 import { BoarderModel } from "../../models/Boarder"
+import { RoleModel } from "../../models/Role"
 
 export default new (class ShareDao extends BaseDao {
     public async getBunks(): Promise<BunkModel[]> {
@@ -78,6 +79,14 @@ export default new (class ShareDao extends BaseDao {
             where: {
                 deleted_at: null,
                 project_id: project_id,
+            },
+        })
+    }
+    public async getRoles(): Promise<RoleModel[]> {
+        return await Db.role.findAll({
+            attributes: ["id", "name"],
+            where: {
+                deleted_at: null,
             },
         })
     }

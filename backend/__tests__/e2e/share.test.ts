@@ -136,4 +136,10 @@ describe("Acceptance test for ShareController.", () => {
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBe(0)
     })
+
+    it("取得角色清單", async () => {
+        const response = await App.get("/api/share/roles")
+        expect(response.status).toBe(200)
+        expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
+    })
 })
