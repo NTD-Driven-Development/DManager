@@ -94,9 +94,12 @@ export default new (class AuthService {
             throw new HttpException("驗證碼錯誤", 400)
         }
         const verified_token = v4()
-        sysPasswordLog.verified_at = moment().toDate()
-        sysPasswordLog.verified_token = verified_token
-        const result = await LogDao.updateSysPasswordLog(sysPasswordLog)
+        const model = {
+            id: sysPasswordLog.id as number,
+            verified_token: verified_token,
+            verified_at: moment().toDate(),
+        } as SysPasswordLogModel
+        const result = await LogDao.updateSysPasswordLog(model)
         if (result.affectedRows === 0) {
             throw new HttpException("驗證失敗", 400)
         }
