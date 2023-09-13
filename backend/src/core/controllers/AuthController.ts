@@ -6,17 +6,15 @@ import { UserModel } from "../../models/User"
 import Db from "../../models"
 import { Transaction } from "sequelize"
 
+const setRefreshToken = (res: Response, refresh_token: string) => {
+    res.cookie("refresh_token", refresh_token, {
+        maxAge:
+            parseInt(process.env.AUTH_REFRESH_EXPIRESIN_SEC as string) * 1000,
+        httpOnly: true,
+        sameSite: "strict",
+    })
+}
 export default new (class AuthController {
-    private async setRefreshToken(res: Response, refresh_token: string) {
-        res.cookie("refresh_token", refresh_token, {
-            maxAge:
-                parseInt(process.env.AUTH_REFRESH_EXPIRESIN_SEC as string) *
-                1000,
-            httpOnly: true,
-            sameSite: "strict",
-        })
-    }
-
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             // set transaction
@@ -24,7 +22,7 @@ export default new (class AuthController {
                 const user = req.user as UserModel
                 const result = await AuthService.login(user, req, res)
                 t.afterCommit(() => {
-                    this.setRefreshToken(res, result.refresh_token)
+                    setRefreshToken(res, result.refresh_token)
                     next(
                         HttpResponse.success({
                             access_token: result.access_token,
@@ -53,7 +51,7 @@ export default new (class AuthController {
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const result = await AuthService.refreshToken(req, res)
                 t.afterCommit(() => {
-                    this.setRefreshToken(res, result.refresh_token)
+                    setRefreshToken(res, result.refresh_token)
                     next(
                         HttpResponse.success({
                             access_token: result.access_token,
@@ -129,11 +127,11 @@ export default new (class AuthController {
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const result = await AuthService.resetPassword(
                     req,
+                    forget_password_token,
                     password,
-                    forget_password_token
                 )
                 t.afterCommit(() => {
-                    this.setRefreshToken(res, result.refresh_token)
+                    setRefreshToken(res, result.refresh_token)
                     next(
                         HttpResponse.success({
                             access_token: result.access_token,
