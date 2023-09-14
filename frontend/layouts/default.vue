@@ -19,9 +19,9 @@
             <!-- SideBarContent -->
             <div class="overflow-auto h-full" :class="[sideBarContentColor, sideBarWidth]">
                 <div class="flex p-4 bg-gray-600">
-                    <div>
+                    <NuxtLink to="/profile">
                         <img :src="avatar(authUser?.name)" class="aspect-square h-full rounded-full object-cover bg-white overflow-hidden">
-                    </div>
+                    </NuxtLink>
                     <div class="text-white flex flex-1 flex-col overflow-hidden px-4 py-2">
                         <div>{{ authUser?.name }}</div>
                         <div class="text-xs mt-1 truncate">{{ authUser?.roles?.map((v) => v?.name)?.join('、') }}</div>

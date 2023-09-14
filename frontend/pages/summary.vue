@@ -26,7 +26,7 @@
             <div class="row-span-1 col-span-full flex items-center justify-center lg:row-span-2">
                 <div class="py-2 sm:text-3xl md:text-5xl lg:text-6xl lg:py-6 xl:text-7xl xl:pb-10">國立臺中科技大學男生宿舍人數概況表</div>
             </div>
-            <div class="flex items-center row-span-4 col-span-full bg-gray-3 p-4 lg:col-span-6">
+            <div class="flex items-center row-span-5 col-span-full bg-gray-3 p-4 lg:col-span-6">
                 <div class="-outline-offset-1 outline outline-white w-full sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl">
                     <div class="grid grid-cols-2">
                         <div class="border border-black p-2 text-center lg:p-4">1F</div>
@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row-span-5 col-span-full lg:col-start-8 lg:col-span-9">
+            <div class="row-span-6 col-span-full lg:col-start-8 lg:col-span-9">
                 <div class="grid grid-rows-5 -outline-offset-1 outline outline-white w-full h-full sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl">
                     <div class="grid grid-cols-5 items-center justify-center">
                         <div class="flex items-center justify-center w-full h-full border-b border-black p-2 text-center lg:p-4"></div>

@@ -45,6 +45,7 @@ export default defineNuxtConfig({
         '/': { ssr: false },
         '/login': { ssr: false },
         '/dashboard': { ssr: false },
+        '/profile': { ssr: false },
         '/projects': { ssr: false },
         '/boarders': { ssr: false },
         '/records': { ssr: false },

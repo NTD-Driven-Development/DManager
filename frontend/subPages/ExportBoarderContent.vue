@@ -38,8 +38,10 @@
                             </div>
                         </template>
                         <template #備註="{ data }">
-                            <div class="whitespace-pre-wrap break-all">
-                                {{ checkValueEmpty(data?.remark) }}
+                            <div class="flex justify-center min-w-[200px]">
+                                <div class="whitespace-pre-wrap break-all">
+                                    {{ checkValueEmpty(data?.remark) }}
+                                </div>
                             </div>
                         </template>
                         <template #聯絡時間="{ data }">{{ checkValueEmpty(data?.contacted_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
