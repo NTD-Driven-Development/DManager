@@ -1,6 +1,7 @@
 import _ from "lodash"
 import UserDao from "../daos/UserDao"
 import UserRoleDao from "../daos/UserRoleDao"
+import UserDutyDao from "../daos/UserDutyDao"
 import { UserModel } from "../../models/User"
 import HttpException from "../../exceptions/HttpException"
 import UpdateUserDto from "../importDtos/users/UpdateUserDto"
@@ -10,6 +11,7 @@ import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import { withPagination } from "../../utils/pagination"
+import UserDuty, { UserDutyModel } from "../../models/UserDuty"
 
 export default new (class UserService {
     private convertCreateDtoToUserModel(
@@ -104,5 +106,78 @@ export default new (class UserService {
             throw new HttpException("查無資料", 400)
         }
         return true
+    }
+
+    public async createUserDuty(
+        payload: UserDutyModel,
+        user: RequestUser
+    ): Promise<UserDutyModel> {
+        payload.created_by = user.id
+        if (!user.is_admin) {
+            if (user.id !== payload.user_id) {
+                throw new HttpException("權限不足", 403)
+            }
+        }
+        const result = await UserDutyDao.create(payload)
+        return result
+    }
+
+    public async updateUserDuty(
+        payload: UserDutyModel,
+        user: RequestUser
+    ): Promise<true> {
+        payload.updated_by = user.id
+        if (!user.is_admin) {
+            if (user.id !== payload.user_id) {
+                throw new HttpException("權限不足", 403)
+            }
+        }
+        const result = await UserDutyDao.update(payload)
+        if (result.affectedRows === 0) {
+            throw new HttpException("查無資料", 400)
+        }
+        return true
+    }
+
+    public async deleteUserDuty(
+        id: string | number,
+        user: RequestUser
+    ): Promise<true> {
+        const user_duty = await UserDutyDao.findOneById(id)
+        if (!user_duty) {
+            throw new HttpException("查無資料", 400)
+        }
+        if (!user.is_admin) {
+            if (user.id !== user_duty.user_id) {
+                throw new HttpException("權限不足", 403)
+            }
+        }
+        await UserDutyDao.delete(id)
+        return true
+    }
+
+    public async getUserDuties(
+        query?: {
+            offset: number
+            limit: number
+        }
+    ): Promise<IPaginationResultDto<UserDutyModel>> {
+        const user_duties = await UserDutyDao.findAll()
+        return withPagination(
+            user_duties.length,
+            user_duties,
+            query?.offset,
+            query?.limit
+        )
+    }
+
+    public async getUserDutyById(
+        id: string | number
+    ): Promise<UserDutyModel> {
+        const result = await UserDutyDao.findOneById(id)
+        if (!result) {
+            throw new HttpException("查無資料", 400)
+        }
+        return result
     }
 })()

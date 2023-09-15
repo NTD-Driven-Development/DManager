@@ -72,4 +72,75 @@ export default new (class UserController {
             next(error)
         }
     }
+
+    public async createUserDuty(req: Request, res: Response, next: NextFunction) {
+        try {
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const data = await UserService.createUserDuty(
+                    req.body,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data, 201))
+                })
+            })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    public async updateUserDuty(req: Request, res: Response, next: NextFunction) {
+        try {
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const data = await UserService.updateUserDuty(
+                    req.body,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(data))
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async deleteUserDuty(req: Request, res: Response, next: NextFunction) {
+        try {
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                await UserService.deleteUserDuty(
+                    req.params.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    next(HttpResponse.success(null, 200))
+                })
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getUserDuties(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await UserService.getUserDuties(req.query as any)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getUserDutyById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const data = await UserService.getUserDutyById(req.params.id)
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
 })()

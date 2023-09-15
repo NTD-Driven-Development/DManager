@@ -6,10 +6,12 @@ import { UserModel } from "./User"
 export interface UserDutyModel {
     id: number
     user_id: number
-    start_date: Date
-    end_date: Date
+    start_time: Date
+    end_time: Date
     created_at?: Date
     created_by?: number
+    updated_at?: Date
+    updated_by?: number
     creator?: UserModel
 }
 
@@ -17,10 +19,12 @@ export default (sequelize: any, DataTypes: any) => {
     class UserDuty extends Model<UserDutyModel> implements UserDutyModel {
         id!: number
         user_id!: number
-        start_date!: Date
-        end_date!: Date
+        start_time!: Date
+        end_time!: Date
         created_at?: Date
         created_by?: number
+        updated_at?: Date
+        updated_by?: number
 
         /**
          * Helper method for defining associations.
@@ -56,12 +60,12 @@ export default (sequelize: any, DataTypes: any) => {
                     key: "id",
                 },
             },
-            start_date: {
+            start_time: {
                 type: DataTypes.DATE,
                 allowNull: false,
                 comment: "起始時間",
             },
-            end_date: {
+            end_time: {
                 type: DataTypes.DATE,
                 allowNull: false,
                 comment: "結束時間",
@@ -76,6 +80,16 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
                 comment: "建立者",
+            },
+            updated_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                comment: "更新時間",
+            },
+            updated_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "更新者",
             },
         },
         {

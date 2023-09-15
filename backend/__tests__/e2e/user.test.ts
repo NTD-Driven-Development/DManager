@@ -3,6 +3,7 @@ import { App, mockUser } from "../../config/preE2eConfig"
 import UserDao from "../../src/core/daos/UserDao"
 import Db from "../../src/models"
 import RoleEnum from "../../src/enumerates/Role"
+import UserDutyDao from "../../src/core/daos/UserDutyDao"
 
 describe("Acceptance test for UserController.", () => {
     describe("取得使用者列表", () => {
@@ -82,8 +83,14 @@ describe("Acceptance test for UserController.", () => {
                 )
             })
             _.forEach(users, async (user) => {
-                await Db.user_role.destroy({ where: { user_id: user.id } })
-                await Db.user.destroy({ where: { id: user.id } })
+                try {
+                    await Db.user_role.destroy({
+                        where: { user_id: user.id },
+                    })
+                    await Db.user.destroy({ where: { id: user.id } })
+                } catch (error) {
+                    console.log(error)
+                }
             })
         })
     })
@@ -185,8 +192,151 @@ describe("Acceptance test for UserController.", () => {
 
         afterAll(async () => {
             // 測試後刪除所有測資
-            await Db.user_role.destroy({ where: { user_id: createdUser?.id } })
-            await Db.user.destroy({ where: { email: createUserPayload.email } })
+            try {
+                await Db.user_role.destroy({
+                    where: { user_id: createdUser?.id },
+                })
+                await Db.user.destroy({
+                    where: { email: createUserPayload.email },
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        })
+    })
+
+    describe("取得輪值表", () => {
+        let testUser: any
+        let testUserDuty: any
+
+        beforeAll(async () => {
+            // 建立測試 user
+            testUser = await UserDao.create({
+                name: "test",
+                email: "testE2eUser@gmail.com",
+                password: "password",
+                sid: "S1234567890testE2e",
+            })
+            // 建立 2 筆輪值
+            testUserDuty = await Db.user_duty.create({
+                user_id: testUser.id,
+                start_time: "2021-01-01 00:00:00",
+                end_time: "2021-01-01 00:11:00",
+            })
+            await Db.user_duty.create({
+                user_id: testUser.id,
+                start_time: "2021-01-01 00:11:00",
+                end_time: "2021-01-01 00:22:00",
+            })
+        })
+
+        it("取得輪值清單，要分頁", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 1,
+            }
+            // when
+            const response = await App.get("/api/users/duty").query(payload)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+            expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
+        })
+
+        it("取得單筆輪值資料", async () => {
+            // given
+            const duty_id = testUserDuty.id
+            // when
+            const response = await App.get(`/api/users/duty/${duty_id}`)
+            // then
+            const data = response.body?.data
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+            expect(data?.id).toBe(duty_id)
+        })
+
+        afterAll(async () => {
+            try {
+                await Db.user_duty.destroy({ where: { user_id: testUser.id } })
+                await Db.user.destroy({ where: { id: testUser.id } })
+            } catch (error) {
+                console.log(error)
+            }
+        })
+    })
+
+    describe("建立輪值時段，可以修改時間跟刪除", () => {
+        let createdUser: any
+        let testDuty: any
+
+        beforeAll(async () => {
+            createdUser = await UserDao.create({
+                name: "test",
+                email: "testE2e@gmail.com",
+                password: "testE2e",
+                sid: "S1234567890testE2e",
+            })
+        })
+
+        it("建立輪值時段", async () => {
+            // given
+            const payload = {
+                user_id: createdUser.id,
+                start_time: "2021-01-01 00:00:00",
+                end_time: "2021-01-01 00:22:00",
+            }
+            // when
+            const response = await App.post("/api/users/duty").send(payload)
+            // then
+            expect(response.status).toBe(201)
+            expect(response.body?.error).toBeNull()
+            testDuty = response.body?.data
+        })
+
+        it("修改輪值時段", async () => {
+            // given
+            const payload = {
+                id: testDuty.id,
+                user_id: createdUser.id,
+                start_time: "2021-01-01 00:00:00",
+                end_time: "2021-01-01 00:33:00",
+            }
+            // when
+            const response = await App.put("/api/users/duty").send(payload)
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+            const result = await UserDutyDao.findOneById(testDuty.id)
+            expect(new Date(result?.start_time)).toEqual(new Date(payload.start_time))
+            expect(new Date(result?.end_time)).toEqual(new Date(payload.end_time))
+            expect(result?.updated_by).toBe(mockUser.id)
+        })
+
+        it("刪除輪值時段", async () => {
+            // given
+            const payload = {
+                id: testDuty.id,
+            }
+            // when
+            const response = await App.delete("/api/users/duty/" + payload.id)
+            // then
+            expect(response.status).toBe(200)
+            expect(response.body?.error).toBeNull()
+            const result = await UserDutyDao.findOneById(testDuty.id)
+            expect(result).toBeNull()
+        })
+
+        afterAll(async () => {
+            try {
+                await Db.user_duty.destroy({
+                    where: { user_id: createdUser.id },
+                })
+                await Db.user.destroy({ where: { id: createdUser.id } })
+            } catch (error) {
+                console.log(error)
+            }
         })
     })
 })

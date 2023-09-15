@@ -13,6 +13,7 @@ export default interface RequestUser {
     email: string
     is_admin: boolean
     is_actived: boolean
+    remark: string
     roles: Role[]
     permissions: Permission[]
 }

@@ -145,6 +145,7 @@ export default new (class AuthService {
             email: user.email,
             is_admin: user.is_admin as boolean,
             is_actived: user.is_actived as boolean,
+            remark: user.remark as string,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }
@@ -171,6 +172,7 @@ export default new (class AuthService {
             email: user.email,
             is_admin: user.is_admin as boolean,
             is_actived: user.is_actived as boolean,
+            remark: user.remark as string,
             roles: roles,
             permissions: _.uniqWith(_.flatten(permissions), _.isEqual),
         }
@@ -223,7 +225,6 @@ export default new (class AuthService {
     public async login(
         user: UserModel,
         req: Request,
-        res: Response
     ): Promise<AuthResult> {
         const userid = user.id as number
         const access_token = await this.signJwtById(userid)

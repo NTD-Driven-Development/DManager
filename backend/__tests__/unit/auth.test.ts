@@ -6,6 +6,7 @@ import moment from "moment"
 import * as uuid from "uuid"
 import strings from "../../src/utils/strings"
 import jwt from "jsonwebtoken"
+import { mockUser } from "../../config/preE2eConfig"
 jest.mock("uuid")
 
 describe("Unit Test for AuthService", () => {
@@ -19,6 +20,33 @@ describe("Unit Test for AuthService", () => {
             "x-forwarded-for": "UnitTest",
         },
     } as any
+
+    describe("登入", () => {
+        it("登入成功，應回傳 access_token, refresh_token", async () => {
+            // given
+            const payload = {
+                email: "123@gmail.com",
+            }
+            // when
+            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+                id: 1,
+                email: payload.email,
+                roles: [],
+            } as any)
+            jest.spyOn(jwt, "sign").mockImplementation(() => "UnitTest")
+            jest.spyOn(uuid, "v4").mockReturnValue("UnitTest")
+            jest.spyOn(LogDao, "saveSysAuthLog").mockResolvedValue({} as any)
+            const result = await AuthService.login(mockUser as any, fakeRequest)
+            // then
+            expect(result).toHaveProperty("access_token")
+            expect(result).toHaveProperty("refresh_token")
+            expect(result.access_token).toEqual("Bearer " + "UnitTest")
+            expect(result.refresh_token).toEqual("UnitTest")
+            expect(jwt.sign).toBeCalledTimes(1)
+            expect(uuid.v4).toBeCalledTimes(1)
+            expect(LogDao.saveSysAuthLog).toBeCalledTimes(1)
+        })
+    })
 
     describe("忘記密碼", () => {
         it("查無此帳號，應擲出例外「查無此帳號」，狀態碼 400", async () => {
@@ -92,8 +120,6 @@ describe("Unit Test for AuthService", () => {
             expect(LogDao.updateSysPasswordLog).toBeCalledTimes(1)
             expect(LogDao.updateSysPasswordLog).toBeCalledWith({
                 id: 1,
-                email: payload.email,
-                token: payload.token,
                 verified_token: verified_token,
                 verified_at: moment().toDate(),
             })
@@ -279,6 +305,33 @@ describe("Unit Test for AuthService", () => {
             expect(AuthDao.getUserInfoByEmail).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("取得個人資料", () => {
+        it("取得個人資料成功，應回傳使用者資料", async () => {
+            // given
+            const payload = {
+                email: "",
+            }
+            // when
+            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+                id: 1,
+                email: "",
+                remark: "",
+                name: "",
+                roles: [],
+            } as any)
+            const result = await AuthService.getUserAuthInfoById(1)
+            // then
+            expect(result).toHaveProperty("id")
+            expect(result).toHaveProperty("email")
+            expect(result).toHaveProperty("name")
+            expect(result).toHaveProperty("remark")
+            expect(result).toHaveProperty("is_admin")
+            expect(result).toHaveProperty("is_actived")
+            expect(result).toHaveProperty("roles")
+            expect(result).toHaveProperty("permissions")
         })
     })
 })

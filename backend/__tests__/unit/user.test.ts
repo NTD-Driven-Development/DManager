@@ -4,6 +4,7 @@ import UserRoleDao from "../../src/core/daos/UserRoleDao"
 import strings from "../../src/utils/strings"
 import RoleEnum from "../../src/enumerates/Role"
 import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
+import UserDutyDao from "../../src/core/daos/UserDutyDao"
 
 describe("Unit test for UserService.", () => {
     afterEach(() => {
@@ -21,6 +22,15 @@ describe("Unit test for UserService.", () => {
         is_actived: true,
         created_at: new Date(),
     } as any
+
+    const fakeUserDuty = {
+        id: 1,
+        user_id: 1,
+        start_time: new Date("2021-01-01 00:00:00"),
+        end_time: new Date("2021-01-01 00:02:00"),
+        created_at: new Date("2021-01-01 00:00:00"),
+    } as any
+
     function givenCreateUserPayload() {
         return {
             email: "abc@gmail.com",
@@ -274,6 +284,206 @@ describe("Unit test for UserService.", () => {
             const result = UserService.getUserById(user_id)
             // then
             expect(UserDao.findOneById).toBeCalledTimes(1)
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("建立輪值", () => {
+        it("給予輪值人、輪值起始時間 & 結束時間，建立一筆輪值。", async () => {
+            // given
+            const payload = {
+                user_id: 1,
+                start_time: new Date(),
+                end_time: new Date(),
+            }
+            // when
+            jest.spyOn(UserDutyDao, "create").mockResolvedValue({
+                id: 1,
+                user_id: payload.user_id,
+                start_time: payload.start_time,
+                end_time: payload.end_time,
+            } as any)
+            const result = await UserService.createUserDuty(
+                payload as any,
+                fakeUser
+            )
+            // then
+            expect(result).toHaveProperty("id", 1)
+            expect(result).toHaveProperty("user_id", payload.user_id)
+            expect(result).toHaveProperty("start_time", payload.start_time)
+            expect(result).toHaveProperty("end_time", payload.end_time)
+            expect(UserDutyDao.create).toBeCalledTimes(1)
+        })
+
+        it("如果不是 admin ，就不能建立除了自己以外的輪值", async () => {
+            // given
+            const payload = {
+                user_id: 2,
+                start_time: new Date(),
+                end_time: new Date(),
+            }
+            // when
+            const result = UserService.createUserDuty(payload as any, fakeUser)
+            // then
+            await expect(result).rejects.toThrow("權限不足")
+            await expect(result).rejects.toHaveProperty("statusCode", 403)
+        })
+    })
+
+    describe("修改輪值", () => {
+        it("給予id、輪值人、輪值起始時間 & 結束時間，修改一筆輪值。", async () => {
+            // given
+            const payload = {
+                id: 1,
+                user_id: 1,
+                start_time: new Date(),
+                end_time: new Date(),
+            }
+            // when
+            jest.spyOn(UserDutyDao, "update").mockResolvedValue(fakeUser as any)
+            const result = await UserService.updateUserDuty(
+                payload as any,
+                fakeUser
+            )
+            // then
+            expect(result).toEqual(true)
+            expect(UserDutyDao.update).toBeCalledTimes(1)
+        })
+
+        it("如果不是 admin ，就不能修改除了自己以外的輪值", async () => {
+            // given
+            const payload = {
+                id: 1,
+                user_id: 2,
+                start_time: new Date(),
+                end_time: new Date(),
+            }
+            // when
+            const result = UserService.updateUserDuty(payload as any, fakeUser)
+            // then
+            await expect(result).rejects.toThrow("權限不足")
+            await expect(result).rejects.toHaveProperty("statusCode", 403)
+        })
+
+        it("找不到輪值，應拋出「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const payload = {
+                id: 1,
+                user_id: 1,
+                start_time: new Date(),
+                end_time: new Date(),
+            }
+            jest.spyOn(UserDutyDao, "update").mockResolvedValue({
+                affectedRows: 0,
+            } as any)
+            const result = UserService.updateUserDuty(payload as any, fakeUser)
+            // then
+            expect(UserDutyDao.update).toBeCalledTimes(1)
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+    })
+
+    describe("刪除輪值", () => {
+        it("給予id，刪除一筆輪值。", async () => {
+            // given
+            const duty_id = 1
+            // when
+            jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue({
+                id: 1,
+                user_id: fakeUser.id,
+            } as any)
+            jest.spyOn(UserDutyDao, "delete").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            const result = await UserService.deleteUserDuty(duty_id, fakeUser)
+            // then
+            expect(result).toEqual(true)
+            expect(UserDutyDao.delete).toBeCalledTimes(1)
+        })
+
+        it("找不到輪值，應拋出「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const duty_id = 1
+            jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue(
+                null as any
+            )
+            const result = UserService.deleteUserDuty(duty_id, fakeUser)
+            // then
+            expect(UserDutyDao.findOneById).toBeCalledTimes(1)
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+
+        it("如果不是 admin，就不能刪除其他人的輪值表", async () => {
+            // given
+            const duty_id = 1
+            // when
+            jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue({
+                id: 1,
+                user_id: fakeUser.id + 123456789,
+            } as any)
+            const result = UserService.deleteUserDuty(duty_id, fakeUser)
+            // then
+            await expect(result).rejects.toThrow("權限不足")
+            await expect(result).rejects.toHaveProperty("statusCode", 403)
+        })
+    })
+
+    describe("取得輪值表", () => {
+        it("查詢分頁第一頁，每頁資料為一筆的輪值清單", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 1,
+            }
+            const fakeResult = [fakeUserDuty, fakeUserDuty]
+            // when
+            jest.spyOn(UserDutyDao, "findAll").mockResolvedValue(
+                fakeResult as any
+            )
+            const result = await UserService.getUserDuties(payload)
+            // then
+            expect(result).toEqual({
+                total: 2,
+                current_page: 1,
+                per_page: 1,
+                last_page: 2,
+                from: 1,
+                to: 1,
+                items: [fakeResult[0]],
+            })
+            expect(UserDutyDao.findAll).toBeCalledTimes(1)
+        })
+    })
+
+    describe("取得單筆輪值表", () => {
+        it("給予 id，取得一筆輪值表。", async () => {
+            // given
+            const duty_id = 1
+            // when
+            jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue(
+                fakeUserDuty as any
+            )
+            const result = await UserService.getUserDutyById(duty_id)
+            // then
+            expect(result).toEqual(fakeUserDuty)
+            expect(UserDutyDao.findOneById).toBeCalledTimes(1)
+        })
+
+        it("若查無資料，應拋出「查無資料」，設定狀態碼 400。", async () => {
+            // given
+            const errorMessage: string = "查無資料"
+            const duty_id = 1
+            jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue(
+                null as any
+            )
+            const result = UserService.getUserDutyById(duty_id)
+            // then
+            expect(UserDutyDao.findOneById).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })

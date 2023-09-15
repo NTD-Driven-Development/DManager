@@ -20,7 +20,7 @@ export default new (class AuthController {
             // set transaction
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const user = req.user as UserModel
-                const result = await AuthService.login(user, req, res)
+                const result = await AuthService.login(user, req)
                 t.afterCommit(() => {
                     setRefreshToken(res, result.refresh_token)
                     next(
