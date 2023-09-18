@@ -40,29 +40,38 @@ export default new (class SSeService {
         const boarderData = await BoarderDao.findBoardersByProjectId(
             payload.project_id
         )
-        const currentUserDuty = await UserDutyDao.findAllByToday()
-        const filterCurrentUserDuty = _.map(currentUserDuty, (userDuty) => {
-            const boarder = _.find(boarderData, (boarder) => {
-                return boarder?.sid == userDuty?.user?.sid
-            })
-            if (_.isEmpty(boarder)) return
-            return {
-                id: userDuty?.user?.id,
-                sid: userDuty?.user?.sid,
-                name: userDuty?.user?.name,
-                email: userDuty?.user?.email,
-                project_bunk: {
-                    id: boarder?.project_bunk?.id,
-                    floor: boarder?.project_bunk?.floor,
-                    room_type: boarder?.project_bunk?.room_type,
-                    room_no: boarder?.project_bunk?.room_no,
-                    bed: boarder?.project_bunk?.bed,
-                },
+        const TodayUserDuty = await UserDutyDao.findAllByToday()
+        const filterCurrentUserDutyBySid = _.map(
+            TodayUserDuty,
+            (userDuty) => {
+                const boarder = _.find(boarderData, (boarder) => {
+                    return boarder?.sid == userDuty?.user?.sid
+                })
+                if (_.isEmpty(boarder)) return
+                return {
+                    id: userDuty?.user?.id,
+                    sid: userDuty?.user?.sid,
+                    name: userDuty?.user?.name,
+                    email: userDuty?.user?.email,
+                    project_bunk: {
+                        id: boarder?.project_bunk?.id,
+                        floor: boarder?.project_bunk?.floor,
+                        room_type: boarder?.project_bunk?.room_type,
+                        room_no: boarder?.project_bunk?.room_no,
+                        bed: boarder?.project_bunk?.bed,
+                    },
+                }
             }
-        })
+        )
+        const currentUserDuty = _.uniqBy(
+            filterCurrentUserDutyBySid,
+            (userDuty) => {
+                return userDuty?.id
+            }
+        )
 
         result.boarders = this.convertBoardersToSSEBoardersStatus(boarderData)
-        result.users = filterCurrentUserDuty as any[]
+        result.users = currentUserDuty as any[]
         return result
     }
 })()

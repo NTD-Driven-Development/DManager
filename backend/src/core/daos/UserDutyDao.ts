@@ -12,7 +12,7 @@ export default new (class UserDutyDao extends BaseDao {
             include: [
                 {
                     model: Db.user,
-                    attributes: ["id", "name", "email"],
+                    attributes: ["id", "name", "email", "sid"],
                     as: "user",
                     required: false,
                 },
@@ -37,7 +37,7 @@ export default new (class UserDutyDao extends BaseDao {
             include: [
                 {
                     model: Db.user,
-                    attributes: ["id", "name", "email"],
+                    attributes: ["id", "name", "email", "sid"],
                     as: "user",
                     required: false,
                 },
@@ -58,14 +58,26 @@ export default new (class UserDutyDao extends BaseDao {
                 [Op.or]: [
                     {
                         start_time: {
-                            [Op.gte]: moment().format("YYYY-MM-DD"),
-                            [Op.lt]: moment().add(1, "d").format("YYYY-MM-DD"),
+                            [Op.and]: [
+                                {
+                                    [Op.gte]: moment().format("YYYY-MM-DD"),
+                                    [Op.lt]: moment()
+                                        .add(1, "d")
+                                        .format("YYYY-MM-DD"),
+                                },
+                            ],
                         },
                     },
                     {
                         end_time: {
-                            [Op.gte]: moment().format("YYYY-MM-DD"),
-                            [Op.lt]: moment().add(1, "d").format("YYYY-MM-DD"),
+                            [Op.and]: [
+                                {
+                                    [Op.gte]: moment().format("YYYY-MM-DD"),
+                                    [Op.lt]: moment()
+                                        .add(1, "d")
+                                        .format("YYYY-MM-DD"),
+                                },
+                            ],
                         },
                     },
                 ],
@@ -77,7 +89,7 @@ export default new (class UserDutyDao extends BaseDao {
             include: [
                 {
                     model: Db.user,
-                    attributes: ["id", "name", "email"],
+                    attributes: ["id", "name", "email", "sid"],
                     as: "user",
                     required: false,
                 },

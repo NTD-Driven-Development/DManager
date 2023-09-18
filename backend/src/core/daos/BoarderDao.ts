@@ -53,7 +53,7 @@ export default new (class BoarderDao extends BaseDao {
                     required: false,
                 },
             ],
-            attributes: ["id", "name", "boarder_status_id"],
+            attributes: ["id", "name", "boarder_status_id", "sid"],
             where: { project_id: project_id, deleted_at: null },
         })
         return boarders

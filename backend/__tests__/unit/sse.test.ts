@@ -22,7 +22,7 @@ describe("Unit test for SseService.", () => {
                         name: "UnitTest",
                         email: "UnitTest",
                     },
-                }
+                },
             ] as any)
             jest.spyOn(BoarderDao, "findBoardersByProjectId").mockResolvedValue(
                 [
@@ -73,7 +73,7 @@ describe("Unit test for SseService.", () => {
                             bed: "1",
                         },
                     },
-                ]
+                ],
             })
         })
 
@@ -94,6 +94,90 @@ describe("Unit test for SseService.", () => {
             expect(result).toEqual({
                 boarders: [],
                 users: [],
+            })
+        })
+
+        it("去除重複的輪值人員", async () => {
+            // given
+            const payload = {
+                project_id: 1,
+            }
+            // when
+            jest.spyOn(Date, "now").mockReturnValue(1234567890)
+            jest.spyOn(UserDutyDao, "findAllByToday").mockResolvedValue([
+                {
+                    user_id: 1,
+                    start_time: new Date(1234567890),
+                    end_time: new Date(1234567890),
+                    user: {
+                        id: 1,
+                        sid: "1",
+                        name: "UnitTest",
+                        email: "UnitTest",
+                    },
+                },
+                {
+                    user_id: 1,
+                    start_time: new Date(1234567890),
+                    end_time: new Date(1234567890),
+                    user: {
+                        id: 1,
+                        sid: "1",
+                        name: "UnitTest",
+                        email: "UnitTest",
+                    },
+                },
+            ] as any)
+            jest.spyOn(BoarderDao, "findBoardersByProjectId").mockResolvedValue(
+                [
+                    {
+                        id: "1",
+                        sid: "1",
+                        name: "UnitTest",
+                        boarder_status_id: 1,
+                        project_bunk: {
+                            id: 1,
+                            floor: "1",
+                            room_type: "E",
+                            room_no: "1",
+                            bed: "1",
+                        } as any,
+                    } as any,
+                ]
+            )
+            const result = await SseService.getAreaOfBoarderStatus(payload)
+            // then
+            expect(BoarderDao.findBoardersByProjectId).toBeCalledWith(
+                payload.project_id
+            )
+            expect(result).toEqual({
+                boarders: [
+                    {
+                        id: "1",
+                        sid: "1",
+                        name: "UnitTest",
+                        boarder_status_id: 1,
+                        floor: 1,
+                        room_type: "E",
+                        room_no: 1,
+                        bed: 1,
+                    },
+                ],
+                users: [
+                    {
+                        id: 1,
+                        sid: "1",
+                        name: "UnitTest",
+                        email: "UnitTest",
+                        project_bunk: {
+                            id: 1,
+                            floor: "1",
+                            room_type: "E",
+                            room_no: "1",
+                            bed: "1",
+                        },
+                    },
+                ],
             })
         })
     })
