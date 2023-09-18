@@ -99,7 +99,7 @@ describe("Acceptance test for UserController.", () => {
         let createdUser: any
         const createUserPayload = {
             name: "test",
-            email: "test_e2e@gmail.com",
+            email: "test_e2e_createUser@gmail.com",
             sid: "S1234567890test_e2e",
             role_ids: [RoleEnum.檢視者],
         }
@@ -280,7 +280,7 @@ describe("Acceptance test for UserController.", () => {
         beforeAll(async () => {
             createdUser = await UserDao.create({
                 name: "test",
-                email: "testE2e@gmail.com",
+                email: "testE2eUser123@gmail.com",
                 password: "testE2e",
                 sid: "S1234567890testE2e",
             })
