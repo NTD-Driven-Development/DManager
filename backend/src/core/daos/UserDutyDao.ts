@@ -3,6 +3,8 @@ import BaseDao from "./BaseDao"
 import Core from "../interfaces/IDao"
 import { UserDutyModel } from "../../models/UserDuty"
 import _ from "lodash"
+import { Op } from "sequelize"
+import moment from "moment"
 
 export default new (class UserDutyDao extends BaseDao {
     public async findAll(): Promise<UserDutyModel[]> {
@@ -27,6 +29,47 @@ export default new (class UserDutyDao extends BaseDao {
                     required: false,
                 },
             ],
+        })
+    }
+
+    public async findAllByToday(): Promise<UserDutyModel[]> {
+        return await Db.user_duty.findAll({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "user",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
+            where: {
+                [Op.or]: [
+                    {
+                        start_time: {
+                            [Op.gte]: moment().format("YYYY-MM-DD"),
+                            [Op.lt]: moment().add(1, "d").format("YYYY-MM-DD"),
+                        },
+                    },
+                    {
+                        end_time: {
+                            [Op.gte]: moment().format("YYYY-MM-DD"),
+                            [Op.lt]: moment().add(1, "d").format("YYYY-MM-DD"),
+                        },
+                    },
+                ],
+            },
         })
     }
     public async findOneById(id: string | number): Promise<UserDutyModel> {

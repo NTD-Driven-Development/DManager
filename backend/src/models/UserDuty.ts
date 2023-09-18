@@ -13,6 +13,8 @@ export interface UserDutyModel {
     updated_at?: Date
     updated_by?: number
     creator?: UserModel
+    updater?: UserModel
+    user?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {
