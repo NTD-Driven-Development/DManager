@@ -29,6 +29,22 @@ describe("Unit test for UserService.", () => {
         start_time: new Date("2021-01-01 00:00:00"),
         end_time: new Date("2021-01-01 00:02:00"),
         created_at: new Date("2021-01-01 00:00:00"),
+        updated_at: new Date("2021-01-01 00:00:00"),
+        user: {
+            id: 1,
+            email: "abc@gmail.com",
+            name: "測試",
+        },
+        creator: {
+            id: 1,
+            email: "abc@gmail.com",
+            name: "測試",
+        },
+        updater: {
+            id: 1,
+            email: "abc@gmail.com",
+            name: "測試",
+        }
     } as any
 
     function givenCreateUserPayload() {

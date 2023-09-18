@@ -41,6 +41,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.get("/api/users").query(payload)
             // then
             const data = response.body?.data
+            testUsers = data
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(response.body?.data).toHaveProperty("items")
@@ -48,7 +49,6 @@ describe("Acceptance test for UserController.", () => {
             _.forEach(data?.items, (item) => {
                 expect(item).toHaveProperty("roles")
             })
-            testUsers = data
         })
 
         it("取得單筆使用者資料，需包含角色屬性", async () => {
@@ -243,6 +243,9 @@ describe("Acceptance test for UserController.", () => {
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
+            expect(data?.items[0]).toHaveProperty("user")
+            expect(data?.items[0]).toHaveProperty("creator")
+            expect(data?.items[0]).toHaveProperty("updater")
         })
 
         it("取得單筆輪值資料", async () => {
@@ -255,6 +258,9 @@ describe("Acceptance test for UserController.", () => {
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(data?.id).toBe(duty_id)
+            expect(data).toHaveProperty("user")
+            expect(data).toHaveProperty("creator")
+            expect(data).toHaveProperty("updater")
         })
 
         afterAll(async () => {

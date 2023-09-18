@@ -35,11 +35,15 @@ export default (sequelize: any, DataTypes: any) => {
             // define association here
             UserDuty.belongsTo(models.user, {
                 foreignKey: "user_id",
-                as: "user_duties",
+                as: "user",
             })
             UserDuty.belongsTo(models.user, {
                 foreignKey: "created_by",
                 as: "creator",
+            })
+            UserDuty.belongsTo(models.user, {
+                foreignKey: "updated_by",
+                as: "updater",
             })
         }
     }

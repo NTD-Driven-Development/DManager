@@ -6,10 +6,55 @@ import _ from "lodash"
 
 export default new (class UserDutyDao extends BaseDao {
     public async findAll(): Promise<UserDutyModel[]> {
-        return await Db.user_duty.findAll()
+        return await Db.user_duty.findAll({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "user",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
+        })
     }
     public async findOneById(id: string | number): Promise<UserDutyModel> {
-        return await Db.user_duty.findByPk(id)
+        return await Db.user_duty.findOne({
+            include: [
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "user",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "creator",
+                    required: false,
+                },
+                {
+                    model: Db.user,
+                    attributes: ["id", "name", "email"],
+                    as: "updater",
+                    required: false,
+                },
+            ],
+            where: {
+                id: id,
+            },
+        })
     }
     public async create(payload: UserDutyModel): Promise<UserDutyModel> {
         return await Db.user_duty.create(payload)
