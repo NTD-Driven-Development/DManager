@@ -52,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
     import { UserPaginator } from '~/composables/api/user';
@@ -70,8 +69,6 @@
         { title: '更新者', values: ['updater'] },
         { title: '操作', values: ['is_admin'] }
     ]
-
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
 
     const userEditPopUp = ref();
     const userDeletePopUp = ref();

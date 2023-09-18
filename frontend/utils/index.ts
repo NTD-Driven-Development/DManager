@@ -121,13 +121,31 @@ export const toBunk = (stringlishBunk: string) => {
     
     if (stringlishBunk?.match(regex)) {
         return {
-            floor: stringlishBunk[0],
+            floor: +stringlishBunk[0],
             room_type: stringlishBunk[1],
-            room_no: stringlishBunk[2],
-            bed: stringlishBunk[4],
+            room_no: +stringlishBunk[2],
+            bed: +stringlishBunk[4],
         } as Omit<Bunk, 'id'>;
     }
     else return null;
+}
+
+export const getTeleExtension = (bunk: Bunk) => {
+    console.log(bunk);
+    
+    const typeWeights = {
+        'A': 0,
+        'B': 7,
+        'C': 15,
+        'D': 24,
+        'E': 30,
+    }
+    let result = 4000;
+    result += +bunk.floor * 100;
+    result += typeWeights[bunk.room_type];
+    result += +bunk.bed;
+
+    return result;
 }
 
 export const checkValueEmpty = <V, O>(value: V, transformer?: (v: NonNullable<V>) => O, returnIfEmpty: string = '--') => {

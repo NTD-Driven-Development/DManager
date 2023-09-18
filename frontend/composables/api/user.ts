@@ -60,6 +60,56 @@ export class UserCaller extends ApiCaller<User> {
     }
 }
 
+export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPaginationQueries> {
+    constructor(options?: Options) {
+        super(options);
+        this._queries.value.limit = 20;
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<UserDuty>>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/duty?${searchParams}`);
+    }
+
+    withQuery = <K extends keyof UserDutyPaginationQueries, V extends UserDutyPaginationQueries[K]>(key: K, value: V) => {
+    }
+}
+
+export class UserDutyCaller extends ApiCaller<UserDuty> {
+    id?: number;
+
+    constructor(id?: number) {
+        const options: Options = {
+            immediate: !_.isNil(id),
+        };
+        super(options);
+        this.id = id;
+        this.startQueriesWatcher();
+    }
+
+    protected define(): Promise<AxiosResponse<ApiResponse<UserDuty>, any>> {
+        const queries = this._queries.value;
+        let searchParams = new URLSearchParams();
+
+        if (queries) {
+            Object.entries(queries).forEach((it) => {
+                searchParams.append(it[0], `${it[1] ?? ''}`);
+            });
+        }
+
+        return axios.get(`${PREFIX}/duty/${this?.id}?${searchParams}`);
+    }
+}
+
 export const createUser =async (formData: CreateUserFormData) => {
     try {
         const response = await axios.post(`${PREFIX}`, formData);
@@ -90,8 +140,42 @@ export const deleteUser = async (id: number) => {
     }
 }
 
+export const createUserDuty =async (formData: CreateUserDutyFormData) => {
+    try {
+        const response = await axios.post(`${PREFIX}/duty`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+export const updateUserDuty = async (formData: UpdateUserDutyFormData) => {
+    try {
+        const response = await axios.put(`${PREFIX}/duty`, formData);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+export const deleteUserDuty = async (id: number) => {
+    try {
+        const response = await axios.delete(`${PREFIX}/duty/${id}`);
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 type User = Model.User & Model.CreateInfo & Model.UpdateInfo & {
     roles: Model.Role[],
+}
+
+type UserDuty = Model.UserDuty & Model.CreateInfo & Model.UpdateInfo & {
+    user: Model.User,
 }
 
 interface CreateUserFormData {
@@ -110,5 +194,22 @@ interface UpdateUserFormData {
     role_ids?: number,
 }
 
+interface CreateUserDutyFormData {
+    user_id: number,
+    start_time: string,
+    end_time: string,
+}
+
+interface UpdateUserDutyFormData {
+    id: number,
+    user_id: number,
+    start_time: string,
+    end_time: string,
+}
+
+
 interface UserPaginationQueries extends PaginationQueries {
+}
+
+interface UserDutyPaginationQueries extends PaginationQueries {
 }

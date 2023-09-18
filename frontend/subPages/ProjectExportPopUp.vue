@@ -20,11 +20,11 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
+    import { ExportCaller } from '~/composables/api/export';
+    import { ProjectsCaller } from '~/composables/api/share';
     import Papa from 'papaparse';
-    import { BoardersCaller, ProjectsCaller } from '~/composables/api/share';
     import * as yup from 'yup';
     import _ from 'lodash';
-import { ExportCaller } from '~/composables/api/export';
 
     interface Emits {
         (e: 'onExported'): void;
@@ -99,6 +99,7 @@ import { ExportCaller } from '~/composables/api/export';
     }
 
     const show = () => {
+        projectsCaller.reload();
         popUp.value?.show();
         visible.value = true;
     };

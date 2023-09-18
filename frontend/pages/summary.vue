@@ -122,10 +122,10 @@
             <div class="flex row-span-2 col-span-full gap-1 lg:col-span-6 flex-col sm:text-2xl
             lg:text-3xl lg:py-6 lg:px-4 xl:text-4xl xl:gap-5 xl:px-6 xl:py-10">
                 <div class="flex items-center">
-                    <div>{{ `輪值大隊：` }}</div>
+                    <div>{{ `輪值大隊：${data?.users?.map((v) => v?.name)?.join('、')}` }}</div>
                 </div>
                 <div class="flex items-center">
-                    <div>{{ `寢室分機：` }}</div>
+                    <div>{{ `寢室分機：${data?.users?.map((v) => getTeleExtension(v?.project_bunk))?.join('、')}` }}</div>
                 </div>
             </div>
         </div>
@@ -138,20 +138,28 @@
     import { EventSourcePolyfill } from 'event-source-polyfill';
     import _ from 'lodash';
 
-    interface Item {
-        id: string,
-        name: string,
-        floor: number,
-        room_type: string,
-        room_no: number,
-        bed: number,
-        boarder_status_id: number,   
+    interface Data {
+        boarders: {
+            id: string,
+            name: string,
+            floor: number,
+            room_type: string,
+            room_no: number,
+            bed: number,
+            boarder_status_id: number,
+        }[],
+        users: {
+            id: number,
+            name: string,
+            sid: string,
+            project_bunk: any,
+        }[],
     }
 
     const { setFieldValue, values } = useForm<{ selectedProjectId?: number, boarder_status_ids?: number[] }>();
 
     const isSettingVisable = ref(false);
-    const items = ref<Item[]>();
+    const data = ref<Data>();
     let mouseMoveTimeout: NodeJS.Timeout;
     let es: EventSourcePolyfill;
 
@@ -165,43 +173,43 @@
     const { data: boarderStatusList } = boarderStatusesCaller;
 
     const _1E = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 1 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 1 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _2C = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 2 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 2 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _2D = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 2 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 2 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _2E = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 2 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 2 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _3C = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 3 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 3 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _3D = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 3 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 3 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _3E = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 3 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 3 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _4C = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 4 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 4 && v?.room_type == 'C' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _4D = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 4 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 4 && v?.room_type == 'D' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     const _4E = computed(() => {
-        return items?.value?.filter((v) => v?.floor == 4 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
+        return data?.value?.boarders?.filter((v) => v?.floor == 4 && v?.room_type == 'E' && includesBoarderStatus(v?.boarder_status_id))?.length ?? 0;
     });
 
     watch(() => values?.selectedProjectId, (n) => {
@@ -218,7 +226,7 @@
             toastNotifier?.error(ev?.type);
         });
         es?.addEventListener('message', (ev) => {
-            items.value = JSON.parse(ev.data);
+            data.value = JSON.parse(ev.data);
         });
     });
 

@@ -9,7 +9,8 @@
                 </div>
                 <div class="flex items-center gap-2 whitespace-nowrap">
                     <div>密碼：</div>
-                    <Input name="password" type="password" placeholder="請輸入密碼" class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500"/>
+                    <Input name="password" type="password" placeholder="請輸入密碼"
+                    class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500" @keyup.enter="onSubmit"/>
                 </div>
                 <NuxtLink to="/forget" class="text-sm text-blue-900 text-right">忘記密碼</NuxtLink>
             </form>

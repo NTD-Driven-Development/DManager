@@ -30,10 +30,10 @@ export interface Project {
 
 export interface Bunk {
     id: number,
-    floor: string,
-    room_type: string,
-    room_no: string,
-    bed: string,
+    floor: number,
+    room_type: 'A' | 'B' | 'C' | 'D' | 'E',
+    room_no: number,
+    bed: number,
 }
 
 export interface Role {
@@ -115,5 +115,6 @@ export interface BoarderNote {
 
 export interface UserDuty {
     id: number,
-    duty_date: number,
+    start_time: string,
+    end_time: string,
 }
