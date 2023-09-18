@@ -30,7 +30,11 @@
                     <span>通話日期：</span>
                 </div>
                 <div class="h-full w-full text-black text-xs">
-                    <Input type="date" name="contacted_at" placeholder="請選擇通話日期" class="w-full rounded border"/>
+                    <VueDatePicker menu-class-name="fixed z-20" locale="zh-TW"
+                    input-class-name="!text-sm" :min-date="new Date()"
+                    :format="(v: any) => v && format(v, 'yyyy-MM-dd')"
+                    @update:model-value="(v: any) => v && setFieldValue('contacted_at', format(v, 'yyyy-MM-dd'))"
+                    :model-value="values.contacted_at" :enable-time-picker="false"></VueDatePicker>
                 </div>
             </div>
             <div class="flex flex-col justify-center w-full gap-0.5">
@@ -57,10 +61,13 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
+    import { format } from 'date-fns';
     import { BoardersCaller, TelCardContractersCaller } from '~/composables/api/share';
     import { createTelCardLog } from '~/composables/api/telCard';
     import * as yup from 'yup';
+    import VueDatePicker from '@vuepic/vue-datepicker';
     import _ from 'lodash';
+    import '@vuepic/vue-datepicker/dist/main.css';
 
     interface Props {
         projectId: number,
@@ -115,6 +122,7 @@
             setFieldValue('bunk', undefined);
             setFieldValue('tel_card_contacter_id', telCardCotacterList?.value?.[0]?.id);
             setFieldValue('remark', undefined);
+            setFieldValue('contacted_at', undefined);
         }
         catch(error) {
             showParseError(toastNotifier, error);

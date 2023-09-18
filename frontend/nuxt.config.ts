@@ -27,6 +27,9 @@ export default defineNuxtConfig({
             './src',
         ],
     },
+    build: {
+        transpile: ['@vuepic/vue-datepicker'],
+    },
 	postcss: {
 		plugins: {
 			tailwindcss: {},
@@ -51,6 +54,7 @@ export default defineNuxtConfig({
         '/records': { ssr: false },
         '/notes': { ssr: false },
         '/users': { ssr: false },
+        '/duties': { ssr: false },
         '/options': { ssr: false },
     },
 })
