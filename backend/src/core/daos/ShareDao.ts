@@ -12,6 +12,7 @@ import { ProjectModel } from "../../models/Project"
 import _ from "lodash"
 import { BoarderModel } from "../../models/Boarder"
 import { RoleModel } from "../../models/Role"
+import { UserModel } from "../../models/User"
 
 export default new (class ShareDao extends BaseDao {
     public async getBunks(): Promise<BunkModel[]> {
@@ -84,6 +85,14 @@ export default new (class ShareDao extends BaseDao {
     }
     public async getRoles(): Promise<RoleModel[]> {
         return await Db.role.findAll({
+            attributes: ["id", "name"],
+            where: {
+                deleted_at: null,
+            },
+        })
+    }
+    public async getUsers(): Promise<UserModel[]> {
+        return await Db.user.findAll({
             attributes: ["id", "name"],
             where: {
                 deleted_at: null,

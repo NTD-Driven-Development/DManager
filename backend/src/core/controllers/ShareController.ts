@@ -92,9 +92,19 @@ export default new (class ShareController {
             next(error)
         }
     }
+
     public async getRoles(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await ShareService.getRoles()
+            next(HttpResponse.success(data))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await ShareService.getUsers()
             next(HttpResponse.success(data))
         } catch (error) {
             next(error)

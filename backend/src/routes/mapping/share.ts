@@ -23,4 +23,6 @@ router.get('/projects', ShareController.getProjects);
 router.get('/boarders', ShareController.getBoarders);
 // 取得角色
 router.get('/roles', ShareController.getRoles);
+// 取得使用者
+router.get('/users', ShareController.getUsers);
 export default router;

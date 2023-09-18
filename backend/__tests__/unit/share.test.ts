@@ -218,6 +218,33 @@ describe("Unit test for ShareService.", () => {
         return result
     }
 
+    function expectUsersData(): { id: number; name: string }[] {
+        return [
+            {
+                id: 1,
+                name: "使用者1",
+            },
+            {
+                id: 2,
+                name: "使用者2",
+            },
+        ]
+    }
+    async function whenGetUsers() {
+        jest.spyOn(ShareDao, "getUsers").mockResolvedValue([
+            {
+                id: 1,
+                name: "使用者1",
+            },
+            {
+                id: 2,
+                name: "使用者2",
+            },
+        ] as any)
+        const result = await ShareService.getUsers()
+        return result
+    }
+
     it("取得樓區室床清單", async () => {
         const result = await whenGetBunks()
         expect(result).toEqual(expectBunksData())
@@ -263,5 +290,10 @@ describe("Unit test for ShareService.", () => {
     it("取得角色清單", async () => {
         const result = await whenGetRoles()
         expect(result).toEqual(expectRolesData())
+    })
+
+    it("取得使用者清單", async () => {
+        const result = await whenGetUsers()
+        expect(result).toEqual(expectUsersData())
     })
 })

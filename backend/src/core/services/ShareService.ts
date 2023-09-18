@@ -10,6 +10,7 @@ import { ProjectModel } from "../../models/Project"
 import BunkResult from "../exportDtos/share/BunkResult"
 import { BoarderModel } from "../../models/Boarder"
 import { RoleModel } from "../../models/Role"
+import { UserModel } from "../../models/User"
 
 export default new (class UserService {
     private convertBunksToBunkResult(bunks: BunkModel[]): BunkResult[] {
@@ -87,6 +88,10 @@ export default new (class UserService {
     }
     public async getRoles(): Promise<RoleModel[]> {
         const result = await ShareDao.getRoles()
+        return result
+    }
+    public async getUsers(): Promise<UserModel[]> {
+        const result = await ShareDao.getUsers()
         return result
     }
 })()

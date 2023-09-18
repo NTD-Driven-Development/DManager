@@ -1,41 +1,52 @@
 import { Transaction } from "sequelize"
-import { App } from "../../config/preE2eConfig"
+import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
+import ProjectDao from "../../src/core/daos/ProjectDao"
+import PointRuleDao from "../../src/core/daos/PointRuleDao"
+import BoarderRoleDao from "../../src/core/daos/BoarderRoleDao"
+import BoarderDao from "../../src/core/daos/BoarderDao"
+import UserDao from "../../src/core/daos/UserDao"
 
 describe("Acceptance test for ShareController.", () => {
-    const testProjectId = 1000000000
-    const testPointRuleId = 1000000000
-    const testBoarderId = "1000000000"
+    let testProject: any
+    let testPointRule: any
+    let testBoarderRole: any
+    let testBoarder: any
+    let testUser: any
 
     async function happyPathData() {
         try {
             const now = new Date()
             await Db.sequelize.transaction(async (t: Transaction) => {
-                await Db.project.create({
-                    id: testProjectId,
+                testProject = await ProjectDao.create({
                     name: "E2Etest",
                     remark: "E2Etest",
                     created_at: now,
                 })
-                await Db.point_rule.create({
-                    id: testPointRuleId,
+                testPointRule = await PointRuleDao.create({
                     code: "E2Etest",
                     reason: "E2Etest",
                     point: 1,
                     is_actived: true,
                     created_at: now,
                 })
-                await Db.boarder_role.create({
-                    project_id: testProjectId,
+                testBoarderRole = await BoarderRoleDao.create({
+                    project_id: testProject.id,
                     name: "E2Etest",
                     created_at: now,
                 })
-                await Db.boarder.create({
-                    id: testBoarderId,
-                    project_id: testProjectId,
+                testBoarder = await BoarderDao.create({
+                    id: "PAWDAWOMOQWFQWPDP",
+                    project_id: testProject.id,
                     name: "E2Etest",
                     boarder_status_id: 1,
+                    created_at: now,
+                })
+                testUser = await UserDao.create({
+                    email: "E2Etest",
+                    password: "E2Etest",
+                    name: "E2Etest",
                     created_at: now,
                 })
             })
@@ -47,11 +58,12 @@ describe("Acceptance test for ShareController.", () => {
     async function deleteHappyPathData() {
         try {
             await Db.boarder_role.destroy({
-                where: { project_id: testProjectId },
+                where: { project_id: testProject.id },
             })
-            await Db.boarder.destroy({ where: { id: testBoarderId } })
-            await Db.project.destroy({ where: { id: testProjectId } })
-            await Db.point_rule.destroy({ where: { id: testPointRuleId } })
+            await Db.boarder.destroy({ where: { id: testBoarder.id } })
+            await Db.project.destroy({ where: { id: testProject.id } })
+            await Db.point_rule.destroy({ where: { id: testPointRule.id } })
+            await Db.user.destroy({ where: { id: testUser.id } })
         } catch (error: any) {
             console.log(error)
             await deleteHappyPathData()
@@ -92,9 +104,10 @@ describe("Acceptance test for ShareController.", () => {
     })
 
     it("取得住宿生身分別清單", async () => {
-        const response = await App.get(
-            "/api/share/boarderRoles?project_id=" + testProjectId
-        )
+        const payload = {
+            project_id: testProject.id,
+        }
+        const response = await App.get("/api/share/boarderRoles").query(payload)
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBe(1)
     })
@@ -107,7 +120,7 @@ describe("Acceptance test for ShareController.", () => {
 
     it("取得加扣點規則清單", async () => {
         const response = await App.get("/api/share/points/rule")
-        const testData = _.find(response.body?.data, { id: testPointRuleId })
+        const testData = _.find(response.body?.data, { id:  testPointRule.id})
 
         expect(response.status).toBe(200)
         expect(testData).toBeTruthy()
@@ -121,7 +134,7 @@ describe("Acceptance test for ShareController.", () => {
 
     it("取得某項目住宿生清單", async () => {
         const payload = {
-            project_id: testProjectId,
+            project_id: testProject.id,
         }
         const response = await App.get("/api/share/boarders").query(payload)
         expect(response.status).toBe(200)
@@ -139,6 +152,12 @@ describe("Acceptance test for ShareController.", () => {
 
     it("取得角色清單", async () => {
         const response = await App.get("/api/share/roles")
+        expect(response.status).toBe(200)
+        expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
+    })
+
+    it("取得使用者清單", async () => {
+        const response = await App.get("/api/share/users")
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBeGreaterThan(0)
     })
