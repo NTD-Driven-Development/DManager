@@ -8,7 +8,7 @@ export interface SysLogModel {
     serverip: string
     url: string
     http_method: string
-    http_status: string
+    http_status: number
     user_agent: string
     user_id?: number
     user_name?: string
@@ -27,7 +27,7 @@ export default (sequelize: any, DataTypes: any) => {
         serverip!: string
         url!: string
         http_method!: string
-        http_status!: string
+        http_status!: number
         user_agent!: string
         user_id?: number
         user_name?: string

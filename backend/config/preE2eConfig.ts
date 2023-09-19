@@ -1,6 +1,7 @@
 import request from "supertest"
 import app from "../src/index"
-import { NextFunction, Request, Response } from "express"
+import { NextFunction } from "express"
+import { IRequest, IResponse } from "../src/core/interfaces/IHttp"
 import RequestUser from "../src/core/exportDtos/auth/RequestUser"
 
 global.console = require("console")
@@ -22,17 +23,15 @@ export const mockBeforeLoginHeader = {
 export const mockAfterLoginHeader = {
     "Content-Type": "application/json",
     "User-Agent": "jest",
-    "Authorization": "Bearer " + process.env.TEST_ACCESS_TOKEN,
+    Authorization: "Bearer " + process.env.TEST_ACCESS_TOKEN,
 }
 
 export const App = request(app)
 
-jest.mock(
-    "../src/middlewares/jwtAuth",
-    () => {
-        return (type: any) => (req: Request, res: Response, next: NextFunction): any => {
+jest.mock("../src/middlewares/jwtAuth", () => {
+    return (type: any) =>
+        (req: IRequest, res: IResponse, next: NextFunction): any => {
             req.user = mockUser
             next()
         }
-    }
-)
+})

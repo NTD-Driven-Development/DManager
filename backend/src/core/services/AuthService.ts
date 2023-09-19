@@ -15,10 +15,11 @@ import HttpException from "../../exceptions/HttpException"
 import strings from "../../utils/strings"
 import mail from "../../utils/sendMail"
 import { SysPasswordLogModel } from "../../models/SysPasswordLog"
+import { IRequest } from "../interfaces/IHttp"
 
 export default new (class AuthService {
     public async changePassword(
-        req: Request,
+        req: IRequest,
         email: string,
         old_password: string,
         new_password: string
@@ -37,7 +38,7 @@ export default new (class AuthService {
     }
 
     private async savingSysPasswordLog(
-        req: Request,
+        req: IRequest,
         { ...arg }: SysPasswordLogModel,
         message: string
     ) {
@@ -58,7 +59,7 @@ export default new (class AuthService {
         await LogDao.saveSysPasswordLog(model)
     }
 
-    public async resetPassword(req: Request, token: string, password: string) {
+    public async resetPassword(req: IRequest, token: string, password: string) {
         const sysPasswordLog = await LogDao.findSysPasswordLogByVerifiedToken(
             token
         )
@@ -106,7 +107,7 @@ export default new (class AuthService {
         return verified_token
     }
 
-    public async forgetPassword(req: Request, email: string) {
+    public async forgetPassword(req: IRequest, email: string) {
         // const sysPasswordLog = await LogDao.findSysPasswordLogByEmail(email)
         const user = await AuthDao.getUserInfoByEmail(email)
         if (_.isEmpty(user)) {
@@ -224,7 +225,7 @@ export default new (class AuthService {
 
     public async login(
         user: UserModel,
-        req: Request,
+        req: IRequest,
     ): Promise<AuthResult> {
         const userid = user.id as number
         const access_token = await this.signJwtById(userid)
@@ -261,7 +262,7 @@ export default new (class AuthService {
     }
 
     public async refreshToken(
-        req: Request,
+        req: IRequest,
         res: Response
     ): Promise<AuthResult> {
         const access_token = _.split(

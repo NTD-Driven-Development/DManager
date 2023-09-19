@@ -1,8 +1,8 @@
-import { Express, Request, Response, Router } from 'express'
-import SseController from '../../core/controllers/SseController';
+import { Express, Request, Response, Router } from "express"
+import SseController from "../../core/controllers/SseController"
 
-const router = Router();
+const router = Router()
 
-router.get('/boarders', SseController.getAreaOfBoarderStatus);
+router.get("/boarders", SseController.getAreaOfBoarderStatus)
 
-export default router;
+export default router

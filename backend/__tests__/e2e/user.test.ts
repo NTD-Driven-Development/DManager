@@ -88,7 +88,7 @@ describe("Acceptance test for UserController.", () => {
                         where: { user_id: user.id },
                     })
                     await Db.user.destroy({ where: { id: user.id } })
-                } catch (error) {
+                } catch (error: any) {
                     console.log(error)
                 }
             })
@@ -199,7 +199,7 @@ describe("Acceptance test for UserController.", () => {
                 await Db.user.destroy({
                     where: { email: createUserPayload.email },
                 })
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
             }
         })
@@ -267,7 +267,7 @@ describe("Acceptance test for UserController.", () => {
             try {
                 await Db.user_duty.destroy({ where: { user_id: testUser.id } })
                 await Db.user.destroy({ where: { id: testUser.id } })
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
             }
         })
@@ -340,7 +340,7 @@ describe("Acceptance test for UserController.", () => {
                     where: { user_id: createdUser.id },
                 })
                 await Db.user.destroy({ where: { id: createdUser.id } })
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
             }
         })

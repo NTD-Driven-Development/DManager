@@ -5,11 +5,17 @@ import validate from "../../middlewares/validateRequest"
 
 const router = Router()
 
-router.use(jwtAuth("jwt"));
-router.get("/boarder", NoteController.getBoarderNotes)
-router.get("/boarder/:id", NoteController.getBoarderNoteById)
-router.post("/boarder", NoteController.createBoarderNote)
-router.put("/boarder", NoteController.updateBoarderNote)
-router.delete("/boarder/:id", NoteController.deleteBoarderNote)
+router
+    .use(jwtAuth("jwt"))
+    // 取得住宿生記事列表
+    .get("/boarder", NoteController.getBoarderNotes)
+    // 取得單筆住宿生記事
+    .get("/boarder/:id", NoteController.getBoarderNoteById)
+    // 建立住宿生記事
+    .post("/boarder", NoteController.createBoarderNote)
+    // 修改住宿生記事
+    .put("/boarder", NoteController.updateBoarderNote)
+    // 刪除住宿生記事
+    .delete("/boarder/:id", NoteController.deleteBoarderNote)
 
 export default router

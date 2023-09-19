@@ -1,10 +1,12 @@
-import { Request, Response, NextFunction } from "express"
+import { NextFunction } from "express"
 import HttpException from "../exceptions/HttpException"
 import RequestUser from "../core/exportDtos/auth/RequestUser"
 import route from "../utils/route"
 import _ from "lodash"
+import { IRequest, IResponse } from "../core/interfaces/IHttp"
 
-export default (req: Request, res: Response, next: NextFunction) => {
+export default (req: IRequest, res: IResponse, next: NextFunction) => {
+    req.routeUrl = route.getApiRouteFullPathFromRequest(req)
     const user = req.user as RequestUser
     if (user?.is_admin) {
         return next()

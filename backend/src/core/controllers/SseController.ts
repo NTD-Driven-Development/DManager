@@ -1,15 +1,18 @@
-import { Request, Response, NextFunction } from "express"
+import { NextFunction } from "express"
+import { IRequest, IResponse } from "../../core/interfaces/IHttp"
 import _ from "lodash"
 import SSEService from "../services/SseService"
 import SseResponse from "../../utils/sseResponse"
+import route from "../../utils/route"
 
 export default new (class SseController {
     public async getAreaOfBoarderStatus(
-        req: Request,
-        res: Response,
+        req: IRequest,
+        res: IResponse,
         next: NextFunction
     ) {
         try {
+            req.routeUrl = route.getApiRouteFullPathFromRequest(req)
             const intervalTime = _.toInteger(process.env.SSE_INTERVAL) || 3000
             const data = await SSEService.getAreaOfBoarderStatus(
                 req.query as any
@@ -21,7 +24,7 @@ export default new (class SseController {
                 return data
             }
             next(SseResponse.send(data, dataCallback, intervalTime))
-        } catch (error) {
+        } catch (error: any) {
             next(error)
         }
     }

@@ -1,32 +1,34 @@
-import { Express, Request, Response, Router } from "express";
-import authRouter from "./mapping/auth";
-import sseRouters from './mapping/sse';
-import userRouters from './mapping/user';
-import shareRouters from './mapping/share';
-import projectRouters from './mapping/project';
-import boarderRouters from './mapping/boarder';
-import boarderRoleRouters from './mapping/boarderRole';
-import boarderStatusRouters from './mapping/boarderStatus';
-import classRouters from './mapping/class';
-import pointRouters from './mapping/point';
-import telCardRouters from './mapping/telCard';
-import noteRouters from './mapping/note';
-import exportRouters from './mapping/export';
+import { Express, Request, Response, Router } from "express"
+import authRouter from "./mapping/auth"
+import sseRouters from "./mapping/sse"
+import userRouters from "./mapping/user"
+import shareRouters from "./mapping/share"
+import projectRouters from "./mapping/project"
+import boarderRouters from "./mapping/boarder"
+import boarderRoleRouters from "./mapping/boarderRole"
+import boarderStatusRouters from "./mapping/boarderStatus"
+import classRouters from "./mapping/class"
+import pointRouters from "./mapping/point"
+import telCardRouters from "./mapping/telCard"
+import noteRouters from "./mapping/note"
+import exportRouters from "./mapping/export"
+import sysLog from "../middlewares/sysLog"
+import sysErrorLog from "../middlewares/sysErrorLog"
 
-const router = Router();
+const router = Router()
 
-router.use('/auth', authRouter);
-router.use('/sse', sseRouters);
-router.use('/users', userRouters);
-router.use('/share', shareRouters);
-router.use('/projects', projectRouters);
-router.use('/boarders', boarderRouters);
-router.use('/boarderRoles', boarderRoleRouters);
-router.use('/boarderStatuses', boarderStatusRouters);
-router.use('/classes', classRouters);
-router.use('/points', pointRouters);
-router.use('/telCards', telCardRouters);
-router.use('/notes', noteRouters);
-router.use('/exports', exportRouters);
-
-export default router;
+router
+    .use("/auth", authRouter)
+    .use("/sse", sseRouters)
+    .use("/users", userRouters)
+    .use("/share", shareRouters)
+    .use("/projects", projectRouters)
+    .use("/boarders", boarderRouters)
+    .use("/boarderRoles", boarderRoleRouters)
+    .use("/boarderStatuses", boarderStatusRouters)
+    .use("/classes", classRouters)
+    .use("/points", pointRouters)
+    .use("/telCards", telCardRouters)
+    .use("/notes", noteRouters)
+    .use("/exports", exportRouters)
+export default router

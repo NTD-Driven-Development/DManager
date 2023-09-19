@@ -1,10 +1,13 @@
-import { Request, Response, NextFunction } from "express"
+import { NextFunction } from "express"
 import { AnySchema } from "yup"
 import ValidationException from "../exceptions/ValidationException"
+import { IRequest, IResponse } from "../core/interfaces/IHttp"
+import route from "../utils/route"
 
 export default (schema: AnySchema) =>
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: IRequest, res: IResponse, next: NextFunction) => {
         try {
+            req.routeUrl = route.getApiRouteFullPathFromRequest(req)
             let { body, query, params } = await schema.validate(req)
             // 將 query 所有參數都轉成字串
             Object.keys(query).forEach((key) => {
