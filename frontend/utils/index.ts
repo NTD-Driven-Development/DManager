@@ -131,8 +131,6 @@ export const toBunk = (stringlishBunk: string) => {
 }
 
 export const getTeleExtension = (bunk: Bunk) => {
-    console.log(bunk);
-    
     const typeWeights = {
         'A': 0,
         'B': 7,
@@ -141,9 +139,9 @@ export const getTeleExtension = (bunk: Bunk) => {
         'E': 30,
     }
     let result = 4000;
-    result += +bunk.floor * 100;
-    result += typeWeights[bunk.room_type];
-    result += +bunk.bed;
+    result += +bunk?.floor * 100;
+    result += typeWeights[bunk?.room_type];
+    result += +bunk?.room_no;
 
     return result;
 }

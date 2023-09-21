@@ -6,7 +6,6 @@
     import { useField } from 'vee-validate';
 
     interface Props {
-        inputClass?: string,
         type?: string,
         autocomplete?: string,
         initValue?: string,
@@ -15,7 +14,6 @@
     }
 
     const props = withDefaults(defineProps<Props>(), {
-        inputClass: '',
         type: 'text',
         autocomplete: '',
         initValue: '',

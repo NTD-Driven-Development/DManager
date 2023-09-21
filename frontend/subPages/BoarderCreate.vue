@@ -74,9 +74,9 @@
                         <span>班級：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Select name="class_id" placeholder="請選擇班級"
-                        :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" :init-value="0"
-                        class="w-full rounded border"/>
+                        <InputSelect name="class" placeholder="請選擇班級"
+                        :options="['暫無', ...classList?.map((v) => v?.name) ?? []]"
+                        input-class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col gap-0.5">
@@ -128,7 +128,7 @@
         bed: yup.number().required(),
         name: yup.string().required(),
         sid: yup.string().nullable(),
-        class_id: yup.number().nullable(),
+        class: yup.string().test((v) => !!classList?.value?.find((it) => it?.name)).required(),
         boarder_status_id: yup.number().required(),
         remark: yup.string().nullable(),
     });
@@ -175,7 +175,9 @@
     });
 
     const onSubmit = handleSubmit(async (data) => {
-        try {            
+        try {
+            const classId = classList?.value?.find((it) => it?.name == data?.class)?.id ?? 0;
+
             await createBoarder({
                 project_id: props?.projectId,
                 floor: data?.floor,
@@ -184,7 +186,7 @@
                 bed: data?.bed,
                 name: data?.name,
                 sid: data?.sid,
-                class_id: data?.class_id != 0 ? data?.class_id : null,
+                class_id: classId != 0 ? classId : undefined,
                 boarder_status_id: data?.boarder_status_id,
                 remark: data?.remark,
             });

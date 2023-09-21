@@ -122,10 +122,10 @@
             <div class="flex row-span-2 col-span-full gap-1 lg:col-span-6 flex-col sm:text-2xl
             lg:text-3xl lg:py-6 lg:px-4 xl:text-4xl xl:gap-5 xl:px-6 xl:py-10">
                 <div class="flex items-center">
-                    <div>{{ `輪值大隊：${data?.users?.map((v) => v?.name)?.join('、')}` }}</div>
+                    <div>{{ `輪值大隊：${data?.users?.map((v) => v?.name)?.filter((v) => !_.isEmpty(v))?.join('、')}` }}</div>
                 </div>
                 <div class="flex items-center">
-                    <div>{{ `寢室分機：${data?.users?.map((v) => getTeleExtension(v?.project_bunk))?.join('、')}` }}</div>
+                    <div>{{ `寢室分機：${data?.users?.map((v) => getTeleExtension(v?.project_bunk))?.filter((v) => v)?.join('、')}` }}</div>
                 </div>
             </div>
         </div>

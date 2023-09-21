@@ -36,9 +36,9 @@
                         <span>班級：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Select name="class_id" placeholder="請選擇班級"
-                        :options="[{ id: 0, name: '暫無' }, ...classList ?? []]" :option-key="'id'" :option-value="'name'" init-value="0"
-                        class="w-full rounded border"/>
+                        <InputSelect name="class" placeholder="請選擇班級"
+                        :options="['暫無', ...classList?.map((v) => v?.name) ?? []]"
+                        input-class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col text-sm gap-0.5">
@@ -126,7 +126,7 @@
         }).nullable().default(undefined),
         name: yup.string().required(),
         sid: yup.string().nullable(),
-        class_id: yup.number().nullable(),
+        class: yup.string().test((v) => !!classList?.value?.find((it) => it?.name)).required(),
         boarder_status_id: yup.number().required(),
         phone: yup.string().nullable(),
         birthday: yup.string().nullable(),
@@ -155,13 +155,14 @@
     const onSubmit = handleSubmit(async (data) => {
         try {
             const boader = boarderCaller?.data?.value;
+            const classId = classList?.value?.find((it) => it?.name == data?.class)?.id ?? 0;
 
             await updateBoarder({
                 id: boader?.id!,
                 avatar: data?.avatar?.content,
                 name: data?.name,
                 sid: data?.sid,
-                class_id: data?.class_id != 0 ? data?.class_id : null,
+                class_id: classId != 0 ? classId : null,
                 boarder_status_id: data?.boarder_status_id,
                 phone: data?.phone,
                 birthday: data?.birthday,
@@ -200,7 +201,7 @@
             } : undefined);
             setFieldValue('name', boader?.name);
             setFieldValue('sid', boader?.sid);
-            setFieldValue('class_id', boader?.class?.id ?? 0);
+            setFieldValue('class', boader?.class?.name ?? '暫無');
             setFieldValue('boarder_status_id', boader?.boarder_status?.id);
             setFieldValue('phone', boader?.phone);
             setFieldValue('birthday', boader?.birthday ? format(new Date(boader?.birthday), 'yyyy-MM-dd') : undefined);

@@ -116,7 +116,7 @@ interface UpdateBoarderFormData {
     sid?: string,
     name: string,
     phone?: string,
-    class_id?: number,
+    class_id?: number | null,
     birthday?: string,
     avatar?: string,
     remark?: string,
