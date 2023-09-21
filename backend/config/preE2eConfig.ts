@@ -35,3 +35,15 @@ jest.mock("../src/middlewares/jwtAuth", () => {
             next()
         }
 })
+
+jest.mock("../src/middlewares/sysLog", () => {
+    return (req: IRequest, res: IResponse, next: NextFunction): any => {
+        next()
+    }
+})
+
+jest.mock("../src/middlewares/sysErrorLog", () => {
+    return (req: IRequest, res: IResponse, next: NextFunction): any => {
+        next()
+    }
+})

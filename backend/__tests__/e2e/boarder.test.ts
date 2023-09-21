@@ -433,10 +433,10 @@ describe("Acceptance test for BoarderController.", () => {
             const filterHasBunk = _.find(
                 data?.bunks,
                 (b) =>
-                    b.floor === payload.floor &&
-                    b.room_type === payload.room_type &&
-                    b.room_no === payload.room_no &&
-                    b.bed === payload.bed
+                    b.floor == payload.floor &&
+                    b.room_type == payload.room_type &&
+                    b.room_no == payload.room_no &&
+                    b.bed == payload.bed
             )
             expect(response.status).toBe(200)
             expect(filterHasBunk).toBeTruthy()

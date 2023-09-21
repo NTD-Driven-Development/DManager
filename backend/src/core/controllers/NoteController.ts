@@ -46,7 +46,7 @@ export default new (class NoteController {
                 req.body as any,
                 req.user as RequestUser
             )
-            next(HttpResponse.success(data, "建立住宿生記事"))
+            next(HttpResponse.success(data, "建立住宿生記事", 201))
         } catch (error: any) {
             next(error)
         }
