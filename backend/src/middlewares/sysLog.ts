@@ -32,6 +32,7 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                 case _.eq(method, "POST") &&
                     _.startsWith(full_path, "/api/auth/resetPassword"):
                 case _.eq(method, "GET"):
+                case res.statusCode != 200 && res.statusCode != 201:
                     return
                 default:
                     // remove listener

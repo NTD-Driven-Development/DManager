@@ -1,7 +1,10 @@
 import LogDao from "../../src/core/daos/LogDao"
 import LogService from "../../src/core/services/LogService"
+import ip from "../../src/utils/ip"
 
 jest.spyOn(JSON, "stringify")
+jest.spyOn(ip, "getClientIp").mockReturnValue("127.0.0.1")
+jest.spyOn(ip, "getServerIp").mockReturnValue("127.0.0.1")
 
 describe("Unit test for LogService", () => {
     const fakeRequest = {
@@ -23,6 +26,23 @@ describe("Unit test for LogService", () => {
         },
         method: "GET",
     } as any
+    const fakeLog = {
+        id: 1,
+        clientip: "123",
+        serverip: "123",
+        url: "123",
+        http_method: "123",
+        http_status: 123,
+        user_agent: "123",
+        user_id: 1,
+        user_name: "123",
+        headers: "123",
+        query: "123",
+        params: "123",
+        body: "123",
+        detail: "123",
+        created_at: new Date(),
+    } as any
 
     afterEach(() => {
         jest.clearAllMocks()
@@ -36,6 +56,7 @@ describe("Unit test for LogService", () => {
             const statusCode = 200
             // when
             jest.spyOn(Date, "now").mockReturnValue(1234567890)
+
             jest.spyOn(LogDao, "saveSysLog").mockResolvedValue({
                 id: 1,
                 clientip: "127.0.0.1",
@@ -67,7 +88,7 @@ describe("Unit test for LogService", () => {
                 http_status: 200,
                 params: `{"id":"3"}`,
                 query: "{}",
-                serverip: "172.18.0.4",
+                serverip: "127.0.0.1",
                 url: "/api/users/:id",
                 user_agent: "UnitTest",
                 user_id: 1,
@@ -119,11 +140,43 @@ describe("Unit test for LogService", () => {
                 http_status: 400,
                 params: `{"id":"3"}`,
                 query: "{}",
-                serverip: "172.18.0.4",
+                serverip: "127.0.0.1",
                 url: "/api/users/:id",
                 user_agent: "UnitTest",
                 user_id: 1,
                 user_name: "TEST",
+            })
+        })
+    })
+
+    describe("讀取操作紀錄列表", () => {
+        it("傳入查詢條件，呼叫 LogDao 取得操作紀錄列表", async () => {
+            // given
+            const payload = {
+                offset: 1,
+                limit: 1,
+            }
+            // when
+            jest.spyOn(LogDao, "findAllSysLog").mockResolvedValue([
+                fakeLog,
+                fakeLog,
+            ])
+            jest.spyOn(LogDao, "findAllSysErrorLog").mockResolvedValue([
+                fakeLog,
+                fakeLog,
+            ])
+            const result = await LogService.getOperationLogs(payload)
+            // then
+            expect(LogDao.findAllSysErrorLog).toBeCalledTimes(1)
+            expect(LogDao.findAllSysLog).toBeCalledTimes(1)
+            expect(result).toEqual({
+                total: 4,
+                per_page: 1,
+                current_page: 1,
+                last_page: 4,
+                from: 1,
+                to: 1,
+                items: [fakeLog],
             })
         })
     })

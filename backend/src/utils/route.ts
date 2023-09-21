@@ -36,7 +36,7 @@ const getApiRouteList = (): IRoute[] => {
 const getApiRouteFullPathFromRequest = (req: IRequest): string => {
     const { routeUrl, baseUrl, route } = req
     // 取得當前路由的完整路徑
-    const path = toRoutePath(route.path)
+    const path = toRoutePath(route?.path)
     const full_path = routeUrl ?? _.concat(baseUrl, path).join("")
     return full_path
 }

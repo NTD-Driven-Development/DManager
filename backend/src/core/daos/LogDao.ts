@@ -84,4 +84,16 @@ export default new (class LogDao extends BaseDao {
             },
         })
     }
+
+    public async findAllSysLog(): Promise<SysLogModel[]> {
+        return await Db.sys_log.findAll({
+            order: [["id", "DESC"]],
+        })
+    }
+
+    public async findAllSysErrorLog(): Promise<SysErrorLogModel[]> {
+        return await Db.sys_error_log.findAll({
+            order: [["id", "DESC"]],
+        })
+    }
 })()

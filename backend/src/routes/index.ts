@@ -12,8 +12,7 @@ import pointRouters from "./mapping/point"
 import telCardRouters from "./mapping/telCard"
 import noteRouters from "./mapping/note"
 import exportRouters from "./mapping/export"
-import sysLog from "../middlewares/sysLog"
-import sysErrorLog from "../middlewares/sysErrorLog"
+import logRouters from "./mapping/log"
 
 const router = Router()
 
@@ -31,4 +30,5 @@ router
     .use("/telCards", telCardRouters)
     .use("/notes", noteRouters)
     .use("/exports", exportRouters)
+    .use("/logs", logRouters)
 export default router

@@ -7,6 +7,8 @@ import { SysLogModel } from "../../models/SysLog"
 import { SysErrorLogModel } from "../../models/SysErrorLog"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { IRequest } from "../interfaces/IHttp"
+import IPaginationResultDto from "../exportDtos/PaginationResultDto"
+import { withPagination } from "../../utils/pagination"
 
 export default new (class LogService {
     public async saveSysLog(
@@ -67,5 +69,17 @@ export default new (class LogService {
             detail,
         }
         return await LogDao.saveSysErrorLog(model)
+    }
+
+    public async getOperationLogs(query: {
+        offset?: number
+        limit?: number
+    }): Promise<IPaginationResultDto<SysLogModel | SysErrorLogModel>> {
+        const { offset, limit } = query
+        const errorLogs = await LogDao.findAllSysErrorLog()
+        const logs = await LogDao.findAllSysLog()
+        const combinedLogs = _.concat(logs, errorLogs)
+        const sortedLogs = _.sortBy(combinedLogs, ["created_at"]).reverse()
+        return withPagination(sortedLogs.length, sortedLogs, offset, limit)
     }
 })()
