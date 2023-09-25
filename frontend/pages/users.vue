@@ -13,7 +13,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋姓名" class="text-xs w-full rounded border"
+                <input placeholder="搜尋姓名、學號、電子郵件" class="text-xs w-full rounded border"
                 @change=""/>
             </div>
              <!-- 列表 -->

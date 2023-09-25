@@ -44,9 +44,9 @@ export abstract class ApiRequestable<T, Q extends Queries = Queries> extends Axi
         const copyQueries = _.cloneDeep(this._queries.value);
 
         if (_.isEqual(copyQueries[key], value)) return;
-        if (_.isEmpty(_.toString(copyQueries[key] ?? '')) && _.isEmpty(_.toString(value ?? ''))) return;
+        // if (_.isEmpty(_.toString(copyQueries[key] ?? '')) && _.isEmpty(_.toString(value ?? ''))) return;
 
-        copyQueries[key] = value! ?? undefined;
+        copyQueries[key] = value! ?? undefined;        
 
         this._queries.value = copyQueries;
     }

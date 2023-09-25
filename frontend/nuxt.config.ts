@@ -56,5 +56,6 @@ export default defineNuxtConfig({
         '/users': { ssr: false },
         '/duties': { ssr: false },
         '/options': { ssr: false },
+        '/logs': { ssr: false },
     },
 })

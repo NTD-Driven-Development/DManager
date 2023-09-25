@@ -29,9 +29,13 @@ export class TelCardLogPaginator extends ApiPaginator<TelCardLog, TelCardLogPagi
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
+        }
     }
 
     protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter> {
@@ -186,6 +190,6 @@ type UpdateTelCardContacterFormData = BaseTelCardContacterFormData & {
 }
 
 interface TelCardLogPaginationQueries extends PaginationQueries {
-    project_id: number,
-    boarder_id: number,
+    project_id?: number,
+    search?: string,
 }

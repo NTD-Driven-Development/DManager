@@ -29,9 +29,13 @@ export class BoarderNotePaginator extends ApiPaginator<BoarderNote, BoarderNoteP
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
+        }
     }
 
     protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class BoarderNoteCaller extends ApiCaller<BoarderNote> {
@@ -114,4 +118,5 @@ interface UpdateBoarderNoteFormData {
 
 interface BoarderNotePaginationQueries extends PaginationQueries {
     project_id?: number,
+    search?: string,
 }

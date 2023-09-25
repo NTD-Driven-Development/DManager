@@ -29,9 +29,13 @@ export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPagination
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
+        }
     }
 
     protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginationQueries> {
@@ -53,6 +57,14 @@ export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginat
 
         return axios.get(`${PREFIX}/rule?${searchParams}`);
     }
+
+    withQuery = <K extends keyof PointRulePaginationQueries, V extends PointRulePaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+    }
+
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class PointLogCaller extends ApiCaller<PointLog> {
@@ -190,9 +202,10 @@ type UpdatePointRuleFormData = BasePointRuleFormData & {
 }
 
 interface PointLogPaginationQueries extends PaginationQueries {
-    project_id: number,
-    boarder_id: number,
+    project_id?: number,
+    search?: string,
 }
 
 interface PointRulePaginationQueries extends PaginationQueries {
+    search?: string,
 }

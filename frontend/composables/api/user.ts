@@ -5,7 +5,7 @@ import * as Model from '~/src/model';
 
 const PREFIX = '/api/users';
 
-export class UserPaginator extends ApiPaginator<User> {
+export class UserPaginator extends ApiPaginator<User, UserPaginationQueries> {
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -25,13 +25,12 @@ export class UserPaginator extends ApiPaginator<User> {
         return axios.get(`${PREFIX}?${searchParams}`);
     }
 
-    // withQuery = <K extends keyof BoarderNotePaginationQueries, V extends BoarderNotePaginationQueries[K]>(key: K, value: V) => {
-    //     if (key === 'project_id') {
-    //         this.projectIdHandler(key, value);
-    //     }
-    // }
-
-    // protected projectIdHandler = _.throttle(this.setQuery, 800);
+    withQuery = <K extends keyof UserPaginationQueries, V extends UserPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+    }
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class UserCaller extends ApiCaller<User> {
@@ -80,8 +79,17 @@ export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPagination
         return axios.get(`${PREFIX}/duty?${searchParams}`);
     }
 
-    withQuery = <K extends keyof UserDutyPaginationQueries, V extends UserDutyPaginationQueries[K]>(key: K, value: V) => {
+     withQuery = <K extends keyof UserDutyPaginationQueries, V extends UserDutyPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+        else if (key === 'start_times') {
+            this.startTimesHandler(key, value);
+        }
     }
+
+    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected startTimesHandler = _.throttle(this.setQuery, 800);
 }
 
 export class UserDutyCaller extends ApiCaller<UserDuty> {
@@ -209,7 +217,10 @@ interface UpdateUserDutyFormData {
 
 
 interface UserPaginationQueries extends PaginationQueries {
+    search?: string,
 }
 
 interface UserDutyPaginationQueries extends PaginationQueries {
+    search: string,
+    start_times: string[],
 }

@@ -5,9 +5,9 @@ import * as Model from '~/src/model';
 
 const PREFIX = '/api/projects';
 
-export class ProjectPaginator extends ApiPaginator<Project> {
-    constructor() {
-        super();
+export class ProjectPaginator extends ApiPaginator<Project, ProjectPaginationQueries> {
+    constructor(options?: Options) {
+        super(options);
         this._queries.value.limit = 18;
         this.startQueriesWatcher();
     }
@@ -25,13 +25,21 @@ export class ProjectPaginator extends ApiPaginator<Project> {
         return axios.get(`${PREFIX}?${searchParams}`);
     }
 
-    withQuery = <K extends keyof PaginationQueries, V extends PaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'limit') {
+    withQuery = <K extends keyof ProjectPaginationQueries, V extends ProjectPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'limit') {
             this.limitHandler(key, value);
+        }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
         }
     }
 
-    protected limitHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.throttle(this.setQuery, 1);
+    protected limitHandler = _.throttle(this.setQuery, 1);
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class ProjectCaller extends ApiCaller<Project> {
@@ -143,5 +151,5 @@ interface SwapProjectBunkFormData {
 }
 
 interface ProjectPaginationQueries extends PaginationQueries {
-
+    search?: string,
 }

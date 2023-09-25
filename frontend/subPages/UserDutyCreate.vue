@@ -20,7 +20,7 @@
                         <span>輪值日：</span>
                     </div>
                     <VueDatePicker multi-dates menu-class-name="fixed z-20" locale="zh-TW"
-                    input-class-name="!text-sm" :min-date="new Date()"
+                    input-class-name="!text-xs placeholder:text-gray-500 h-[38px]" :min-date="new Date()" placeholder="選擇輪值日"
                     :format="(v: any[]) => v?.map((v) => format(v, 'yyyy-MM-dd'))?.join('、')"
                     @update:model-value="(v: any[]) => setFieldValue('dates', v?.map((v) => format(v, 'yyyy-MM-dd')))"
                     :model-value="values.dates" :enable-time-picker="false"></VueDatePicker>

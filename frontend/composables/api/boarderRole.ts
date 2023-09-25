@@ -29,9 +29,13 @@ export class BoarderRolePaginator extends ApiPaginator<BoarderRole, BoarderRoleP
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
+        else if (key === 'search') {
+            this.projectIdHandler(key, value);
+        }
     }
 
     protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class BoarderRoleCaller extends ApiCaller<BoarderRole> {
@@ -106,4 +110,5 @@ interface UpdateBoarderRoleFormData {
 
 interface BoarderRolePaginationQueries extends PaginationQueries {
     project_id?: number,
+    search?: string,
 }

@@ -26,7 +26,12 @@ export class BoarderStatusPaginator extends ApiPaginator<BoarderStatus, BoarderS
     }
 
     withQuery = <K extends keyof BoarderStatusPaginationQueries, V extends BoarderStatusPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
     }
+
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class BoarderStatusCaller extends ApiCaller<BoarderStatus> {
@@ -98,4 +103,5 @@ type UpdateBoarderStatusFormData = BaseBoarderStatusFormData & {
 }
 
 interface BoarderStatusPaginationQueries extends PaginationQueries {
+    search?: string,
 }

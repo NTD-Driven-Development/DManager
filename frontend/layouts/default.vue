@@ -77,7 +77,7 @@
                 </button>
                 <button class="flex items-center justify-between w-full py-3.5 px-4 bg-white" 
                 @click="navigateTo('/logs'); isMenuOpen = false;">
-                    <div :class="[{ 'font-bold': $route.path.startsWith('/logs') }]">事件記錄</div>
+                    <div :class="[{ 'font-bold': $route.path.startsWith('/logs') }]">操作記錄</div>
                     <Icon icon="ic:baseline-circle" class="text-gray-600 text-sm"
                     v-show="$route.path.startsWith('/logs')"></Icon>
                 </button>

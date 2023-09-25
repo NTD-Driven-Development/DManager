@@ -5,10 +5,11 @@
                 <div class="flex flex-col justify-center w-full gap-0.5">
                     <div class="flex gap-0.5 shrink-0">
                         <span class="text-red-500">*</span>
-                        <span>樓寢床：</span>
+                        <span>樓寢床或門禁卡號
+                            ：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="bunk" placeholder="請輸入樓寢床" class="w-full rounded border"/>
+                        <Input name="bunk" placeholder="請輸入樓寢床或門禁卡號" class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center w-full gap-0.5">
@@ -31,7 +32,7 @@
                 </div>
                 <div class="h-full w-full text-black text-xs">
                     <VueDatePicker menu-class-name="fixed z-20" locale="zh-TW"
-                    input-class-name="!text-sm" :min-date="new Date()"
+                    input-class-name="!text-xs h-[38px] placeholder:text-gray-500" :min-date="addDays(new Date(), -14)" placeholder="請選擇通話日期"
                     :format="(v: any) => v && format(v, 'yyyy-MM-dd')"
                     @update:model-value="(v: any) => v && setFieldValue('contacted_at', format(v, 'yyyy-MM-dd'))"
                     :model-value="values.contacted_at" :enable-time-picker="false"></VueDatePicker>
@@ -61,7 +62,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { format } from 'date-fns';
+    import { format, addDays } from 'date-fns';
     import { BoardersCaller, TelCardContractersCaller } from '~/composables/api/share';
     import { createTelCardLog } from '~/composables/api/telCard';
     import * as yup from 'yup';
@@ -98,13 +99,18 @@
     boardersCaller?.bind('project_id', toRef(props, 'projectId'), { immediate: !_.isNaN(props?.projectId) });
 
     const boarder = computed(() => {
-        const bunk = toBunk(values?.bunk);
+        const bunkOrAccessCard = toBunk(values?.bunk) ?? values?.bunk;
         const boaders = boardersCaller?.data?.value;
 
-        if (!bunk) 
+        if (!bunkOrAccessCard) 
             return null;
+        console.log(boaders);
+        
 
-        return boaders?.find(({ project_bunk: v }) => v?.floor == bunk?.floor && v?.room_type == bunk?.room_type && v?.room_no == bunk?.room_no && v?.bed == bunk?.bed);
+        return boaders?.find(({ project_bunk: v, access_card }) => 
+            (v?.floor == bunkOrAccessCard?.floor && v?.room_type == bunkOrAccessCard?.room_type && v?.room_no == bunkOrAccessCard?.room_no && v?.bed == bunkOrAccessCard?.bed)
+            || (bunkOrAccessCard == access_card)
+        );
     });
 
     const onSubmit = handleSubmit(async (data) => {

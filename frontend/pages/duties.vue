@@ -13,8 +13,15 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
+                <input placeholder="搜尋姓名" class="text-xs w-full rounded border"
                 @change=""/>
+            </div>
+            <div>
+                <VueDatePicker multi-dates menu-class-name="fixed z-20" locale="zh-TW"
+                    input-class-name="!text-xs h-[38px] placeholder:text-gray-500" :min-date="new Date()" placeholder="篩選輪值日"
+                    :format="(v: any[]) => v?.map((v) => format(v, 'yyyy-MM-dd'))?.join('、')"
+                    @update:model-value="(v: any[]) => selectedDateList = v?.map((v) => formatISO(v))"
+                    :model-value="selectedDateList" :enable-time-picker="false"></VueDatePicker>
             </div>
              <!-- 列表 -->
             <div class="w-full overflow-auto bg-white">
@@ -46,7 +53,10 @@
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
     import { UserDutyPaginator } from '~/composables/api/user';
+    import VueDatePicker from '@vuepic/vue-datepicker';
     import _ from 'lodash';
+    import '@vuepic/vue-datepicker/dist/main.css';
+import { formatISO } from 'date-fns';
 
     const headers = [
         { title: '姓名', values: ['user'] },
@@ -59,7 +69,10 @@
     ]
 
     const userDutyDeletePopUp = ref();
+    const selectedDateList = ref();
 
     const userDutyPaginator = new UserDutyPaginator();
     const { data: userDutyList } = userDutyPaginator;
+    
+    userDutyPaginator.bind('start_times', selectedDateList);
 </script>

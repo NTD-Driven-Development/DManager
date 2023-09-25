@@ -9,13 +9,13 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64">
-            <input placeholder="搜尋名稱" class="text-xs w-full rounded border"
+            <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
             @change=""/>
         </div>
         <!-- 列表 -->
         <div class="w-full overflow-auto bg-white">
             <OrderTable id="id" :headers="headers" :rows="telCardLogList">
-                <template #床位="{ data }">
+                <template #樓寢床="{ data }">
                     <div class="px-2 py-1">
                         {{ checkValueEmpty(data?.boarder?.project_bunk, (v) => toStringlish(v)) }}
                     </div>
@@ -53,7 +53,7 @@
     }
 
     const headers = [
-        { title: '床位', values: ['boarder'] },
+        { title: '樓寢床', values: ['boarder'] },
         { title: '姓名', values: ['boarder'] },
         { title: '通話對象', values: ['tel_card_contacter'] },
         { title: '備註', values: ['remark'] },

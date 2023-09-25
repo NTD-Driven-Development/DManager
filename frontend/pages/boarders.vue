@@ -20,8 +20,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋住宿生姓名、班級、樓寢床" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋樓寢床、姓名、班級" class="text-xs w-full rounded border"/>
             </div>
             <!-- 列表 -->
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
@@ -109,7 +108,10 @@
     import { ProjectsCaller } from '~/composables/api/share';
     import _ from 'lodash';
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number,
+        search?: string,
+    }>();
 
     const boarderSwapPopUp = ref();
     const boarderEditPopUp = ref();
@@ -118,8 +120,22 @@
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const boarderPaginator = new BoarderPaginator({ immediate: false });
+    const boarderPaginator = new BoarderPaginator({ immediate: false, debounceTime: 500 });
     const { data: boarderList } = boarderPaginator;
 
     boarderPaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
+    boarderPaginator.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(boarderPaginator.queries, { deep: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRoute().query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            boarderPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
 </script>

@@ -24,7 +24,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋住宿生姓名、班級、樓寢床" class="text-xs w-full rounded border"
+                <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
                 @change=""/>
             </div>
             <!-- 列表 -->

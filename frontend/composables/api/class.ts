@@ -24,6 +24,14 @@ export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> 
 
         return axios.get(`${PREFIX}?${searchParams}`);
     }
+
+    withQuery = <K extends keyof ClassPaginationQueries, V extends ClassPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+    }
+
+    protected searchHandler = _.throttle(this.setQuery, 800);
 }
 
 export class ClassCaller extends ApiCaller<Class> {
@@ -95,4 +103,5 @@ type UpdateClassFormData = BaseClassFormData & {
 }
 
 interface ClassPaginationQueries extends PaginationQueries {
+    search?: string,
 }

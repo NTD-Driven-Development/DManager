@@ -14,8 +14,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋項目名稱" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋名稱" class="text-xs w-full rounded border"/>
             </div>
             <!-- 列表 -->
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
@@ -38,7 +37,7 @@
                         </template>
                         <template #content>
                             <div class="text-sm">
-                                {{ checkValueEmpty(it?.remark, undefined, '尚無備註') }}
+                                {{ checkValueEmpty(it?.remark, undefined, '--') }}
                             </div>
                         </template>
                     </Detail>
@@ -53,14 +52,35 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { ProjectPaginator } from '~/composables/api/project';
     import _ from 'lodash';
+
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
 
     const projectImportPopUp = ref();
     const projectExportPopUp = ref();
     const projectEditPopUp = ref();
 
-    const projectPaginator = new ProjectPaginator();
+    const projectPaginator = new ProjectPaginator({ immediate: false });
     const { data: projectList } = projectPaginator;
+
+    projectPaginator.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(projectPaginator.queries, { deep: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRoute().query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            projectPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+
+        });
+    });
 </script>
