@@ -4,6 +4,7 @@ import Db from "../../src/models"
 import _ from "lodash"
 import LogDao from "../../src/core/daos/LogDao"
 import strings from "../../src/utils/strings"
+import UserDao from "../../src/core/daos/UserDao"
 
 describe("AuthController", () => {
     const orgPassword = "test123456"
@@ -19,9 +20,9 @@ describe("AuthController", () => {
         jest.restoreAllMocks()
     })
 
-    beforeAll(async () => {
+    it("建立測試帳號", async () => {
         // 建立測試帳號
-        await Db.user.create(fakeUser)
+        await UserDao.create(fakeUser)
     })
 
     describe("登入登出流程", () => {
@@ -154,10 +155,5 @@ describe("AuthController", () => {
             expect(data).toHaveProperty("permissions")
             expect(data).toHaveProperty("remark")
         })
-    })
-
-    afterAll(async () => {
-        await Db.sys_password_log.destroy({ where: { email: fakeUser.email } })
-        await Db.user.destroy({ where: { email: fakeUser.email } })
     })
 })

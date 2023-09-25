@@ -42,7 +42,7 @@ describe("Acceptance test for ClassController.", () => {
             expect(data?.id).toEqual(id)
         })
 
-        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+        it("查無單筆紀錄，statusCode 為 404「查無資料」", async () => {
             // given
             const id = -1
             // when
@@ -59,7 +59,7 @@ describe("Acceptance test for ClassController.", () => {
         it("建立班級", async () => {
             // given
             const payload = {
-                name: "E2eTest",
+                name: "ATDD_Class",
             }
             // when
             const res = await App.post("/api/classes").send(payload)
@@ -73,7 +73,7 @@ describe("Acceptance test for ClassController.", () => {
         it("不可重複建立", async () => {
             // given
             const payload = {
-                name: "E2eTest",
+                name: "ATDD_Class",
             }
             // when
             const response = await App.post("/api/classes").send(payload)
@@ -85,7 +85,7 @@ describe("Acceptance test for ClassController.", () => {
             // given
             const payload = {
                 id: testClass?.id,
-                name: "E2eTest(Edited)",
+                name: "ATDD_Class(ed)",
             }
             // when
             const res = await App.put("/api/classes").send(payload)
@@ -100,7 +100,7 @@ describe("Acceptance test for ClassController.", () => {
             // given
             const payload = {
                 id: -1,
-                name: "E2eTest(Edited)",
+                name: "ATDD_Class(ed)",
             }
             // when
             const res = await App.put("/api/classes").send(payload)
@@ -120,14 +120,6 @@ describe("Acceptance test for ClassController.", () => {
             expect(
                 (await Db.class.findOne({ where: { id: id } })).deleted_by
             ).toBe(mockUser.id)
-        })
-
-        afterAll(async () => {
-            await Db.class.destroy({
-                where: {
-                    id: testClass?.id,
-                },
-            })
         })
     })
 })

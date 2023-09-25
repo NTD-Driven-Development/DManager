@@ -8,7 +8,7 @@ export interface PointRuleModel {
     code: string
     reason: string
     point: number
-    is_actived: boolean
+    is_actived?: boolean
     created_at?: Date
     created_by?: number
     updated_at?: Date

@@ -28,6 +28,8 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                 case _.eq(method, "POST") &&
                     _.startsWith(full_path, "/api/auth/login"):
                 case _.eq(method, "POST") &&
+                    _.startsWith(full_path, "/api/auth/logout"):
+                case _.eq(method, "POST") &&
                     _.startsWith(full_path, "/api/auth/changePassword"):
                 case _.eq(method, "POST") &&
                     _.startsWith(full_path, "/api/auth/resetPassword"):
@@ -45,6 +47,7 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                                 Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
                         },
                         async (t: Transaction) => {
+                            console.log(req.params)
                             await LogService.saveSysLog(
                                 req,
                                 res.statusCode,

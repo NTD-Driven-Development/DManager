@@ -4,21 +4,25 @@ import Db from "../../src/models"
 import _ from "lodash"
 import PointRuleDao from "../../src/core/daos/PointRuleDao"
 import PointLogDao from "../../src/core/daos/PointLogDao"
+import ProjectDao from "../../src/core/daos/ProjectDao"
+import BoarderDao from "../../src/core/daos/BoarderDao"
 
 describe("Acceptance test for PointController.", () => {
+    function givenCreatePointRulePayload(concatStr: string) {
+        return {
+            code: `ATDD_point${concatStr}`,
+            reason: "ATDD_point",
+            point: 3,
+        }
+    }
+
     describe("取得加扣點規則列表", () => {
-        let testPointRules: any
-
-        it("取得加扣點規則列表", async () => {
+        let testPointRule: any
+        it("建立一筆加扣點規則，查詢加扣點規則列表第一頁的一筆資料 API，StatusCode 為 200 且資料 items 為一筆", async () => {
             // given
-            // when
-            const res = await App.get("/api/points/rule")
-            // then
-            expect(res.status).toBe(200)
-        })
-
-        it("取得加扣點規則列表，並且有分頁", async () => {
-            // given
+            testPointRule = await PointRuleDao.create(
+                givenCreatePointRulePayload("1")
+            )
             const payload = {
                 offset: 1,
                 limit: 1,
@@ -29,12 +33,11 @@ describe("Acceptance test for PointController.", () => {
             const data = res.body?.data
             expect(res.status).toBe(200)
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
-            testPointRules = data
         })
 
         it("取得單筆", async () => {
             // given
-            const id = testPointRules?.items[0]?.id
+            const id = testPointRule?.id
             // when
             const response = await App.get(`/api/points/rule/${id}`)
             // then
@@ -43,7 +46,7 @@ describe("Acceptance test for PointController.", () => {
             expect(data?.id).toEqual(id)
         })
 
-        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+        it("查無單筆紀錄，statusCode 為 404 「查無資料」", async () => {
             // given
             const id = -1
             // when
@@ -59,11 +62,7 @@ describe("Acceptance test for PointController.", () => {
 
         it("建立加扣點規則", async () => {
             // given
-            const payload = {
-                code: "E2eTest",
-                reason: "E2eTest",
-                point: 3,
-            }
+            const payload = givenCreatePointRulePayload("2")
             // when
             const res = await App.post("/api/points/rule").send(payload)
             // then
@@ -79,11 +78,7 @@ describe("Acceptance test for PointController.", () => {
 
         it("不可重複建立", async () => {
             // given
-            const payload = {
-                code: "E2eTest",
-                reason: "E2eTest",
-                point: 3,
-            }
+            const payload = givenCreatePointRulePayload("2")
             // when
             const response = await App.post("/api/points/rule").send(payload)
             // then
@@ -94,8 +89,8 @@ describe("Acceptance test for PointController.", () => {
             // given
             const payload = {
                 id: testPointRule?.id,
-                code: "E2eTest(Edited)",
-                reason: "E2eTest(Edited)",
+                code: "ATDD_point(ed)",
+                reason: "ATDD_point(ed)",
                 point: 5,
             }
             // when
@@ -113,8 +108,8 @@ describe("Acceptance test for PointController.", () => {
             // given
             const payload = {
                 id: -1,
-                code: "E2eTest(Edited)",
-                reason: "E2eTest(Edited)",
+                code: "ATDD_point(ed)",
+                reason: "ATDD_point(ed)",
                 point: 5,
             }
             // when
@@ -136,14 +131,6 @@ describe("Acceptance test for PointController.", () => {
                 (await Db.point_rule.findOne({ where: { id: id } })).deleted_by
             ).toBe(mockUser.id)
         })
-
-        afterAll(async () => {
-            await Db.point_rule.destroy({
-                where: {
-                    id: testPointRule?.id,
-                },
-            })
-        })
     })
 
     describe("取得住宿生加扣點紀錄，能夠建立及刪除", () => {
@@ -153,79 +140,35 @@ describe("Acceptance test for PointController.", () => {
         let testPointLogs: any = []
         let testPointLog: any
 
-        async function deleteImportData(
-            testProject: any,
-            testPointRule: any,
-            testBoarder: any
-        ) {
+        it("建立一個項目、一位住宿生、一個加扣點規則，並且該位住宿生有兩筆加扣點紀錄", async () => {
             try {
-                await Db.point_log.destroy({
-                    where: {
-                        project_id: testProject.id,
-                    },
+                testProject = await ProjectDao.create({
+                    name: "ATDD_point",
                 })
-                await Db.point_rule.destroy({
-                    where: {
-                        id: testPointRule.id,
-                    },
+                testBoarder = await BoarderDao.create({
+                    id: "ATDD_point",
+                    project_id: testProject.id,
+                    name: "ATDD_point",
+                    boarder_status_id: 1,
                 })
-                await Db.boarder.destroy({
-                    where: {
-                        id: testBoarder.id,
-                    },
+                testPointRule = await PointRuleDao.create(
+                    givenCreatePointRulePayload("3")
+                )
+                await PointLogDao.create({
+                    boarder_id: testBoarder.id,
+                    project_id: testProject.id,
+                    point_rule_id: testPointRule.id,
+                    point: 3,
+                    remark: "ATDD_point",
+                    created_by: mockUser.id,
                 })
-                await Db.project.destroy({
-                    where: {
-                        id: testProject.id,
-                    },
-                })
-            } catch (error: any) {
-                console.log(error)
-                if (error instanceof ForeignKeyConstraintError) {
-                    await deleteImportData(
-                        testProject,
-                        testPointRule,
-                        testBoarder
-                    )
-                }
-            }
-        }
-
-        beforeAll(async () => {
-            try {
-                await Db.sequelize.transaction(async (t: Transaction) => {
-                    testProject = await Db.project.create({
-                        name: "E2eTest",
-                        remark: "E2eTest",
-                    })
-                    testBoarder = await Db.boarder.create({
-                        id: "E2eTest",
-                        project_id: testProject.id,
-                        name: "E2eTest",
-                        boarder_status_id: 1,
-                    })
-                    testPointRule = await Db.point_rule.create({
-                        code: "E2eTest",
-                        reason: "E2eTest",
-                        point: 3,
-                        is_actived: true,
-                    })
-                    await Db.point_log.create({
-                        boarder_id: testBoarder.id,
-                        project_id: testProject.id,
-                        point_rule_id: testPointRule.id,
-                        point: 3,
-                        remark: "E2eTest123",
-                        created_by: mockUser.id,
-                    })
-                    await Db.point_log.create({
-                        boarder_id: testBoarder.id,
-                        project_id: testProject.id,
-                        point_rule_id: testPointRule.id,
-                        point: 3,
-                        remark: "E2eTest123",
-                        created_by: mockUser.id,
-                    })
+                await PointLogDao.create({
+                    boarder_id: testBoarder.id,
+                    project_id: testProject.id,
+                    point_rule_id: testPointRule.id,
+                    point: 4,
+                    remark: "ATDD_point",
+                    created_by: mockUser.id,
                 })
             } catch (error: any) {
                 console.log(error)
@@ -265,7 +208,7 @@ describe("Acceptance test for PointController.", () => {
                 boarder_id: testBoarder.id,
                 point_rule_id: testPointRule.id,
                 point: 3,
-                remark: "E2eTest123",
+                remark: "ATDD_point",
             }
             // when
             const res = await App.post("/api/points/log").send(payload)
@@ -289,10 +232,6 @@ describe("Acceptance test for PointController.", () => {
             expect(res.status).toBe(200)
             const result = await PointLogDao.findOneById(id)
             expect(result).toBeNull()
-        })
-
-        afterAll(async () => {
-            await deleteImportData(testProject, testPointRule, testBoarder)
         })
     })
 })

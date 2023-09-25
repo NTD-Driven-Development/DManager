@@ -20,7 +20,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
                 "陸生",
                 "僑生",
             ],
-            all_new_classes: ["測試班級E2E"],
+            all_new_classes: ["ATDD_boarderRole"],
             items: [
                 {
                     sid: "1111134023",
@@ -108,7 +108,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
                     name: "王明如",
                     remark: "",
                     new_boarder_roles: ["陸生"],
-                    new_class: "資工研二",
+                    new_class: "ATDD_boarderRole",
                 },
                 {
                     sid: "1411107038",
@@ -135,40 +135,6 @@ describe("Acceptance test for BoarderRoleController.", () => {
             ],
         }
     }
-    async function deleteImportData(project_id: number) {
-        try {
-            const boarder_role_ids = await Db.boarder_role
-                .findAll({
-                    where: { project_id: project_id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            await Db.boarder_mapping_role.destroy({
-                where: { boarder_role_id: { [Op.in]: boarder_role_ids } },
-            })
-            await Db.project_bunk.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder_role.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.project.destroy({ where: { id: project_id } })
-            await Db.class.destroy({
-                where: {
-                    name: {
-                        [Op.in]: givenImportPayload(project_id).all_new_classes,
-                    },
-                },
-            })
-        } catch (error: any) {
-            console.log(error)
-            if (error instanceof ForeignKeyConstraintError) {
-                await deleteImportData(project_id)
-            }
-        }
-    }
 
     describe("取得住宿生身分列表", () => {
         let testProject: any
@@ -177,7 +143,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
         it("預先建立項目", async () => {
             // given
             const payload = {
-                name: "E2E住宿生身分測試",
+                name: "ATDD_boarder_role",
             }
             // when
             const response = await App.post("/api/projects").send(payload)
@@ -241,7 +207,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
             expect(data?.id).toEqual(id)
         })
 
-        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+        it("查無單筆紀錄，statusCode 為 404「查無資料」", async () => {
             // given
             const id = -1
             // when
@@ -249,11 +215,6 @@ describe("Acceptance test for BoarderRoleController.", () => {
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("查無資料")
-        })
-
-
-        afterAll(async () => {
-            await deleteImportData(testProject.id)
         })
     })
 
@@ -345,10 +306,6 @@ describe("Acceptance test for BoarderRoleController.", () => {
                 (await Db.boarder_role.findOne({ where: { id: id } }))
                     .deleted_by
             ).toBe(mockUser.id)
-        })
-
-        afterAll(async () => {
-            await deleteImportData(testProject.id)
         })
     })
 })

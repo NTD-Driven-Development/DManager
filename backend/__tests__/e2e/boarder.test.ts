@@ -5,9 +5,9 @@ import _ from "lodash"
 import BoarderDao from "../../src/core/daos/BoarderDao"
 
 describe("Acceptance test for BoarderController.", () => {
-    function givenCreateProjectPayload() {
+    function givenCreateProjectPayload(concatStr: string) {
         return {
-            name: "test",
+            name: `ATDD_boarder${concatStr}`,
         }
     }
 
@@ -26,7 +26,7 @@ describe("Acceptance test for BoarderController.", () => {
                 "陸生",
                 "僑生",
             ],
-            all_new_classes: ["測試班級E2E"],
+            all_new_classes: ["ATDD_boarder"],
             items: [
                 {
                     sid: "1111134023",
@@ -114,7 +114,7 @@ describe("Acceptance test for BoarderController.", () => {
                     name: "王明如",
                     remark: "",
                     new_boarder_roles: ["陸生"],
-                    new_class: "資工研二",
+                    new_class: "ATDD_boarder",
                 },
                 {
                     sid: "1411107038",
@@ -180,48 +180,13 @@ describe("Acceptance test for BoarderController.", () => {
         }
     }
 
-    async function deleteImportData(project_id: number) {
-        try {
-            const boarder_role_ids = await Db.boarder_role
-                .findAll({
-                    where: { project_id: project_id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            await Db.boarder_mapping_role.destroy({
-                where: { boarder_role_id: { [Op.in]: boarder_role_ids } },
-            })
-            await Db.project_bunk.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder_role.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.project.destroy({ where: { id: project_id } })
-            await Db.class.destroy({
-                where: {
-                    name: {
-                        [Op.in]: givenImportPayload(project_id).all_new_classes,
-                    },
-                },
-            })
-        } catch (error: any) {
-            console.log(error)
-            if (error instanceof ForeignKeyConstraintError) {
-                await deleteImportData(project_id)
-            }
-        }
-    }
-
     describe("取得匯入後住宿生資訊，並能夠進行編輯及刪除", () => {
         let testProject: any
         let testBoarder: any
 
         it("預先建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("1")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -299,7 +264,9 @@ describe("Acceptance test for BoarderController.", () => {
             const result = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
-            expect(boarder_role_ids.length).toEqual(result.boarder_roles?.length)
+            expect(boarder_role_ids.length).toEqual(
+                result.boarder_roles?.length
+            )
             expect(result.created_by).toBe(mockUser.id)
         })
 
@@ -355,10 +322,6 @@ describe("Acceptance test for BoarderController.", () => {
             expect(response.status).toBe(201)
             expect(response.body?.error).toBeNull()
         })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
-        })
     })
 
     describe("建立住宿生(床位)", () => {
@@ -367,7 +330,7 @@ describe("Acceptance test for BoarderController.", () => {
 
         it("預先建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("2")
             // when
             const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
@@ -481,10 +444,6 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
-        })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
         })
     })
 })
