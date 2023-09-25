@@ -88,7 +88,7 @@ describe("Acceptance test for ShareController.", () => {
         expect(testData).toBeTruthy()
     })
 
-    it("建立一筆項目、一筆住宿生紀錄，已建立的住宿生會在「該項目的住宿生列表」內", async () => {
+    it("建立一筆項目、一筆住宿生紀錄，已建立的住宿生會在「該項目的住宿生列表」內，包含學號、門禁卡號、姓名、床位和班級", async () => {
         // given
         const testProject = await ProjectDao.create(
             givenCreateProjectPayload("3")
@@ -107,6 +107,14 @@ describe("Acceptance test for ShareController.", () => {
         // then
         expect(response.status).toBe(200)
         expect(response.body?.data?.length ?? 0).toBe(1)
+        _.forEach(response.body?.data, (item) => {
+            expect(item).toHaveProperty("id")
+            expect(item).toHaveProperty("sid")
+            expect(item).toHaveProperty("access_card")
+            expect(item).toHaveProperty("name")
+            expect(item).toHaveProperty("project_bunk")
+            expect(item).toHaveProperty("class")
+        })
     })
 
     it("取得角色清單", async () => {

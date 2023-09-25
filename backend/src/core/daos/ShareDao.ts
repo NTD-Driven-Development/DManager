@@ -64,7 +64,7 @@ export default new (class ShareDao extends BaseDao {
         project_id: number | string
     ): Promise<BoarderModel[]> {
         return await Db.boarder.findAll({
-            attributes: ["id", "sid", "name"],
+            // attributes: ["id", "sid", "name"],
             include: [
                 {
                     model: Db.project_bunk,
