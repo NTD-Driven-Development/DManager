@@ -12,21 +12,21 @@ module.exports = {
         "define": {
             "underscored": true,
             "charset": "utf8mb4",
-            "collate": "utf8mb4_unicode_ci",
+            "collate": "utf8mb4_0900_ai_ci",
         },
     },
     "test": {
         "username": process.env.DB_USER,
         "password": process.env.DB_PASS,
-        "database": process.env.DB_NAME,
+        "database": process.env.DB_NAME + "_test",
         "host": process.env.DB_HOST,
         "dialect": process.env.DB_TYPE,
         "timezone": process.env.DB_TIMEZONE,
-        "logging": true,
+        "logging": false,
         "define": {
             "underscored": true,
             "charset": "utf8mb4",
-            "collate": "utf8mb4_unicode_ci",
+            "collate": "utf8mb4_0900_ai_ci",
         },
     },
     "production": {
@@ -40,7 +40,7 @@ module.exports = {
         "define": {
             "underscored": true,
             "charset": "utf8mb4",
-            "collate": "utf8mb4_unicode_ci",
+            "collate": "utf8mb4_0900_ai_ci",
         },
     }
 }

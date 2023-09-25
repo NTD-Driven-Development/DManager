@@ -28,7 +28,7 @@ describe("Unit Test for AuthService", () => {
                 email: "123@gmail.com",
             }
             // when
-            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+            jest.spyOn(AuthDao, "getUserAuthInfoById").mockResolvedValue({
                 id: 1,
                 email: payload.email,
                 roles: [],
@@ -40,6 +40,7 @@ describe("Unit Test for AuthService", () => {
             // then
             expect(result).toHaveProperty("access_token")
             expect(result).toHaveProperty("refresh_token")
+            expect(AuthDao.getUserAuthInfoById).toBeCalledTimes(1)
             expect(result.access_token).toEqual("Bearer " + "UnitTest")
             expect(result.refresh_token).toEqual("UnitTest")
             expect(jwt.sign).toBeCalledTimes(1)
@@ -161,6 +162,11 @@ describe("Unit Test for AuthService", () => {
                 email: "abc@gmail.com",
                 roles: null,
             } as any)
+            jest.spyOn(AuthDao, "getUserAuthInfoById").mockResolvedValue({
+                id: 1,
+                email: "abc@gmail.com",
+                roles: null,
+            } as any)
             jest.spyOn(
                 LogDao,
                 "findSysPasswordLogByVerifiedToken"
@@ -189,6 +195,8 @@ describe("Unit Test for AuthService", () => {
             expect(result).toHaveProperty("refresh_token")
             expect(result.access_token).toEqual("Bearer " + fakeAccessToken)
             expect(result.refresh_token).toEqual(fakeRefreshToken)
+            expect(AuthDao.getUserAuthInfoByEmail).toBeCalledTimes(1)
+            expect(AuthDao.getUserAuthInfoById).toBeCalledTimes(1)
             expect(strings.hash).toBeCalledTimes(1)
             expect(LogDao.findSysPasswordLogByVerifiedToken).toBeCalledTimes(1)
             expect(AuthDao.updateUserPasswordByEmail).toBeCalledTimes(1)
@@ -315,7 +323,7 @@ describe("Unit Test for AuthService", () => {
                 email: "",
             }
             // when
-            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+            jest.spyOn(AuthDao, "getUserAuthInfoById").mockResolvedValue({
                 id: 1,
                 email: "",
                 remark: "",

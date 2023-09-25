@@ -76,10 +76,10 @@ export default new (class LogService {
         limit?: number
     }): Promise<IPaginationResultDto<SysLogModel | SysErrorLogModel>> {
         const { offset, limit } = query
-        const errorLogs = await LogDao.findAllSysErrorLog()
+        // const errorLogs = await LogDao.findAllSysErrorLog()
         const logs = await LogDao.findAllSysLog()
-        const combinedLogs = _.concat(logs, errorLogs)
-        const sortedLogs = _.sortBy(combinedLogs, ["created_at"]).reverse()
-        return withPagination(sortedLogs.length, sortedLogs, offset, limit)
+        // const combinedLogs = _.concat(logs, errorLogs)
+        // const sortedLogs = _.sortBy(combinedLogs, ["created_at"]).reverse()
+        return withPagination(logs.length, logs, offset, limit)
     }
 })()

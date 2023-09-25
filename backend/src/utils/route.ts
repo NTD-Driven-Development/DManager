@@ -41,7 +41,30 @@ const getApiRouteFullPathFromRequest = (req: IRequest): string => {
     return full_path
 }
 
+function getUrlParams(urlPath: string, urlPattern: string) {
+    const pathParts = urlPath.split("/")
+    const patternParts = urlPattern.split("/")
+
+    if (pathParts.length !== patternParts.length) {
+        return null // URL Path 與 URL Pattern 結構不相符
+    }
+
+    const mappedData: any = {}
+    for (let i = 0; i < patternParts.length; i++) {
+        const patternPart = patternParts[i]
+        if (patternPart.startsWith(":")) {
+            const key = patternPart.slice(1)
+            mappedData[key] = pathParts[i]
+        } else if (patternPart !== pathParts[i]) {
+            continue
+        }
+    }
+
+    return mappedData
+}
+
 export default {
     getApiRouteList,
     getApiRouteFullPathFromRequest,
+    getUrlParams,
 }

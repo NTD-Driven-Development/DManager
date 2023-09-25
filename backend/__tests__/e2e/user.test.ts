@@ -6,33 +6,26 @@ import RoleEnum from "../../src/enumerates/Role"
 import UserDutyDao from "../../src/core/daos/UserDutyDao"
 
 describe("Acceptance test for UserController.", () => {
+    function givenCreateUserPayload(concatStr: string) {
+        return {
+            name: `ATDD_user_${concatStr}`,
+            email: `ATDD_user_${concatStr}@gmail.com`,
+            sid: `ATDD_user_${concatStr}`,
+            role_ids: [RoleEnum.檢視者],
+        }
+    }
+
     describe("取得使用者列表", () => {
-        let testUsers: any
+        let testUser: any
 
-        const createUserPayload = [
-            {
-                name: "test",
-                email: "test_e2e@gmail.com",
-                sid: "S1234567890test_e2e",
-                role_ids: [RoleEnum.檢視者],
-            },
-            {
-                name: "test22",
-                email: "test_e2e22@gmail.com",
-                sid: "S12345test_e2e+123",
-                role_ids: [RoleEnum.檢視者],
-            },
-        ]
-        beforeAll(async () => {
-            // 測試前新增測資
-            const res1 = await App.post("/api/users").send(createUserPayload[0])
-            expect(res1.status).toBe(201)
-            const res2 = await App.post("/api/users").send(createUserPayload[1])
-            expect(res2.status).toBe(201)
-        })
-
-        it("取得使用者列表，每位使用者須包含角色屬性，並且有分頁", async () => {
+        it("建立兩位使用者，取得使用者列表，每位使用者須包含角色屬性，並且有分頁", async () => {
             // given
+            const res1 = await App.post("/api/users").send(
+                givenCreateUserPayload("1")
+            )
+            const res2 = await App.post("/api/users").send(
+                givenCreateUserPayload("2")
+            )
             const payload = {
                 page: 1,
                 limit: 1,
@@ -41,7 +34,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.get("/api/users").query(payload)
             // then
             const data = response.body?.data
-            testUsers = data
+            testUser = res1.body?.data
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             expect(response.body?.data).toHaveProperty("items")
@@ -53,7 +46,7 @@ describe("Acceptance test for UserController.", () => {
 
         it("取得單筆使用者資料，需包含角色屬性", async () => {
             // given
-            const user_id = testUsers?.items[0].id
+            const user_id = testUser?.id
             // when
             const response = await App.get(`/api/users/${user_id}`)
             // then
@@ -66,43 +59,17 @@ describe("Acceptance test for UserController.", () => {
 
         it("取得單筆使用者資料，若無此使用者，應回傳 400「查無資料」", async () => {
             // given
-            const user_id = -9998978978
+            const user_id = -123465789
             // when
             const response = await App.get(`/api/users/${user_id}`)
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("查無資料")
         })
-
-        afterAll(async () => {
-            // 測試後刪除所有測資
-            const users = _.filter(await UserDao.findAll(), (user) => {
-                return (
-                    user.email === createUserPayload[0].email ||
-                    user.email === createUserPayload[1].email
-                )
-            })
-            _.forEach(users, async (user) => {
-                try {
-                    await Db.user_role.destroy({
-                        where: { user_id: user.id },
-                    })
-                    await Db.user.destroy({ where: { id: user.id } })
-                } catch (error: any) {
-                    console.log(error)
-                }
-            })
-        })
     })
 
     describe("建立使用者，並且能夠編輯 & 刪除。", () => {
         let createdUser: any
-        const createUserPayload = {
-            name: "test",
-            email: "test_e2e_createUser@gmail.com",
-            sid: "S1234567890test_e2e",
-            role_ids: [RoleEnum.檢視者],
-        }
 
         it("不符合輸入格式應回傳 400.", async () => {
             // given
@@ -137,7 +104,7 @@ describe("Acceptance test for UserController.", () => {
 
         it("新用戶應能夠正常新增.", async () => {
             // given
-            const payload = createUserPayload
+            const payload = givenCreateUserPayload("3")
             // when
             const response = await App.post("/api/users").send(payload)
             // then
@@ -152,7 +119,7 @@ describe("Acceptance test for UserController.", () => {
 
         it("不可重複新增相同 Email 使用者.", async () => {
             // given
-            const payload = createUserPayload
+            const payload = givenCreateUserPayload("3")
             // when
             const response = await App.post("/api/users").send(payload)
             // then
@@ -164,8 +131,8 @@ describe("Acceptance test for UserController.", () => {
             // given
             const payload = {
                 id: createdUser?.id,
-                name: "test_e2e_updated",
-                sid: "test_e2e_updated",
+                name: "ATDD_user(ed)",
+                sid: "ATDD_user(ed)",
                 role_ids: [],
             }
             // when
@@ -189,27 +156,13 @@ describe("Acceptance test for UserController.", () => {
             expect(response.body?.error).toBeNull()
             expect(result).toBeNull()
         })
-
-        afterAll(async () => {
-            // 測試後刪除所有測資
-            try {
-                await Db.user_role.destroy({
-                    where: { user_id: createdUser?.id },
-                })
-                await Db.user.destroy({
-                    where: { email: createUserPayload.email },
-                })
-            } catch (error: any) {
-                console.log(error)
-            }
-        })
     })
 
     describe("取得輪值表", () => {
         let testUser: any
         let testUserDuty: any
 
-        beforeAll(async () => {
+        it("建立一位使用者，該使用者建立兩筆輪值", async () => {
             // 建立測試 user
             testUser = await UserDao.create({
                 name: "test",
@@ -230,7 +183,7 @@ describe("Acceptance test for UserController.", () => {
             })
         })
 
-        it("取得輪值清單，要分頁", async () => {
+        it("查詢第一頁使用者輪值清單，分頁筆數不超過一筆", async () => {
             // given
             const payload = {
                 offset: 1,
@@ -262,32 +215,20 @@ describe("Acceptance test for UserController.", () => {
             expect(data).toHaveProperty("creator")
             expect(data).toHaveProperty("updater")
         })
-
-        afterAll(async () => {
-            try {
-                await Db.user_duty.destroy({ where: { user_id: testUser.id } })
-                await Db.user.destroy({ where: { id: testUser.id } })
-            } catch (error: any) {
-                console.log(error)
-            }
-        })
     })
 
     describe("建立輪值時段，可以修改時間跟刪除", () => {
         let createdUser: any
         let testDuty: any
 
-        beforeAll(async () => {
-            createdUser = await UserDao.create({
-                name: "test",
-                email: "testE2eUser123@gmail.com",
-                password: "testE2e",
-                sid: "S1234567890testE2e",
-            })
-        })
+        beforeAll(async () => {})
 
-        it("建立輪值時段", async () => {
+        it("為使用者建立一筆輪值時段", async () => {
             // given
+            const res = await App.post("/api/users").send(
+                givenCreateUserPayload("4")
+            )
+            createdUser = res.body?.data
             const payload = {
                 user_id: createdUser.id,
                 start_time: "2021-01-01 00:00:00",
@@ -315,8 +256,12 @@ describe("Acceptance test for UserController.", () => {
             expect(response.status).toBe(200)
             expect(response.body?.error).toBeNull()
             const result = await UserDutyDao.findOneById(testDuty.id)
-            expect(new Date(result?.start_time)).toEqual(new Date(payload.start_time))
-            expect(new Date(result?.end_time)).toEqual(new Date(payload.end_time))
+            expect(new Date(result?.start_time)).toEqual(
+                new Date(payload.start_time)
+            )
+            expect(new Date(result?.end_time)).toEqual(
+                new Date(payload.end_time)
+            )
             expect(result?.updated_by).toBe(mockUser.id)
         })
 
@@ -332,17 +277,6 @@ describe("Acceptance test for UserController.", () => {
             expect(response.body?.error).toBeNull()
             const result = await UserDutyDao.findOneById(testDuty.id)
             expect(result).toBeNull()
-        })
-
-        afterAll(async () => {
-            try {
-                await Db.user_duty.destroy({
-                    where: { user_id: createdUser.id },
-                })
-                await Db.user.destroy({ where: { id: createdUser.id } })
-            } catch (error: any) {
-                console.log(error)
-            }
         })
     })
 })

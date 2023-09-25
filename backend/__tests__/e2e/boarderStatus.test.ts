@@ -26,7 +26,9 @@ describe("Acceptance test for BoarderStatusController.", () => {
             // then
             testBoarderStatuses = res.body?.data
             expect(res.status).toBe(200)
-            expect(testBoarderStatuses?.items.length).toBeLessThanOrEqual(payload.limit)
+            expect(testBoarderStatuses?.items.length).toBeLessThanOrEqual(
+                payload.limit
+            )
         })
 
         it("請求單筆住宿生狀態", async () => {
@@ -110,14 +112,6 @@ describe("Acceptance test for BoarderStatusController.", () => {
                 (await Db.boarder_status.findOne({ where: { id: id } }))
                     .deleted_by
             ).toBe(mockUser.id)
-        })
-
-        afterAll(async () => {
-            await Db.boarder_status.destroy({
-                where: {
-                    id: testBoarderStatus?.id,
-                },
-            })
         })
     })
 })

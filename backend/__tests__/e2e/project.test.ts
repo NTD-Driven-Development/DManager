@@ -5,44 +5,9 @@ import _ from "lodash"
 import ProjectDao from "../../src/core/daos/ProjectDao"
 
 describe("Acceptance test for ProjectController.", () => {
-    async function deleteImportData(project_id: number) {
-        try {
-            const boarder_role_ids = await Db.boarder_role
-                .findAll({
-                    where: { project_id: project_id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            await Db.boarder_mapping_role.destroy({
-                where: { boarder_role_id: { [Op.in]: boarder_role_ids } },
-            })
-            await Db.project_bunk.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder_role.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.project.destroy({ where: { id: project_id } })
-            await Db.class.destroy({
-                where: {
-                    name: {
-                        [Op.in]: givenImportPayload(project_id).all_new_classes,
-                    },
-                },
-            })
-        } catch (error: any) {
-            console.log(error)
-            if (error instanceof ForeignKeyConstraintError) {
-                await deleteImportData(project_id)
-            }
-        }
-    }
-
-    function givenCreateProjectPayload() {
+    function givenCreateProjectPayload(concatStr: string) {
         return {
-            name: "E2ETestCreateProject",
+            name: `ATDD_project${concatStr}`,
             remark: null,
         }
     }
@@ -50,7 +15,7 @@ describe("Acceptance test for ProjectController.", () => {
     function givenUpdateProjectPayload(id: number) {
         return {
             id: id,
-            name: "E2ETestUpdateProject",
+            name: "ATDD_project(ed)",
             remark: "remark",
         }
     }
@@ -70,7 +35,7 @@ describe("Acceptance test for ProjectController.", () => {
                 "陸生",
                 "僑生",
             ],
-            all_new_classes: ["測試班級E2E"],
+            all_new_classes: ["ATDD_project"],
             items: [
                 {
                     sid: "1111134023",
@@ -158,7 +123,7 @@ describe("Acceptance test for ProjectController.", () => {
                     name: "王明如",
                     remark: "",
                     new_boarder_roles: ["陸生"],
-                    new_class: "測試班級E2E",
+                    new_class: "ATDD_project",
                 },
                 {
                     sid: "1411107038",
@@ -191,7 +156,7 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("預先建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("1")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -229,10 +194,6 @@ describe("Acceptance test for ProjectController.", () => {
             expect(data).toBeTruthy()
             expect(data.items.length).toBeLessThanOrEqual(1)
         })
-
-        afterAll(async () => {
-            await Db.project.destroy({ where: { id: testProject.id } })
-        })
     })
 
     describe("建立項目", () => {
@@ -240,7 +201,7 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("測試資料建立成功", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("2")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -252,15 +213,12 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("若建立項目名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("2")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("名稱已存在")
-        })
-        afterAll(async () => {
-            await Db.project.destroy({ where: { id: testProject.id } })
         })
     })
 
@@ -269,7 +227,7 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("預先建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("3")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -299,10 +257,6 @@ describe("Acceptance test for ProjectController.", () => {
             expect(response.status).toBe(400)
             expect(response.body?.error).toBe("名稱已存在")
         })
-
-        afterAll(async () => {
-            await Db.project.destroy({ where: { id: testProject.id } })
-        })
     })
 
     describe("刪除項目", () => {
@@ -310,7 +264,7 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("預先建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("4")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -339,10 +293,6 @@ describe("Acceptance test for ProjectController.", () => {
             // then
             expect(response.status).toBe(400)
         })
-
-        afterAll(async () => {
-            await Db.project.destroy({ where: { id: testProject.id } })
-        })
     })
 
     describe("匯入住宿生資料", () => {
@@ -350,7 +300,7 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("建立項目", async () => {
             // given
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("5")
             // when
             const response = await App.post("/api/projects").send(payload)
             // then
@@ -441,10 +391,6 @@ describe("Acceptance test for ProjectController.", () => {
                 givenImportPayload(project_id).all_new_classes.length
             )
         })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
-        })
     })
 
     describe("交換床位", () => {
@@ -456,7 +402,7 @@ describe("Acceptance test for ProjectController.", () => {
         let swap_boarder_id: number
 
         it("預先建立項目", async () => {
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("6")
 
             const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
@@ -530,10 +476,6 @@ describe("Acceptance test for ProjectController.", () => {
             expect(response.status).toBe(200)
             expect(filterHasOriginBoarder.id).toBe(swap_bunk_id)
             expect(filterHasSwapBoarder.id).toBe(origin_bunk_id)
-        })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
         })
     })
 })

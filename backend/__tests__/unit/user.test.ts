@@ -44,7 +44,7 @@ describe("Unit test for UserService.", () => {
             id: 1,
             email: "abc@gmail.com",
             name: "測試",
-        }
+        },
     } as any
 
     function givenCreateUserPayload() {
@@ -85,14 +85,6 @@ describe("Unit test for UserService.", () => {
     }
 
     function givenUpdateUserPayload() {
-        return {
-            id: 1,
-            sid: "0",
-            name: "測試修改",
-            remark: "測試修改",
-        }
-    }
-    function givenUpdateUserRolePayload() {
         return {
             id: 1,
             sid: "0",
@@ -140,34 +132,10 @@ describe("Unit test for UserService.", () => {
     })
 
     describe("更新使用者資料", () => {
-        it("給予 id、學號、姓、備註，更新一位使用者資料。", async () => {
+        it("給予 id、學號、姓、備註，角色清單，更新一位使用者資料。", async () => {
             // given
             const payload = givenUpdateUserPayload()
 
-            // when
-            jest.spyOn(UserDao, "update").mockResolvedValue({
-                affectedRows: 1,
-            } as any)
-            const updatedResult = await UserService.updateUser(
-                payload,
-                fakeUser
-            )
-
-            // then
-            expect(updatedResult).toBe(true)
-            expect(UserDao.update).toBeCalledTimes(1)
-            expect(UserDao.update).toBeCalledWith({
-                id: payload.id,
-                sid: payload.sid,
-                name: payload.name,
-                remark: payload.remark,
-                updated_by: fakeUser.id,
-            })
-        })
-
-        it("要能夠修改角色", async () => {
-            // given
-            const payload = givenUpdateUserRolePayload()
             // when
             jest.spyOn(UserDao, "update").mockResolvedValue({
                 affectedRows: 1,
@@ -182,17 +150,25 @@ describe("Unit test for UserService.", () => {
                 payload,
                 fakeUser
             )
+
             // then
             expect(updatedResult).toBe(true)
-            expect(UserDao.update).toBeCalledTimes(1)
             expect(UserRoleDao.deleteByUserId).toBeCalledTimes(1)
             expect(UserRoleDao.bulkCreateUserRole).toBeCalledTimes(1)
+            expect(UserDao.update).toBeCalledTimes(1)
+            expect(UserDao.update).toBeCalledWith({
+                id: payload.id,
+                sid: payload.sid,
+                name: payload.name,
+                remark: payload.remark,
+                updated_by: fakeUser.id,
+            })
         })
 
         it("若修改時發生外鍵關聯錯誤，應擲出「資料錯誤」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "資料錯誤"
-            const payload = givenUpdateUserRolePayload()
+            const payload = givenUpdateUserPayload()
             jest.spyOn(UserDao, "update").mockResolvedValue({
                 affectedRows: 1,
             } as any)

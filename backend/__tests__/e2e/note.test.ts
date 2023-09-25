@@ -3,11 +3,12 @@ import { App, mockUser } from "../../config/preE2eConfig"
 import Db from "../../src/models"
 import _ from "lodash"
 import BoarderNoteDao from "../../src/core/daos/BoarderNoteDao"
+import BoarderDao from "../../src/core/daos/BoarderDao"
 
 describe("Acceptance test for NoteController.", () => {
-    function givenCreateProjectPayload() {
+    function givenCreateProjectPayload(concatStr: string) {
         return {
-            name: "E2ETestCreateProject",
+            name: `ATDD_Note${concatStr}`,
             remark: null,
         }
     }
@@ -26,7 +27,7 @@ describe("Acceptance test for NoteController.", () => {
                 "陸生",
                 "僑生",
             ],
-            all_new_classes: ["測試班級E2E"],
+            all_new_classes: ["ATDD_Note"],
             items: [
                 {
                     sid: "1111134023",
@@ -114,7 +115,7 @@ describe("Acceptance test for NoteController.", () => {
                     name: "王明如",
                     remark: "",
                     new_boarder_roles: ["陸生"],
-                    new_class: "測試班級E2E",
+                    new_class: "ATDD_Note",
                 },
                 {
                     sid: "1411107038",
@@ -139,49 +140,6 @@ describe("Acceptance test for NoteController.", () => {
                     class_id: 222,
                 },
             ],
-        }
-    }
-
-    async function deleteImportData(project_id: number) {
-        try {
-            const boarder_role_ids = await Db.boarder_role
-                .findAll({
-                    where: { project_id: project_id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            const boarder_ids = await Db.boarder
-                .findAll({
-                    where: { project_id: project_id },
-                })
-                .then((result: any) => _.map(result, (item) => item.id))
-            await Db.boarder_mapping_role.destroy({
-                where: { boarder_role_id: { [Op.in]: boarder_role_ids } },
-            })
-            await Db.project_bunk.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder_role.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.boarder_note.destroy({
-                where: { boarder_id: { [Op.in]: boarder_ids } },
-            })
-            await Db.boarder.destroy({
-                where: { project_id: project_id },
-            })
-            await Db.project.destroy({ where: { id: project_id } })
-            await Db.class.destroy({
-                where: {
-                    name: {
-                        [Op.in]: givenImportPayload(project_id).all_new_classes,
-                    },
-                },
-            })
-        } catch (error: any) {
-            console.log(error)
-            if (error instanceof ForeignKeyConstraintError) {
-                await deleteImportData(project_id)
-            }
         }
     }
 
@@ -228,48 +186,44 @@ describe("Acceptance test for NoteController.", () => {
         return isAllItemPassing
     }
 
+    function givenCreateBoarderNotePayload(boarder_id: any): any {
+        return {
+            boarder_id: boarder_id,
+            title: "ATDD_note",
+            description: "ATDD_note",
+        }
+    }
+
     describe("取得住宿生記事", () => {
         let testProject: any
         let testBoarder: any
         let testBoarderNote: any
 
-        beforeAll(async () => {
+        it("建立項目、匯入項目，挑選一位住宿生紀錄兩筆記事", async () => {
             try {
-                const payload = givenCreateProjectPayload()
-                const response = await App.post("/api/projects").send(payload)
-                testProject = response.body?.data
-                const importPayload = givenImportPayload(testProject.id)
-                const response2 = await App.post("/api/projects/import").send(
-                    importPayload
+                const res = await App.post("/api/projects").send(
+                    givenCreateProjectPayload("1")
                 )
-                expect(response.status).toBe(201)
-                expect(response2.status).toBe(200)
-                await Db.sequelize.transaction(async (t: Transaction) => {
-                    const boarder = await Db.boarder.findOne({
-                        where: {
-                            project_id: testProject.id,
-                            sid: "1111134023",
-                        },
-                    })
-                    testBoarder = boarder
-                    const boarderNote = await Db.boarder_note.create({
-                        boarder_id: boarder.id,
-                        title: "test",
-                        description: "test",
-                    })
-                    testBoarderNote = boarderNote
-                    const boarderNote2 = await Db.boarder_note.create({
-                        boarder_id: boarder.id,
-                        title: "test2",
-                        description: "test2",
-                    })
-                })
+                testProject = res.body?.data
+                await App.post("/api/projects/import").send(
+                    givenImportPayload(testProject.id)
+                )
+                const boarders = await BoarderDao.findBoardersByProjectId(
+                    testProject.id
+                )
+                testBoarder = _.first(boarders)
+                testBoarderNote = await BoarderNoteDao.create(
+                    givenCreateBoarderNotePayload(testBoarder.id)
+                )
+                await BoarderNoteDao.create(
+                    givenCreateBoarderNotePayload(testBoarder.id)
+                )
             } catch (error: any) {
                 console.log(error)
             }
         })
 
-        it("取得住宿生記事列表，有分頁", async () => {
+        it("查詢第一頁住宿生記事列表，分頁筆數不超過一筆", async () => {
             // given
             const payload = {
                 offset: 1,
@@ -305,7 +259,7 @@ describe("Acceptance test for NoteController.", () => {
                 offset: 1,
                 limit: 20,
                 project_id: testProject.id,
-                search: "test",
+                search: "ATDD",
             }
             // when
             const isAllItemPassing =
@@ -316,12 +270,13 @@ describe("Acceptance test for NoteController.", () => {
             expect(isAllItemPassing).toBe(true)
 
             const importPayload = givenImportPayload(testProject.id)
+            const boarder = await BoarderDao.findOneById(testBoarder.id)
             // given
             const payload2 = {
                 offset: 1,
                 limit: 20,
                 project_id: testProject.id,
-                search: importPayload.items[0].name,
+                search: boarder.name,
             }
             // when
             const isAllItemPassing2 =
@@ -337,10 +292,10 @@ describe("Acceptance test for NoteController.", () => {
                 limit: 20,
                 project_id: testProject.id,
                 search:
-                    importPayload.items[0].floor +
-                    importPayload.items[0].room_type +
-                    importPayload.items[0].room_no +
-                    importPayload.items[0].bed,
+                    (boarder?.project_bunk?.floor as string) +
+                    boarder?.project_bunk?.room_type +
+                    boarder?.project_bunk?.room_no +
+                    boarder?.project_bunk?.bed,
             }
             // when
             const isAllItemPassing3 =
@@ -364,10 +319,6 @@ describe("Acceptance test for NoteController.", () => {
             expect(res.body?.data?.boarder).toHaveProperty("project")
             expect(res.body?.data?.boarder).toHaveProperty("class")
         })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
-        })
     })
 
     describe("建立住宿生記事，並能夠編輯和刪除", () => {
@@ -375,7 +326,7 @@ describe("Acceptance test for NoteController.", () => {
         let testBoarder: any
         let testBoarderNote: any
         beforeAll(async () => {
-            const payload = givenCreateProjectPayload()
+            const payload = givenCreateProjectPayload("2")
             const response = await App.post("/api/projects").send(payload)
             testProject = response.body?.data
             const importPayload = givenImportPayload(testProject?.id)
@@ -409,8 +360,8 @@ describe("Acceptance test for NoteController.", () => {
             // given
             const payload = {
                 id: testBoarderNote?.id,
-                title: "test2",
-                description: "test2",
+                title: "ATDD_note(ed)",
+                description: "ATDD_note(ed)",
             }
             // when
             const res = await App.put("/api/notes/boarder").send(payload)
@@ -430,10 +381,6 @@ describe("Acceptance test for NoteController.", () => {
             expect(res.status).toBe(200)
             const result = await BoarderNoteDao.findOneById(id)
             expect(result).toBeNull()
-        })
-
-        afterAll(async () => {
-            await deleteImportData(testProject?.id)
         })
     })
 })

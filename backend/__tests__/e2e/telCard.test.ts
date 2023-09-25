@@ -4,21 +4,42 @@ import Db from "../../src/models"
 import _ from "lodash"
 import TelCardContacterDao from "../../src/core/daos/TelCardContacterDao"
 import TelCardLogDao from "../../src/core/daos/TelCardLogDao"
+import ProjectDao from "../../src/core/daos/ProjectDao"
+import BoarderDao from "../../src/core/daos/BoarderDao"
 
 describe("Acceptance test for TelCardController.", () => {
+    function givenCreateTelCardContacterPayload(concatStr: string) {
+        return {
+            name: `ATDD_tel${concatStr}`,
+        }
+    }
+
+    function givenCreateTelCardLogPayload(
+        boarder_id: any,
+        project_id: any,
+        tel_card_contacter_id: any
+    ): any {
+        return {
+            boarder_id: boarder_id,
+            project_id: project_id,
+            tel_card_contacter_id: tel_card_contacter_id,
+            contacted_at: new Date("2022-01-01T00:00:00.000Z"),
+            remark: "ATDD_telCard",
+            created_by: mockUser.id,
+        }
+    }
+
     describe("取得電話卡聯絡人列表", () => {
-        let testTelCardContacters: any
+        let tel_card_contacter_1: any
 
-        it("取得電話卡聯絡人列表", async () => {
+        it("建立兩筆電話卡聯絡人，查詢第一頁電話卡聯絡人列表，分頁不大於一筆，statusCode 為 200", async () => {
             // given
-            // when
-            const res = await App.get("/api/telCards/contacter")
-            // then
-            expect(res.status).toBe(200)
-        })
-
-        it("取得電話卡聯絡人列表，並且有分頁", async () => {
-            // given
+            tel_card_contacter_1 = await TelCardContacterDao.create(
+                givenCreateTelCardContacterPayload("1")
+            )
+            const tel_card_contacter_2 = await TelCardContacterDao.create(
+                givenCreateTelCardContacterPayload("2")
+            )
             const payload = {
                 offset: 1,
                 limit: 1,
@@ -29,12 +50,11 @@ describe("Acceptance test for TelCardController.", () => {
             const data = res.body?.data
             expect(res.status).toBe(200)
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
-            testTelCardContacters = data
         })
 
-        it("取得單筆", async () => {
+        it("查詢已建立的單筆電話卡聯絡人紀錄，statusCode 為 200", async () => {
             // given
-            const id = testTelCardContacters?.items[0]?.id
+            const id = tel_card_contacter_1?.id
             // when
             const response = await App.get(`/api/telCards/contacter/${id}`)
             // then
@@ -43,7 +63,7 @@ describe("Acceptance test for TelCardController.", () => {
             expect(data?.id).toEqual(id)
         })
 
-        it("若取得單筆不存在，回應 404 「查無資料」", async () => {
+        it("查無單筆，statusCode 為 404「查無資料」", async () => {
             // given
             const id = -1
             // when
@@ -59,9 +79,7 @@ describe("Acceptance test for TelCardController.", () => {
 
         it("建立電話卡聯絡人", async () => {
             // given
-            const payload = {
-                name: "E2eTest",
-            }
+            const payload = givenCreateTelCardContacterPayload("3")
             // when
             const res = await App.post("/api/telCards/contacter").send(payload)
             // then
@@ -73,9 +91,7 @@ describe("Acceptance test for TelCardController.", () => {
 
         it("不可重複建立", async () => {
             // given
-            const payload = {
-                name: "E2eTest",
-            }
+            const payload = givenCreateTelCardContacterPayload("3")
             // when
             const response = await App.post("/api/telCards/contacter").send(
                 payload
@@ -88,7 +104,7 @@ describe("Acceptance test for TelCardController.", () => {
             // given
             const payload = {
                 id: testTelCardContacter?.id,
-                name: "E2eEdited",
+                name: "ATDD_(ed)",
             }
             // when
             const res = await App.put("/api/telCards/contacter").send(payload)
@@ -103,7 +119,7 @@ describe("Acceptance test for TelCardController.", () => {
             // given
             const payload = {
                 id: -1,
-                name: "E2eEdited",
+                name: "ATDD_(ed)",
             }
             // when
             const res = await App.put("/api/telCards/contacter").send(payload)
@@ -125,100 +141,43 @@ describe("Acceptance test for TelCardController.", () => {
                     .deleted_by
             ).toBe(mockUser.id)
         })
-
-        afterAll(async () => {
-            await Db.tel_card_contacter.destroy({
-                where: {
-                    id: testTelCardContacter?.id,
-                },
-            })
-        })
     })
 
     describe("取得住宿生電話卡紀錄，能夠建立及刪除", () => {
         let testProject: any
         let testBoarder: any
-        let testTelCardContacter: any
-        let testTelCardLogs: any = []
         let testTelCardLog: any
 
-        async function deleteImportData(
-            testProject: any,
-            testTelCardContacter: any,
-            testBoarder: any
-        ) {
-            try {
-                await Db.tel_card_log.destroy({
-                    where: {
-                        project_id: testProject.id,
-                    },
-                })
-                await Db.tel_card_contacter.destroy({
-                    where: {
-                        id: testTelCardContacter.id,
-                    },
-                })
-                await Db.boarder.destroy({
-                    where: {
-                        id: testBoarder.id,
-                    },
-                })
-                await Db.project.destroy({
-                    where: {
-                        id: testProject.id,
-                    },
-                })
-            } catch (error: any) {
-                console.log(error)
-                if (error instanceof ForeignKeyConstraintError) {
-                    await deleteImportData(
-                        testProject,
-                        testTelCardContacter,
-                        testBoarder
-                    )
-                }
-            }
-        }
-
-        beforeAll(async () => {
-            try {
-                await Db.sequelize.transaction(async (t: Transaction) => {
-                    testProject = await Db.project.create({
-                        name: "E2eTest",
-                        remark: "E2eTest",
-                    })
-                    testBoarder = await Db.boarder.create({
-                        id: "E2eTest",
-                        project_id: testProject.id,
-                        name: "E2eTest",
-                        boarder_status_id: 1,
-                    })
-                    testTelCardContacter = await Db.tel_card_contacter.create({
-                        name: "E2eTest",
-                    })
-                    await Db.tel_card_log.create({
-                        boarder_id: testBoarder.id,
-                        project_id: testProject.id,
-                        tel_card_contacter_id: testTelCardContacter.id,
-                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
-                        remark: "E2eTest123",
-                        created_by: mockUser.id,
-                    })
-                    await Db.tel_card_log.create({
-                        boarder_id: testBoarder.id,
-                        project_id: testProject.id,
-                        tel_card_contacter_id: testTelCardContacter.id,
-                        contacted_at: new Date("2022-01-01T00:00:00.000Z"),
-                        remark: "E2eTest123",
-                        created_by: mockUser.id,
-                    })
-                })
-            } catch (error: any) {
-                console.log(error)
-            }
+        it("建立一個項目、一位住宿生、一個電話卡聯絡人、兩筆住宿生電話卡紀錄", async () => {
+            testProject = await ProjectDao.create({
+                name: "ATDD_telCard",
+            })
+            testBoarder = await BoarderDao.create({
+                id: "ATDD_telCard",
+                project_id: testProject.id as number,
+                name: "ATDD_telCard",
+                boarder_status_id: 1,
+            })
+            const testTelCardContacter = await TelCardContacterDao.create(
+                givenCreateTelCardContacterPayload("4")
+            )
+            testTelCardLog = await Db.tel_card_log.create(
+                givenCreateTelCardLogPayload(
+                    testBoarder.id,
+                    testProject.id,
+                    testTelCardContacter.id
+                )
+            )
+            await Db.tel_card_log.create(
+                givenCreateTelCardLogPayload(
+                    testBoarder.id,
+                    testProject.id,
+                    testTelCardContacter.id
+                )
+            )
         })
 
-        it("取得住宿生電話卡紀錄，並且有分頁", async () => {
+        it("查詢指定項目第一頁取得住宿生電話卡紀錄，並且分頁數量不大於一筆", async () => {
             // given
             const payload = {
                 project_id: testProject.id,
@@ -228,14 +187,13 @@ describe("Acceptance test for TelCardController.", () => {
             // when
             const res = await App.get("/api/telCards/log").query(payload)
             // then
-            testTelCardLogs = res.body?.data?.items
             expect(res.status).toBe(200)
             expect(res.body?.data?.items?.length).toBeLessThanOrEqual(1)
         })
 
         it("取得單筆", async () => {
             // given
-            const id = testTelCardLogs[0]?.id
+            const id = testTelCardLog?.id
             // when
             const response = await App.get(`/api/telCards/log/${id}`)
             // then
@@ -246,13 +204,11 @@ describe("Acceptance test for TelCardController.", () => {
 
         it("建立住宿生電話卡紀錄", async () => {
             // given
-            const payload = {
-                project_id: testProject.id,
-                boarder_id: testBoarder.id,
-                tel_card_contacter_id: testTelCardContacter.id,
-                contacted_at: new Date("2022-01-01T00:00:00.000Z"),
-                remark: "E2eTest123",
-            }
+            const payload = givenCreateTelCardLogPayload(
+                testBoarder.id,
+                testProject.id,
+                testTelCardLog.id
+            )
             // when
             const res = await App.post("/api/telCards/log").send(payload)
             // then
@@ -276,14 +232,6 @@ describe("Acceptance test for TelCardController.", () => {
             expect(res.status).toBe(200)
             const result = await TelCardLogDao.findOneById(id)
             expect(result).toBeNull()
-        })
-
-        afterAll(async () => {
-            await deleteImportData(
-                testProject,
-                testTelCardContacter,
-                testBoarder
-            )
         })
     })
 })

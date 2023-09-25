@@ -161,19 +161,19 @@ describe("Unit test for LogService", () => {
                 fakeLog,
                 fakeLog,
             ])
-            jest.spyOn(LogDao, "findAllSysErrorLog").mockResolvedValue([
-                fakeLog,
-                fakeLog,
-            ])
+            // jest.spyOn(LogDao, "findAllSysErrorLog").mockResolvedValue([
+            //     fakeLog,
+            //     fakeLog,
+            // ])
             const result = await LogService.getOperationLogs(payload)
             // then
-            expect(LogDao.findAllSysErrorLog).toBeCalledTimes(1)
+            // expect(LogDao.findAllSysErrorLog).toBeCalledTimes(1)
             expect(LogDao.findAllSysLog).toBeCalledTimes(1)
             expect(result).toEqual({
-                total: 4,
+                total: 2,
                 per_page: 1,
                 current_page: 1,
-                last_page: 4,
+                last_page: 2,
                 from: 1,
                 to: 1,
                 items: [fakeLog],

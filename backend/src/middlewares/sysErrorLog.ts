@@ -4,6 +4,7 @@ import { Transaction } from "sequelize"
 import _ from "lodash"
 import { IRequest, IResponse } from "../core/interfaces/IHttp"
 import { NextFunction } from "express"
+import routeUtil from "../utils/route"
 
 // 紀錄系統日誌 (需注入至路由)
 export default async (req: IRequest, res: IResponse, next: NextFunction) => {
@@ -21,6 +22,10 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                             Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
                     },
                     async (t: Transaction) => {
+                        req.params = routeUtil.getUrlParams(
+                            req.originalUrl,
+                            req.routeUrl as string
+                        )
                         await LogService.saveSysErrorLog(
                             req,
                             res.statusCode,
