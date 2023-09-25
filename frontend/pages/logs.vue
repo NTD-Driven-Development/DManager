@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <template>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
         <!-- 內容 -->
@@ -46,8 +45,3 @@
     const logPaginator = new LogPaginator();
     const { data: logList } = logPaginator;
 </script>
-=======
-<template>
-    
-</template>
->>>>>>> fe379ea492c0967f3bb78983a68b59fe78bf11c2
