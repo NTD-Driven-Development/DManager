@@ -47,7 +47,10 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                                 Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
                         },
                         async (t: Transaction) => {
-                            console.log(req.params)
+                            req.params = routeUtil.getUrlParams(
+                                req.originalUrl,
+                                req.routeUrl as string
+                            )
                             await LogService.saveSysLog(
                                 req,
                                 res.statusCode,
