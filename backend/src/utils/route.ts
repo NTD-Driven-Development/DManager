@@ -42,8 +42,12 @@ const getApiRouteFullPathFromRequest = (req: IRequest): string => {
 }
 
 function getUrlParams(urlPath: string, urlPattern: string) {
-    const pathParts = urlPath.split("/")
-    const patternParts = urlPattern.split("/")
+    if (!urlPath || !urlPattern) {
+        return null // URL Path 或 URL Pattern 為空值
+    }
+
+    const pathParts: string[] = urlPath.split("/")
+    const patternParts: string[] = urlPattern.split("/")
 
     if (pathParts.length !== patternParts.length) {
         return null // URL Path 與 URL Pattern 結構不相符
