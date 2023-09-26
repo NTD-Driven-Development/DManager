@@ -21,13 +21,18 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ProjectService {
     public async getProjects(query?: {
+        search?: string
         offset?: number
         limit?: number
     }): Promise<PaginationResultDto<ProjectModel>> {
         const projects = await ProjectDao.findAll()
+        const filterProject = _.filter(projects, (item) => {
+            if (!query?.search) return true
+            return item.name.includes(query.search)
+        })
         return withPagination(
-            projects.length,
-            projects,
+            filterProject.length,
+            filterProject,
             query?.offset,
             query?.limit
         )

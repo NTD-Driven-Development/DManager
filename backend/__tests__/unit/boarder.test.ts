@@ -40,10 +40,10 @@ describe("Unit test for BoarderService.", () => {
             id: 1,
             project_id: 1,
             boarder_id: "1",
-            floor: "1",
+            floor: 1,
             room_type: "1",
-            room_no: "1",
-            bed: "1",
+            room_no: 1,
+            bed: 1,
         },
     }
     const fakeBoarderRole = {
@@ -100,10 +100,10 @@ describe("Unit test for BoarderService.", () => {
             id: number
             project_id: number
             boarder_id: string
-            floor: string
+            floor: number
             room_type: string
-            room_no: string
-            bed: string
+            room_no: number
+            bed: number
         }
     }) {
         const fakeBoarder1 = fakeBoarder
@@ -586,431 +586,566 @@ describe("Unit test for BoarderService.", () => {
             expect(result).toEqual(expectResult)
             expect(BoarderDao.findAll).toBeCalledTimes(1)
         })
-    })
 
-    describe("建立住宿生(床位)", () => {
-        it("確實呼叫 DAO", async () => {
+        it("給予查詢參數 search，搜尋符合樓寢床、姓名、班級", async () => {
             // given
-            const project_id = 1
-            const payload = givenCreateProjectBunkPayload()
-
+            const payload1 = {
+                project_id: 1,
+                search: "2A1-1",
+            }
+            const payload2 = {
+                project_id: 1,
+                search: "姓名",
+            }
+            const payload3 = {
+                project_id: 1,
+                search: "班級3",
+            }
             // when
-            const createdResult = await whenCreateProjectBunk(
-                project_id,
-                payload
-            )
-
-            // then
-            expect(createdResult).toBe(true)
-            expect(BoarderDao.create).toBeCalledWith({
-                id: uuid.v4(),
-                name: payload.name,
-                project_id: project_id,
-                class_id: payload.class_id,
-                sid: payload.sid,
-                boarder_status_id: payload.boarder_status_id,
-                remark: payload.remark,
-                created_by: fakeUser.id,
-            })
-            expect(BoarderMappingRoleDao.bulkCreate).toBeCalledWith([
+            jest.spyOn(BoarderDao, "findAll").mockResolvedValue([
                 {
-                    boarder_id: 1,
-                    boarder_role_id: payload.boarder_role_ids[0],
-                    created_by: fakeUser.id,
-                },
+                    id: "1",
+                    project_id: 1,
+                    project_bunk: {
+                        floor: 1,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名1",
+                    class: {
+                        name: "班級1",
+                    } as any,
+                } as any,
+                {
+                    id: "2",
+                    project_id: 1,
+                    project_bunk: {
+                        floor: 2,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名2",
+                    class: {
+                        name: "班級2",
+                    } as any,
+                } as any,
+                {
+                    id: "3",
+                    project_id: 1,
+                    project_bunk: {
+                        floor: 2,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名3",
+                    class: {
+                        name: "班級3",
+                    } as any,
+                } as any,
             ])
-            expect(ProjectDao.createProjectBunk).toBeCalledWith({
-                boarder_id: 1,
-                project_id: project_id,
-                floor: payload.floor,
-                room_type: payload.room_type,
-                room_no: payload.room_no,
-                bed: payload.bed,
-                remark: payload.remark,
-                created_by: fakeUser.id,
+            const result1 = await BoarderService.getBoarders(payload1)
+            const result2 = await BoarderService.getBoarders(payload2)
+            const result3 = await BoarderService.getBoarders(payload3)
+            // then
+            expect(result1.items.length).toBe(2)
+            expect(result2.items.length).toBe(3)
+            expect(result3.items.length).toBe(1)
+        })
+
+        describe("建立住宿生(床位)", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const project_id = 1
+                const payload = givenCreateProjectBunkPayload()
+
+                // when
+                const createdResult = await whenCreateProjectBunk(
+                    project_id,
+                    payload
+                )
+
+                // then
+                expect(createdResult).toBe(true)
+                expect(BoarderDao.create).toBeCalledWith({
+                    id: uuid.v4(),
+                    name: payload.name,
+                    project_id: project_id,
+                    class_id: payload.class_id,
+                    sid: payload.sid,
+                    boarder_status_id: payload.boarder_status_id,
+                    remark: payload.remark,
+                    created_by: fakeUser.id,
+                })
+                expect(BoarderMappingRoleDao.bulkCreate).toBeCalledWith([
+                    {
+                        boarder_id: 1,
+                        boarder_role_id: payload.boarder_role_ids[0],
+                        created_by: fakeUser.id,
+                    },
+                ])
+                expect(ProjectDao.createProjectBunk).toBeCalledWith({
+                    boarder_id: 1,
+                    project_id: project_id,
+                    floor: payload.floor,
+                    room_type: payload.room_type,
+                    room_no: payload.room_no,
+                    bed: payload.bed,
+                    remark: payload.remark,
+                    created_by: fakeUser.id,
+                })
+            })
+
+            it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "此項目不存在"
+                const payload = givenCreateProjectBunkPayload()
+
+                // when
+                const result = whenCreateProjectBunkNotFoundProject(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
+
+            it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "建立失敗，此床位已存在"
+                const payload = givenCreateProjectBunkPayload()
+
+                // when
+                const result = whenCreateProjectBunkRepeat(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
             })
         })
 
-        it("若此項目不存在應擲出例外「此項目不存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "此項目不存在"
-            const payload = givenCreateProjectBunkPayload()
+        describe("編輯住宿生", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = givenUpdateBoarderPayload()
 
-            // when
-            const result = whenCreateProjectBunkNotFoundProject(payload)
+                // when
+                const result = await whenUpdateBoarderSucceeded(payload)
 
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderDao.update).toBeCalledTimes(1)
+                expect(
+                    BoarderMappingRoleDao.destroyByBoarderId
+                ).toBeCalledTimes(1)
+                expect(BoarderMappingRoleDao.bulkCreate).toBeCalledTimes(1)
+            })
+
+            it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const payload = givenUpdateBoarderPayload()
+
+                // when
+                const result = whenUpdateBoarderNotFound(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
 
-        it("若項目中已有此床位應擲出例外「建立失敗，此床位已存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "建立失敗，此床位已存在"
-            const payload = givenCreateProjectBunkPayload()
+        describe("取得單筆住宿生資訊", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const boarder_id = 1
+                const expectResult = fakeBoarder
 
-            // when
-            const result = whenCreateProjectBunkRepeat(payload)
+                // when
+                const result = await whenGetBoarderByIdSucceeded(boarder_id)
 
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
+                // then
+                expect(result).toEqual(expectResult)
+                expect(BoarderDao.findOneById).toBeCalledTimes(1)
+            })
 
-    describe("編輯住宿生", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = givenUpdateBoarderPayload()
+            it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const boarder_id = 1
 
-            // when
-            const result = await whenUpdateBoarderSucceeded(payload)
+                // when
+                const result = whenGetBoarderByIdNotFound(boarder_id)
 
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderDao.update).toBeCalledTimes(1)
-            expect(BoarderMappingRoleDao.destroyByBoarderId).toBeCalledTimes(1)
-            expect(BoarderMappingRoleDao.bulkCreate).toBeCalledTimes(1)
-        })
-
-        it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const payload = givenUpdateBoarderPayload()
-
-            // when
-            const result = whenUpdateBoarderNotFound(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("取得單筆住宿生資訊", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const boarder_id = 1
-            const expectResult = fakeBoarder
-
-            // when
-            const result = await whenGetBoarderByIdSucceeded(boarder_id)
-
-            // then
-            expect(result).toEqual(expectResult)
-            expect(BoarderDao.findOneById).toBeCalledTimes(1)
+                // then
+                expect(result).rejects.toThrow(errorMessage)
+                expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
 
-        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const boarder_id = 1
+        describe("刪除住宿生資訊", () => {
+            it("確實呼叫 DAO，清空床位對應", async () => {
+                // given
+                const boarder_id = "1"
 
-            // when
-            const result = whenGetBoarderByIdNotFound(boarder_id)
+                // when
+                const result = await whenDeleteBoarderSucceeded(boarder_id)
 
-            // then
-            expect(result).rejects.toThrow(errorMessage)
-            expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderDao.delete).toBeCalledTimes(1)
+                expect(ProjectDao.deleteBunkByBoarderId).toBeCalledTimes(1)
+            })
 
-    describe("刪除住宿生資訊", () => {
-        it("確實呼叫 DAO，清空床位對應", async () => {
-            // given
-            const boarder_id = "1"
+            it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const boarder_id = "1"
 
-            // when
-            const result = await whenDeleteBoarderSucceeded(boarder_id)
+                // when
+                const result = whenDeleteBoarderNotFound(boarder_id)
 
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderDao.delete).toBeCalledTimes(1)
-            expect(ProjectDao.deleteBunkByBoarderId).toBeCalledTimes(1)
-        })
-
-        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const boarder_id = "1"
-
-            // when
-            const result = whenDeleteBoarderNotFound(boarder_id)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("取得某項目住宿生身分列表", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = {
-                project_id: 1,
-            }
-
-            // when
-            const result = await whenGetBoarderRolesFromProject(payload)
-
-            // then
-            expect(result).toEqual(expectGetBoarderRolesFromProjectData())
-            expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
 
-        it("有分頁", async () => {
-            // given
-            const payload = {
-                project_id: 1,
-                offset: 1,
-                limit: 2,
-            }
-            const expectResult =
-                expectGivenOffset1Limit2ThenGetBoarderRolesCountShouldBeEqual2(
-                    payload.offset,
-                    payload.limit
+        describe("取得某項目住宿生身分列表", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = {
+                    project_id: 1,
+                }
+
+                // when
+                const result = await whenGetBoarderRolesFromProject(payload)
+
+                // then
+                expect(result).toEqual(expectGetBoarderRolesFromProjectData())
+                expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
+            })
+
+            it("有分頁", async () => {
+                // given
+                const payload = {
+                    project_id: 1,
+                    offset: 1,
+                    limit: 2,
+                }
+                const expectResult =
+                    expectGivenOffset1Limit2ThenGetBoarderRolesCountShouldBeEqual2(
+                        payload.offset,
+                        payload.limit
+                    )
+
+                // when
+                const result =
+                    await whenGetBoarderRolesFromProjectWithPagination(payload)
+
+                // then
+                expect(result).toEqual(expectResult)
+                expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
+            })
+        })
+
+        describe("取得單筆住宿生身分", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const id = 1
+                const expectResult = fakeBoarderRole
+                // when
+                jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(
+                    expectResult as any
+                )
+                const result = await BoarderService.getBoarderRoleById(id)
+                // then
+                expect(result).toEqual(expectResult)
+                expect(BoarderRoleDao.findOneById).toBeCalledTimes(1)
+            })
+
+            it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const id = 1
+                // when
+                const result = whenGetBoarderRoleByIdNotFound(id)
+                // then
+                expect(result).rejects.toThrow(errorMessage)
+                expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
+
+            it("給予查詢參數 search，搜尋符合名稱", async () => {
+                // given
+                const payload1 = {
+                    search: "姓名",
+                }
+                const payload2 = {
+                    search: "姓名1",
+                }
+                // when
+                jest.spyOn(BoarderRoleDao, "findAll").mockResolvedValue([
+                    {
+                        id: "1",
+                        name: "姓名1",
+                    } as any,
+                    {
+                        name: "姓名2",
+                    } as any,
+                    {
+                        id: "3",
+                        name: "姓名3",
+                    } as any,
+                ])
+                const result1 = await BoarderService.getBoarderRoles(payload1)
+                const result2 = await BoarderService.getBoarderRoles(payload2)
+                // then
+                expect(result1.items.length).toBe(3)
+                expect(result2.items.length).toBe(1)
+            })
+        })
+
+        describe("建立住宿生身分", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = givenCreateBoarderRolePayload()
+
+                // when
+                const result = await whenCreateBoarderRoleSucceeded(payload)
+
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderRoleDao.create).toBeCalledTimes(1)
+            })
+
+            it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "名稱已存在"
+                const payload = givenCreateBoarderRolePayload()
+
+                // when
+                const result = whenCreateBoarderRoleRepeated(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
+        })
+
+        describe("修改住宿生身分", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = givenUpdateBoarderRolePayload()
+
+                // when
+                const result = await whenUpdateBoarderRoleSucceeded(payload)
+
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderRoleDao.update).toBeCalledTimes(1)
+            })
+
+            it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const payload = givenUpdateBoarderRolePayload()
+
+                // when
+                const result = whenUpdateBoarderRoleNotModified(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
+        })
+
+        describe("刪除住宿生身分", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const boarder_role_id = 1
+
+                // when
+                const result = await whenDeleteBoarderRoleSucceeded(
+                    boarder_role_id
                 )
 
-            // when
-            const result = await whenGetBoarderRolesFromProjectWithPagination(
-                payload,
-            )
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderRoleDao.delete).toBeCalledTimes(1)
+            })
 
-            // then
-            expect(result).toEqual(expectResult)
-            expect(BoarderRoleDao.findAll).toBeCalledTimes(1)
-        })
-    })
+            it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const boarder_role_id = 1
 
-    describe("取得單筆住宿生身分", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const id = 1
-            const expectResult = fakeBoarderRole
-            // when
-            jest.spyOn(BoarderRoleDao, "findOneById").mockResolvedValue(
-                expectResult as any
-            )
-            const result = await BoarderService.getBoarderRoleById(id)
-            // then
-            expect(result).toEqual(expectResult)
-            expect(BoarderRoleDao.findOneById).toBeCalledTimes(1)
+                // when
+                const result = whenDeleteBoarderRoleNotFound(boarder_role_id)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
 
-        it("若查無資料則應擲出例外「查無資料」，設定狀態碼 400", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const id = 1
-            // when
-            const result = whenGetBoarderRoleByIdNotFound(id)
-            // then
-            expect(result).rejects.toThrow(errorMessage)
-            expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
+        describe("取得住宿生狀態列表", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
 
-    describe("建立住宿生身分", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = givenCreateBoarderRolePayload()
+                // when
+                const result = await whenGetBoarderStatues()
 
-            // when
-            const result = await whenCreateBoarderRoleSucceeded(payload)
+                // then
+                expect(result).toEqual(expectGetBoarderStatuesData())
+                expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
+            })
 
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderRoleDao.create).toBeCalledTimes(1)
-        })
+            it("有分頁", async () => {
+                // given
+                const payload = {
+                    offset: 1,
+                    limit: 2,
+                }
+                const expectResult =
+                    expectGivenOffset1Limit2ThenGetBoarderStatusCountShouldBeEqual2(
+                        payload.offset,
+                        payload.limit
+                    )
 
-        it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "名稱已存在"
-            const payload = givenCreateBoarderRolePayload()
-
-            // when
-            const result = whenCreateBoarderRoleRepeated(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("修改住宿生身分", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = givenUpdateBoarderRolePayload()
-
-            // when
-            const result = await whenUpdateBoarderRoleSucceeded(payload)
-
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderRoleDao.update).toBeCalledTimes(1)
-        })
-
-        it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const payload = givenUpdateBoarderRolePayload()
-
-            // when
-            const result = whenUpdateBoarderRoleNotModified(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("刪除住宿生身分", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const boarder_role_id = 1
-
-            // when
-            const result = await whenDeleteBoarderRoleSucceeded(boarder_role_id)
-
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderRoleDao.delete).toBeCalledTimes(1)
-        })
-
-        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const boarder_role_id = 1
-
-            // when
-            const result = whenDeleteBoarderRoleNotFound(boarder_role_id)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("取得住宿生狀態列表", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-
-            // when
-            const result = await whenGetBoarderStatues()
-
-            // then
-            expect(result).toEqual(expectGetBoarderStatuesData())
-            expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
-        })
-
-        it("有分頁", async () => {
-            // given
-            const payload = {
-                offset: 1,
-                limit: 2,
-            }
-            const expectResult =
-                expectGivenOffset1Limit2ThenGetBoarderStatusCountShouldBeEqual2(
-                    payload.offset,
-                    payload.limit
+                // when
+                const result = await whenGetBoarderStatusesWithPagination(
+                    payload
                 )
 
-            // when
-            const result = await whenGetBoarderStatusesWithPagination(payload)
+                // then
+                expect(result).toEqual(expectResult)
+                expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
+            })
 
-            // then
-            expect(result).toEqual(expectResult)
-            expect(BoarderStatusDao.findAll).toBeCalledTimes(1)
-        })
-    })
-
-    describe("建立住宿生狀態", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = {
-                name: "E2eTest",
-            }
-
-            // when
-            const result = await whenCreateBoarderStatusSucceeded(payload)
-
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderStatusDao.create).toBeCalledTimes(1)
-        })
-
-        it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "名稱已存在"
-            const payload = {
-                name: "E2eTest",
-            }
-
-            // when
-            const result = whenCreateBoarderStatusRepeated(payload)
-
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("修改住宿生狀態", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const payload = {
-                id: 1,
-                name: "E2eTest(Edited)",
-            }
-
-            // when
-            const result = await whenUpdateBoarderStatusSucceed(payload)
-
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderStatusDao.update).toBeCalledTimes(1)
+            it("給予查詢參數 search，搜尋符合名稱", async () => {
+                // given
+                const payload1 = {
+                    search: "姓名",
+                }
+                const payload2 = {
+                    search: "姓名1",
+                }
+                // when
+                jest.spyOn(BoarderStatusDao, "findAll").mockResolvedValue([
+                    {
+                        id: "1",
+                        name: "姓名1",
+                    } as any,
+                    {
+                        name: "姓名2",
+                    } as any,
+                    {
+                        id: "3",
+                        name: "姓名3",
+                    } as any,
+                ])
+                const result1 = await BoarderService.getBoarderStatuses(
+                    payload1
+                )
+                const result2 = await BoarderService.getBoarderStatuses(
+                    payload2
+                )
+                // then
+                expect(result1.items.length).toBe(3)
+                expect(result2.items.length).toBe(1)
+            })
         })
 
-        it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const payload = {
-                id: 1,
-                name: "E2eTest(Edited)",
-            }
+        describe("建立住宿生狀態", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = {
+                    name: "E2eTest",
+                }
 
-            // when
-            const result = whenUpdateBoarderStatusNotFound(payload)
+                // when
+                const result = await whenCreateBoarderStatusSucceeded(payload)
 
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderStatusDao.create).toBeCalledTimes(1)
+            })
+
+            it("重複建立名稱應擲出例外「名稱已存在」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "名稱已存在"
+                const payload = {
+                    name: "E2eTest",
+                }
+
+                // when
+                const result = whenCreateBoarderStatusRepeated(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
-    })
 
-    describe("刪除住宿生狀態", () => {
-        it("確實呼叫 DAO", async () => {
-            // given
-            const id = 1
+        describe("修改住宿生狀態", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const payload = {
+                    id: 1,
+                    name: "E2eTest(Edited)",
+                }
 
-            // when
-            const result = await whenDeleteBoarderStatusSucceeded(id)
+                // when
+                const result = await whenUpdateBoarderStatusSucceed(payload)
 
-            // then
-            expect(result).toEqual(true)
-            expect(BoarderStatusDao.delete).toBeCalledTimes(1)
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderStatusDao.update).toBeCalledTimes(1)
+            })
+
+            it("若更新資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const payload = {
+                    id: 1,
+                    name: "E2eTest(Edited)",
+                }
+
+                // when
+                const result = whenUpdateBoarderStatusNotFound(payload)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
 
-        it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
-            // given
-            const errorMessage: string = "查無資料"
-            const id = 1
+        describe("刪除住宿生狀態", () => {
+            it("確實呼叫 DAO", async () => {
+                // given
+                const id = 1
 
-            // when
-            const result = whenDeleteBoarderStatusNotFound(id)
+                // when
+                const result = await whenDeleteBoarderStatusSucceeded(id)
 
-            // then
-            await expect(result).rejects.toThrow(errorMessage)
-            await expect(result).rejects.toHaveProperty("statusCode", 400)
+                // then
+                expect(result).toEqual(true)
+                expect(BoarderStatusDao.delete).toBeCalledTimes(1)
+            })
+
+            it("若刪除資料無異動則應擲出例外「查無資料」，設定狀態碼 400。", async () => {
+                // given
+                const errorMessage: string = "查無資料"
+                const id = 1
+
+                // when
+                const result = whenDeleteBoarderStatusNotFound(id)
+
+                // then
+                await expect(result).rejects.toThrow(errorMessage)
+                await expect(result).rejects.toHaveProperty("statusCode", 400)
+            })
         })
     })
 })

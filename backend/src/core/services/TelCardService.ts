@@ -10,10 +10,16 @@ import { TelCardLogModel } from "../../models/TelCardLog"
 
 export default new (class TelCardService {
     public async getTelCardContacters(query?: {
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<TelCardContacterModel>> {
-        const data = await TelCardContacterDao.findAll()
+        let data = await TelCardContacterDao.findAll()
+        if (query?.search) {
+            data = _.filter(data, (item) =>
+                _.includes(item?.name, query?.search)
+            )
+        }
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 
@@ -93,6 +99,7 @@ export default new (class TelCardService {
     }
 
     public async getTelCardLogs(query?: {
+        search?: string
         offset?: number
         limit?: number
         project_id?: number
@@ -104,7 +111,27 @@ export default new (class TelCardService {
                 (item) => item.project_id == query?.project_id
             )
         }
-        return withPagination(result.length, result, query?.offset, query?.limit)
+        if (query?.search) {
+            result = _.filter(result, (item) => {
+                const bunk =
+                    "" +
+                    item.boarder?.project_bunk?.floor +
+                    item.boarder?.project_bunk?.room_type +
+                    item.boarder?.project_bunk?.room_no +
+                    "-" +
+                    item.boarder?.project_bunk?.bed
+                return (
+                    _.includes(item.boarder?.name, query.search) ||
+                    _.includes(bunk, query.search)
+                )
+            })
+        }
+        return withPagination(
+            result.length,
+            result,
+            query?.offset,
+            query?.limit
+        )
     }
 
     public async getTelCardLogById(

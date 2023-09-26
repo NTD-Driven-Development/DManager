@@ -61,7 +61,9 @@ describe("Unit test for ProjectService.", () => {
         }
     }
     async function whenCreateProject(payload: any) {
-        jest.spyOn(ProjectDao, "findAll").mockResolvedValue([] as any as Promise<any>)
+        jest.spyOn(ProjectDao, "findAll").mockResolvedValue(
+            [] as any as Promise<any>
+        )
         jest.spyOn(ProjectDao, "create").mockResolvedValue(fakeProject)
         return await ProjectService.createProject(payload, fakeUser)
     }
@@ -301,6 +303,19 @@ describe("Unit test for ProjectService.", () => {
             items: [fakeProject, fakeProject],
         }
     }
+    function expectGetAllProjectsDataFilter測試2() {
+        return {
+            total: 1,
+            from: 1,
+            to: 1,
+            current_page: 1,
+            last_page: 1,
+            per_page: 2,
+            items: [
+                { id: 2, name: "測試2" }
+            ],
+        }
+    }
     async function whenGetAllProjectData() {
         jest.spyOn(ProjectDao, "findAll").mockResolvedValue([
             fakeProject,
@@ -410,6 +425,34 @@ describe("Unit test for ProjectService.", () => {
 
             // then
             expect(projectList).toEqual(expectResult)
+            expect(ProjectDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("給定 search，能夠篩選項目名稱", async () => {
+            // given
+            const payload = {
+                search: "2",
+                offset: 1,
+                limit: 2,
+            }
+            // when
+            jest.spyOn(ProjectDao, "findAll").mockResolvedValue([
+                {
+                    id: 1,
+                    name: "1",
+                },
+                {
+                    id: 2,
+                    name: "測試2",
+                },
+                {
+                    id: 3,
+                    name: "測試3",
+                },
+            ] as any as Promise<any>)
+            const result = await ProjectService.getProjects(payload)
+            // then
+            expect(result).toEqual(expectGetAllProjectsDataFilter測試2())
             expect(ProjectDao.findAll).toBeCalledTimes(1)
         })
     })
@@ -538,8 +581,6 @@ describe("Unit test for ProjectService.", () => {
             await expect(result).rejects.toHaveProperty("statusCode", 400)
         })
     })
-
-    
 
     describe("交換床位", () => {
         it("確實呼叫 DAO", async () => {

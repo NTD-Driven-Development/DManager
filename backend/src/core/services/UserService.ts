@@ -32,11 +32,21 @@ export default new (class UserService {
     }
 
     public async getUsers(query?: {
-        offset: number
-        limit: number
+        search?: string
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<UserModel>> {
-        const users = await UserDao.findAll()
-        return withPagination(users.length, users, query?.offset, query?.limit)
+        let result = await UserDao.findAll()
+        if (query?.search) {
+            result = _.filter(result, (item) => {
+                return (
+                    _.includes(item.email, query.search) ||
+                    _.includes(item.name, query.search) ||
+                    _.includes(item.sid, query.search)
+                )
+            })
+        }
+        return withPagination(result.length, result, query?.offset, query?.limit)
     }
 
     public async getUserById(user_id: string | number): Promise<UserModel> {
@@ -83,7 +93,10 @@ export default new (class UserService {
             }
             await UserRoleDao.deleteByUserId(data.id)
             if (data?.role_ids?.length !== 0) {
-                await UserRoleDao.bulkCreateUserRole(data.id, data?.role_ids as number[])
+                await UserRoleDao.bulkCreateUserRole(
+                    data.id,
+                    data?.role_ids as number[]
+                )
             }
             return true
         } catch (error: any) {
@@ -156,12 +169,10 @@ export default new (class UserService {
         return true
     }
 
-    public async getUserDuties(
-        query?: {
-            offset: number
-            limit: number
-        }
-    ): Promise<IPaginationResultDto<UserDutyModel>> {
+    public async getUserDuties(query?: {
+        offset: number
+        limit: number
+    }): Promise<IPaginationResultDto<UserDutyModel>> {
         const user_duties = await UserDutyDao.findAll()
         return withPagination(
             user_duties.length,
@@ -171,9 +182,7 @@ export default new (class UserService {
         )
     }
 
-    public async getUserDutyById(
-        id: string | number
-    ): Promise<UserDutyModel> {
+    public async getUserDutyById(id: string | number): Promise<UserDutyModel> {
         const result = await UserDutyDao.findOneById(id)
         if (!result) {
             throw new HttpException("查無資料", 400)

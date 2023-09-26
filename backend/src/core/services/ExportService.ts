@@ -29,14 +29,31 @@ export default new (class ExportService {
 
     public async getBoarderPointAndTelCardLogs(query?: {
         project_id: number | string
+        search?: string
     }): Promise<ExportBoarderPointAndTelCardLogsDto[]> {
         let data = await ExportDao.getBoarderPointAndTelCardLogs()
         if (query?.project_id) {
             data = _.filter(data, (item) => item.project_id == query.project_id)
         }
+        if (query?.search) {
+            data = _.filter(data, (item) => {
+                const bunk =
+                    "" +
+                    item?.project_bunk?.floor +
+                    item?.project_bunk?.room_type +
+                    item?.project_bunk?.room_no +
+                    "-" +
+                    item?.project_bunk?.bed
+                return (
+                    _.includes(item?.name, query.search) ||
+                    _.includes(bunk, query.search)
+                )
+            })
+        }
         const formatData = await this.convertBoarderPointAndTelCardLogsToExport(
             data
         )
+        
         // sort by bunk
         const result = _.sortBy(formatData, [
             (item) => item?.boarder?.project_bunk?.floor,

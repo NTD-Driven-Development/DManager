@@ -7,10 +7,10 @@ export interface ProjectBunkModel {
     id: number
     boarder_id: string
     project_id: number
-    floor: string
+    floor: number
     room_type: string
-    room_no: string
-    bed: string
+    room_no: number
+    bed: number
     remark?: string
     created_at?: Date
     created_by?: number
@@ -28,10 +28,10 @@ export default (sequelize: any, DataTypes: any) => {
         id!: number
         boarder_id!: string
         project_id!: number
-        floor!: string
+        floor!: number
         room_type!: string
-        room_no!: string
-        bed!: string
+        room_no!: number
+        bed!: number
         remark?: string
         created_at?: Date
         created_by?: number
@@ -90,7 +90,7 @@ export default (sequelize: any, DataTypes: any) => {
                 },
             },
             floor: {
-                type: DataTypes.STRING(10),
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "樓層",
             },
@@ -100,12 +100,12 @@ export default (sequelize: any, DataTypes: any) => {
                 comment: "房型",
             },
             room_no: {
-                type: DataTypes.STRING(10),
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "房號",
             },
             bed: {
-                type: DataTypes.STRING(10),
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: "床號",
             },

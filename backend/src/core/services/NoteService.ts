@@ -24,15 +24,18 @@ export default new (class BoarderNoteService {
         if (query?.search) {
             data = _.filter(data, (item) => {
                 const bunk =
-                    (item.boarder?.project_bunk?.floor as string) +
+                    "" +
+                    item.boarder?.project_bunk?.floor +
                     item.boarder?.project_bunk?.room_type +
                     item.boarder?.project_bunk?.room_no +
+                    "-" +
                     item.boarder?.project_bunk?.bed
-                return item.boarder?.name.includes(query.search as string) ||
-                    item.title.includes(query.search as string) ||
-                    item.description.includes(query.search as string) ||
-                    bunk.includes(query.search as string)
-                
+                return (
+                    _.includes(item.boarder?.name, query.search) ||
+                    _.includes(item.title, query.search) ||
+                    _.includes(item.description, query.search) ||
+                    _.includes(bunk, query.search)
+                )
             })
         }
         return withPagination(data.length, data, query?.offset, query?.limit)

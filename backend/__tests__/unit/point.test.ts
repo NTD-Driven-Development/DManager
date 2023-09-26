@@ -251,6 +251,45 @@ describe("Unit test for PointService.", () => {
             })
             expect(PointRuleDao.findAll).toBeCalledTimes(1)
         })
+
+        it("給予查詢參數 search，搜尋符合代碼、原因", async () => {
+            // given
+            const payload1 = {
+                search: "代碼1",
+            }
+            const payload2 = {
+                search: "原因2",
+            }
+            const payload3 = {
+                search: "代碼",
+            }
+            // when
+            jest.spyOn(PointRuleDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    code: "代碼1",
+                    reason: "原因1",
+                } as any,
+                {
+                    id: "2",
+                    code: "代碼2",
+                    reason: "原因2",
+                } as any,
+                {
+                    id: "3",
+                    code: "代碼3",
+                    reason: "原因2",
+                } as any,
+            ])
+            const result1 = await PointService.getPointRules(payload1)
+            const result2 = await PointService.getPointRules(payload2)
+            const result3= await PointService.getPointRules(payload3)
+            // then
+            expect(result1.items.length).toBe(1)
+            expect(result2.items.length).toBe(2)
+            expect(result3.items.length).toBe(3)
+        })
+
     })
 
     describe("建立加扣點規則", () => {
@@ -431,6 +470,63 @@ describe("Unit test for PointService.", () => {
                 ],
             })
             expect(PointLogDao.findAll).toBeCalledTimes(1)
+        })
+
+        
+        it("給予查詢參數 search，搜尋符合樓寢床、姓名", async () => {
+            // given
+            const payload1 = {
+                search: "2A1-1",
+            }
+            const payload2 = {
+                search: "姓名",
+            }
+            // when
+            jest.spyOn(PointLogDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    boarder: {
+                        project_bunk: {
+                            floor: 1,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名1",
+                    },
+                } as any,
+                {
+                    id: "2",
+                    project_id: 1,
+                    boarder: {
+                        project_bunk: {
+                            floor: 2,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名2",
+                    },
+                } as any,
+                {
+                    id: "3",
+                    project_id: 1,
+                    boarder: {
+                        project_bunk: {
+                            floor: 2,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名3",
+                    },
+                } as any,
+            ])
+            const result1 = await PointService.getPointLogs(payload1)
+            const result2 = await PointService.getPointLogs(payload2)
+            // then
+            expect(result1.items.length).toBe(2)
+            expect(result2.items.length).toBe(3)
         })
     })
 

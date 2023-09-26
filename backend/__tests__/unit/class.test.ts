@@ -124,6 +124,36 @@ describe("Unit test for ClassService.", () => {
             })
             expect(ClassDao.findAll).toBeCalledTimes(1)
         })
+
+        it("給予查詢參數 search，搜尋符合名稱", async () => {
+            // given
+            const payload1 = {
+                search: "姓名",
+            }
+            const payload2 = {
+                search: "姓名1",
+            }
+            // when
+            jest.spyOn(ClassDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    name: "姓名1",
+
+                } as any,
+                {
+                    name: "姓名2",
+                } as any,
+                {
+                    id: "3",
+                    name: "姓名3",
+                } as any,
+            ])
+            const result1 = await ClassService.getClasses(payload1)
+            const result2 = await ClassService.getClasses(payload2)
+            // then
+            expect(result1.items.length).toBe(3)
+            expect(result2.items.length).toBe(1)
+        })
     })
 
     describe("建立班級", () => {

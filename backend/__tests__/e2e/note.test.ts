@@ -167,6 +167,7 @@ describe("Acceptance test for NoteController.", () => {
                 item?.boarder?.project_bunk?.floor +
                 item?.boarder?.project_bunk?.room_type +
                 item?.boarder?.project_bunk?.room_no +
+                "-" +
                 item?.boarder?.project_bunk?.bed
             if (
                 !(
@@ -292,9 +293,11 @@ describe("Acceptance test for NoteController.", () => {
                 limit: 20,
                 project_id: testProject.id,
                 search:
-                    (boarder?.project_bunk?.floor as string) +
+                    "" +
+                    boarder?.project_bunk?.floor +
                     boarder?.project_bunk?.room_type +
                     boarder?.project_bunk?.room_no +
+                    "-" +
                     boarder?.project_bunk?.bed,
             }
             // when

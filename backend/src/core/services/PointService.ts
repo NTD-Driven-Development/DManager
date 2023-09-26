@@ -10,14 +10,25 @@ import { PointLogModel } from "../../models/PointLog"
 
 export default new (class PointService {
     public async getPointRules(query?: {
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<PointRuleModel>> {
-        const data = await PointRuleDao.findAll()
+        let data = await PointRuleDao.findAll()
+        if (query?.search) {
+            data = _.filter(data, (item) => {
+                return (
+                    _.includes(item?.code, query.search) ||
+                    _.includes(item?.reason, query.search)
+                )
+            })
+        }
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 
-    public async getPointRuleById(id: string | number): Promise<PointRuleModel> {
+    public async getPointRuleById(
+        id: string | number
+    ): Promise<PointRuleModel> {
         const data = await PointRuleDao.findOneById(id as number)
         if (!data) {
             throw new HttpException("查無資料", 400)
@@ -84,6 +95,7 @@ export default new (class PointService {
     }
 
     public async getPointLogs(query?: {
+        search?: string
         offset?: number
         limit?: number
         project_id?: number
@@ -95,8 +107,28 @@ export default new (class PointService {
                 (item) => item.project_id == query?.project_id
             )
         }
+        if (query?.search) {
+            result = _.filter(result, (item) => {
+                const bunk =
+                    "" +
+                    item.boarder?.project_bunk?.floor +
+                    item.boarder?.project_bunk?.room_type +
+                    item.boarder?.project_bunk?.room_no +
+                    "-" +
+                    item.boarder?.project_bunk?.bed
+                return (
+                    _.includes(item.boarder?.name, query.search) ||
+                    _.includes(bunk, query.search)
+                )
+            })
+        }
 
-        return withPagination(result.length, result, query?.offset, query?.limit)
+        return withPagination(
+            result.length,
+            result,
+            query?.offset,
+            query?.limit
+        )
     }
 
     public async getPointLogById(id: string | number): Promise<PointLogModel> {
@@ -129,5 +161,4 @@ export default new (class PointService {
         }
         return true
     }
-
 })()

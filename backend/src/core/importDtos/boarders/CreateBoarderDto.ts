@@ -1,9 +1,9 @@
 export default class CreateBoarderDto {
     public readonly project_id!: number
-    public readonly floor!: string
+    public readonly floor!: number
     public readonly room_type!: string
-    public readonly room_no!: string
-    public readonly bed!: string
+    public readonly room_no!: number
+    public readonly bed!: number
     public readonly remark?: string
     public readonly name!: string
     public readonly sid?: string

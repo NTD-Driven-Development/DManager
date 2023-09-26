@@ -2,6 +2,7 @@
 import moment from "moment"
 import { Model } from "sequelize"
 import { UserModel } from "./User"
+import { BoarderModel } from "./Boarder"
 
 export interface TelCardLogModel {
     id?: number
@@ -15,6 +16,7 @@ export interface TelCardLogModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    boarder?: BoarderModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

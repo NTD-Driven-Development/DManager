@@ -211,7 +211,9 @@ describe("Unit test for TelCardService.", () => {
     }
 
     async function whenGetTelCardLogByIdSucceeded(id: number) {
-        jest.spyOn(TelCardLogDao, "findOneById").mockResolvedValue(fakeTelCardLog)
+        jest.spyOn(TelCardLogDao, "findOneById").mockResolvedValue(
+            fakeTelCardLog
+        )
         const result = await TelCardService.getTelCardLogById(id)
         return result
     }
@@ -262,6 +264,35 @@ describe("Unit test for TelCardService.", () => {
                 items: [fakeTelCardContacter, fakeTelCardContacter],
             })
             expect(TelCardContacterDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("給予查詢參數 search，搜尋符合名稱", async () => {
+            // given
+            const payload1 = {
+                search: "姓名",
+            }
+            const payload2 = {
+                search: "姓名1",
+            }
+            // when
+            jest.spyOn(TelCardContacterDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    name: "姓名1",
+                } as any,
+                {
+                    name: "姓名2",
+                } as any,
+                {
+                    id: "3",
+                    name: "姓名3",
+                } as any,
+            ])
+            const result1 = await TelCardService.getTelCardContacters(payload1)
+            const result2 = await TelCardService.getTelCardContacters(payload2)
+            // then
+            expect(result1.items.length).toBe(3)
+            expect(result2.items.length).toBe(1)
         })
     })
 
@@ -434,6 +465,62 @@ describe("Unit test for TelCardService.", () => {
                 ],
             })
             expect(TelCardLogDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("給予查詢參數 search，搜尋符合樓寢床、姓名", async () => {
+            // given
+            const payload1 = {
+                search: "2A1-1",
+            }
+            const payload2 = {
+                search: "姓名",
+            }
+            // when
+            jest.spyOn(TelCardLogDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    boarder: {
+                        project_bunk: {
+                            floor: 1,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名1",
+                    },
+                } as any,
+                {
+                    id: "2",
+                    project_id: 1,
+                    boarder: {
+                        project_bunk: {
+                            floor: 2,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名2",
+                    },
+                } as any,
+                {
+                    id: "3",
+                    project_id: 1,
+                    boarder: {
+                        project_bunk: {
+                            floor: 2,
+                            room_type: "A",
+                            room_no: 1,
+                            bed: 1,
+                        } as any,
+                        name: "姓名3",
+                    },
+                } as any,
+            ])
+            const result1 = await TelCardService.getTelCardLogs(payload1)
+            const result2 = await TelCardService.getTelCardLogs(payload2)
+            // then
+            expect(result1.items.length).toBe(2)
+            expect(result2.items.length).toBe(3)
         })
     })
 

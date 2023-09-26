@@ -21,12 +21,30 @@ import { v4 } from "uuid"
 export default new (class BoarderService {
     public async getBoarders(query: {
         project_id: string | number
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<BoarderModel>> {
         let data = await BoarderDao.findAll()
         if (query?.project_id) {
             data = _.filter(data, (item) => item.project_id == query.project_id)
+        }
+        if (query?.search) {
+            data = _.filter(data, (item: BoarderModel) => {
+                return (
+                    _.includes(item?.name, query.search) ||
+                    _.includes(item?.class?.name, query.search) ||
+                    _.includes(
+                        "" +
+                            item?.project_bunk?.floor +
+                            item?.project_bunk?.room_type +
+                            item?.project_bunk?.room_no +
+                            "-" +
+                            item?.project_bunk?.bed,
+                        query.search
+                    )
+                )
+            })
         }
 
         // sort by floor, room_type, room_no, bed
@@ -182,6 +200,7 @@ export default new (class BoarderService {
 
     public async getBoarderRoles(query: {
         project_id: string | number
+        search: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<BoarderRoleModel>> {
@@ -190,6 +209,11 @@ export default new (class BoarderService {
             result = _.filter(
                 result,
                 (item) => item.project_id == query.project_id
+            )
+        }
+        if (query?.search) {
+            result = _.filter(result, (item) =>
+                _.includes(item?.name, query.search)
             )
         }
 
@@ -288,10 +312,16 @@ export default new (class BoarderService {
     }
 
     public async getBoarderStatuses(query?: {
+        search: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<BoarderStatusModel>> {
-        const data = await BoarderStatusDao.findAll()
+        let data = await BoarderStatusDao.findAll()
+        if (query?.search) {
+            data = _.filter(data, (item) =>
+                _.includes(item?.name, query.search)
+            )
+        }
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 

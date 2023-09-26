@@ -8,10 +8,16 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export default new (class ClassService {
     public async getClasses(query?: {
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<ClassModel>> {
-        const data = await ClassDao.findAll()
+        let data = await ClassDao.findAll()
+        if (query?.search) {
+            data = _.filter(data, (item) =>
+                _.includes(item?.name, query.search)
+            )
+        }
         return withPagination(data.length, data, query?.offset, query?.limit)
     }
 

@@ -252,6 +252,47 @@ describe("Unit test for UserService.", () => {
             })
             expect(UserDao.findAll).toBeCalledTimes(1)
         })
+
+        it("給予查詢參數 search，搜尋符合學號、姓名、電子郵件", async () => {
+            // given
+            const payload1 = {
+                search: "abc@gmail.com",
+            }
+            const payload2 = {
+                search: "姓名2",
+            }
+            const payload3 = {
+                search: "學號2",
+            }
+            // when
+            jest.spyOn(UserDao, "findAll").mockResolvedValue([
+                {
+                    id: "1",
+                    name: "姓名1",
+                    email: "abc@gmail.com",
+                    sid: "學號1"
+                } as any,
+                {
+                    id: "2",
+                    name: "姓名2",
+                    email: "123@gmail.com",
+                    sid: "學號3"
+                } as any,
+                {
+                    id: "3",
+                    name: "姓名2",
+                    email: "AD@gmail.com",
+                    sid: "學號2"
+                } as any,
+            ])
+            const result1 = await UserService.getUsers(payload1)
+            const result2 = await UserService.getUsers(payload2)
+            const result3 = await UserService.getUsers(payload3)
+            // then
+            expect(result1.items.length).toBe(1)
+            expect(result2.items.length).toBe(2)
+            expect(result3.items.length).toBe(1)
+        })
     })
 
     describe("取得單筆使用者資料", () => {

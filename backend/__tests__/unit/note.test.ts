@@ -13,13 +13,10 @@ describe("Unit test for NoteService.", () => {
     const fakeBoarderNote = {
         id: 1,
         boarder_id: "unitTest",
-        title: "unitTestTitle",
+        title: "Title",
         description: "Description",
         boarder: {
             id: "unitTest",
-            sid: "unitTest",
-            project_id: 1,
-            boarder_status_id: 1,
             name: "unitTestBoarderName",
             project: {
                 id: 1,
@@ -29,22 +26,37 @@ describe("Unit test for NoteService.", () => {
                 name: "unitTestClass",
             } as any,
             project_bunk: {
-                floor: "1",
+                floor: 1,
                 room_type: "2",
-                room_no: "3",
-                bed: "4",
+                room_no: 3,
+                bed: 4,
             } as any,
         } as any,
-        creator: {
-            id: 1,
-            name: "unitTest",
-        } as any,
-        created_at: new Date(),
-        updater: {
-            id: 1,
-            name: "unitTest",
-        } as any,
-        updated_at: new Date(),
+    }
+
+    function testBoarderNoteFactory(count: number, project_id: number) {
+        const result: any[] = []
+        for (let i = 0; i < count; i++) {
+            result.push({
+                id: i,
+                title: "測試標題" + i,
+                description: "測試描述" + i,
+                boarder: {
+                    id: "unitTest" + i,
+                    name: "測試名字" + i,
+                    project: {
+                        id: project_id,
+                    },
+                    project_bunk: {
+                        floor: i,
+                        room_type: "2",
+                        room_no: 3,
+                        bed: 4,
+                    } as any,
+                } as any,
+            })
+        }
+        return result
     }
 
     async function whenGetBoarderNoteedWithPaginatationSucceeded(
@@ -199,88 +211,46 @@ describe("Unit test for NoteService.", () => {
 
         it("住宿生記事模糊查詢(住宿生姓名、樓區室床、標題、描述)", async () => {
             // given
+            const project_id = 1
             const payload = {
-                offset: 1,
-                limit: 20,
-                project_id: 1,
-                search: "unitTest",
+                project_id: project_id,
+                search: "測試名字",
             }
-            const daoData = [
-                fakeBoarderNote,
-                fakeBoarderNote,
-                fakeBoarderNote,
-                fakeBoarderNote,
-            ]
+            const payload2 = {
+                project_id: project_id,
+                search: "測試標題1",
+            }
+            const payload3 = {
+                project_id: project_id,
+                search: "123-4",
+            }
+            const payload4 = {
+                project_id: project_id,
+                search: "1234",
+            }
+            const daoData = testBoarderNoteFactory(4, project_id)
             // when
             const result1 = await whenGetBoarderNoteedWithPaginatationSucceeded(
                 daoData,
                 payload
             )
-            // then
-            expect(result1.items.length).toBe(4)
-
-            // given
-            const payload2 = {
-                offset: 1,
-                limit: 20,
-                project_id: 1,
-                search: "unitTestTitle",
-            }
-            const daoData2 = _.map(daoData, (item, index) => {
-                if (index === 0) {
-                    return {
-                        ...item,
-                        title: "1234",
-                    }
-                }
-                return item
-            })
-            // when
             const result2 = await whenGetBoarderNoteedWithPaginatationSucceeded(
-                daoData2,
+                daoData,
                 payload2
             )
-            // then
-            expect(result2.items.length).toBe(3)
-
-            // given
-            const payload3 = {
-                offset: 1,
-                limit: 20,
-                project_id: 1,
-                search: "-1234",
-            }
-            // when
             const result3 = await whenGetBoarderNoteedWithPaginatationSucceeded(
                 daoData,
                 payload3
             )
-            // then
-            expect(result3.items.length).toBe(0)
-
-            // given
-            const payload4 = {
-                offset: 1,
-                limit: 20,
-                project_id: 1,
-                search: "1235",
-            }
-            const daoData4 = _.map(daoData, (item, index) => {
-                if (index === 0) {
-                    return {
-                        ...item,
-                        title: "1235",
-                    }
-                }
-                return item
-            })
-            // when
             const result4 = await whenGetBoarderNoteedWithPaginatationSucceeded(
-                daoData4,
+                daoData,
                 payload4
             )
             // then
-            expect(result4.items.length).toBe(1)
+            expect(result1.items.length).toBe(4)
+            expect(result2.items.length).toBe(1)
+            expect(result3.items.length).toBe(1)
+            expect(result4.items.length).toBe(0)
         })
     })
 

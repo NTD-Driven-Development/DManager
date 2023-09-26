@@ -1,9 +1,9 @@
 interface Item {
     sid?: string,
-    floor: string,
+    floor: number,
     room_type: string,
-    room_no: string,
-    bed: string,
+    room_no: number,
+    bed: number,
     name: string,
     remark?: string,
     new_boarder_roles: string[],

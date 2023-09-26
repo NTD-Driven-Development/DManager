@@ -223,5 +223,56 @@ describe("Unit test for ExportService.", () => {
             expect(ExportDao.getBoarderPointAndTelCardLogs).toBeCalledTimes(1)
             expect(result).toEqual(expectResult)
         })
+
+        it("給予查詢參數 search，搜尋符合樓寢床、姓名", async () => {
+            // given
+            const payload1 = {
+                search: "2A1-1",
+            }
+            const payload2 = {
+                search: "姓名",
+            }
+            // when
+            jest.spyOn(ExportDao, "getBoarderPointAndTelCardLogs").mockResolvedValue([
+                {
+                    id: "1",
+                    project_bunk: {
+                        floor: 1,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名1",
+
+                } as any,
+                {
+                    id: "2",
+                    project_id: 1,
+                    project_bunk: {
+                        floor: 2,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名2",
+                } as any,
+                {
+                    id: "3",
+                    project_id: 1,
+                    project_bunk: {
+                        floor: 2,
+                        room_type: "A",
+                        room_no: 1,
+                        bed: 1,
+                    } as any,
+                    name: "姓名3",
+                } as any,
+            ])
+            const result1 = await ExportService.getBoarderPointAndTelCardLogs(payload1)
+            const result2 = await ExportService.getBoarderPointAndTelCardLogs(payload2)
+            // then
+            expect(result1.length).toBe(2)
+            expect(result2.length).toBe(3)
+        })
     })
 })
