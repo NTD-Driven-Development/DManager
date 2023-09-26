@@ -124,9 +124,8 @@
     const { data: boarderList } = boarderPaginator;
 
     boarderPaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
-    boarderPaginator.bind('search', toRef(values, 'search'));
+    boarderPaginator?.bind('search', toRef(values, 'search'));
 
-    queryStringInspecter(boarderPaginator.queries, { deep: true });
 
     onMounted(() => {
         Promise.all([])
@@ -136,6 +135,8 @@
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
             boarderPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+
+            queryStringInspecter(boarderPaginator.queries, { deep: true });
         });
     });
 </script>

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '~/stores/auth';
 
 export default defineNuxtPlugin(() => {
@@ -10,19 +10,17 @@ export default defineNuxtPlugin(() => {
         return config;
     });
 
-    axios.interceptors.response.use((response) => response, async (error) => {
+    axios.interceptors.response.use((response) => response, async (error: AxiosError) => {
         return new Promise(async (resolve, reject) => {
             const authStore = useAuthStore();
-            const config = error.config;
+            const config = error.config!;
 
             try {
                 if (error.response && error.response.status == 401) {
                     await authStore.refresh(); // 嘗試刷新token
 
                     config.headers.Authorization = authStore.getAccessToken();
-                    config.responseType = 'json';
-
-                    const response = await axios.request(config);
+                    const response = await axios(config);
                     response.data = JSON.parse(response?.data);
                     
                     resolve(response);

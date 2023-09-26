@@ -17,7 +17,7 @@
                         <span>姓名：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="name" placeholder="請輸入姓名" class="w-full rounded border"/>
+                        <Input name="name" autocomplete="off" placeholder="請輸入姓名" class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col text-sm gap-0.5">
@@ -25,7 +25,7 @@
                         <span>學號：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="sid" placeholder="請輸入學號" class="w-full rounded border"/>
+                        <Input name="sid" autocomplete="off" placeholder="請輸入學號" class="w-full rounded border"/>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         <span>電話：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="phone" placeholder="請輸入電話" class="w-full rounded border"/>
+                        <Input name="phone" autocomplete="off" placeholder="請輸入電話" class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-1 flex-col text-sm gap-0.5">
@@ -77,7 +77,7 @@
                         <span>門禁卡號：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="access_card" placeholder="請輸入門禁卡號" class="w-full rounded border"/>
+                        <Input name="access_card" autocomplete="off" placeholder="請輸入門禁卡號" class="w-full rounded border"/>
                     </div>
                 </div>
             </div>

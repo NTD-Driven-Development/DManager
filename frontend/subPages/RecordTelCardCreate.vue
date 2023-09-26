@@ -9,7 +9,7 @@
                             ：</span>
                     </div>
                     <div class="flex-1 text-black text-xs">
-                        <Input name="bunk" placeholder="請輸入樓寢床或門禁卡號" class="w-full rounded border"/>
+                        <Input name="bunk" autocomplete="off" placeholder="請輸入樓寢床或門禁卡號" class="w-full rounded border"/>
                     </div>
                 </div>
                 <div class="flex flex-col justify-center w-full gap-0.5">
