@@ -41,7 +41,7 @@ const jwtAuth = (type: string) => {
                     (err: any, user: RequestUser) => {
                         try {
                             if (err || !user) {
-                                throw new HttpException("請重新登入", 401)
+                                throw new HttpException("權限已過期，請重新登入", 401)
                             }
                             req.user = user
                             return next()

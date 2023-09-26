@@ -12,6 +12,7 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import { withPagination } from "../../utils/pagination"
 import UserDuty, { UserDutyModel } from "../../models/UserDuty"
+import moment from "moment"
 
 export default new (class UserService {
     private convertCreateDtoToUserModel(
@@ -46,7 +47,12 @@ export default new (class UserService {
                 )
             })
         }
-        return withPagination(result.length, result, query?.offset, query?.limit)
+        return withPagination(
+            result.length,
+            result,
+            query?.offset,
+            query?.limit
+        )
     }
 
     public async getUserById(user_id: string | number): Promise<UserModel> {
@@ -170,10 +176,33 @@ export default new (class UserService {
     }
 
     public async getUserDuties(query?: {
-        offset: number
-        limit: number
+        search?: string
+        start_times?: string[]
+        offset?: number
+        limit?: number
     }): Promise<IPaginationResultDto<UserDutyModel>> {
-        const user_duties = await UserDutyDao.findAll()
+        let user_duties = await UserDutyDao.findAll()
+
+        if (query?.search) {
+            user_duties = _.filter(user_duties, (item) => {
+                return _.includes(item.user?.name, query.search)
+            })
+        }
+
+        if (query?.start_times && query?.start_times?.length !== 0) {
+            user_duties = _.filter(user_duties, (item) => {
+                // filter to date
+                return _.map(query.start_times, (start_time) => {
+                    return (
+                        moment(item.start_time).format("YYYY-MM-DD") ===
+                            moment(start_time).format("YYYY-MM-DD") ||
+                        moment(item.end_time).format("YYYY-MM-DD") ===
+                            moment(start_time).format("YYYY-MM-DD")
+                    )
+                }).includes(true)
+            })
+        }
+
         return withPagination(
             user_duties.length,
             user_duties,

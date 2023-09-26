@@ -5,6 +5,7 @@ import strings from "../../src/utils/strings"
 import RoleEnum from "../../src/enumerates/Role"
 import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize"
 import UserDutyDao from "../../src/core/daos/UserDutyDao"
+import moment from "moment"
 
 describe("Unit test for UserService.", () => {
     afterEach(() => {
@@ -92,6 +93,31 @@ describe("Unit test for UserService.", () => {
             remark: "測試修改",
             roles: [RoleEnum.編輯者],
         }
+    }
+
+    function testUserDutyFactory(
+        count: number,
+        start_time: Date,
+        end_time: Date
+    ): any {
+        const result: any[] = []
+        const daysCount = moment(end_time).diff(moment(start_time), "days") + 1
+        let idCount = 1
+        for (let i = 0; i < count; i++) {
+            for (let j = 0; j < daysCount; j++) {
+                result.push({
+                    id: idCount,
+                    start_time: moment(start_time).add(j, "days").toDate(),
+                    end_time: moment(start_time).add(j, "days").toDate(),
+                    user: {
+                        id: i + 1,
+                        name: `測試${i + 1}`,
+                    },
+                })
+            }
+        }
+        console.log(result)
+        return result
     }
 
     describe("建立使用者帳號", () => {
@@ -270,19 +296,19 @@ describe("Unit test for UserService.", () => {
                     id: "1",
                     name: "姓名1",
                     email: "abc@gmail.com",
-                    sid: "學號1"
+                    sid: "學號1",
                 } as any,
                 {
                     id: "2",
                     name: "姓名2",
                     email: "123@gmail.com",
-                    sid: "學號3"
+                    sid: "學號3",
                 } as any,
                 {
                     id: "3",
                     name: "姓名2",
                     email: "AD@gmail.com",
-                    sid: "學號2"
+                    sid: "學號2",
                 } as any,
             ])
             const result1 = await UserService.getUsers(payload1)
@@ -466,7 +492,7 @@ describe("Unit test for UserService.", () => {
         })
     })
 
-    describe("取得輪值表", () => {
+    describe("取得輪值清單", () => {
         it("查詢分頁第一頁，每頁資料為一筆的輪值清單", async () => {
             // given
             const payload = {
@@ -490,6 +516,33 @@ describe("Unit test for UserService.", () => {
                 items: [fakeResult[0]],
             })
             expect(UserDutyDao.findAll).toBeCalledTimes(1)
+        })
+
+        it("給予查詢參數 search, start_times，搜尋符合姓名、指定輪值日的資料", async () => {
+            // given
+            const payload1 = {
+                search: "測試1",
+                start_times: [
+                    "2021-01-01T00:00:00.000Z",
+                ],
+            }
+            const payload2 = {
+                search: "測試2",
+                // start_times: "2021-01-02T00:00:00.000Z",
+            }
+            // when
+            jest.spyOn(UserDutyDao, "findAll").mockResolvedValue(
+                testUserDutyFactory(
+                    2,
+                    new Date("2021-01-01T00:00:00.000Z"),
+                    new Date("2021-01-02T00:00:00.000Z")
+                ) as any
+            )
+            const result1 = await UserService.getUserDuties(payload1)
+            const result2 = await UserService.getUserDuties(payload2)
+            // then
+            expect(result1.items.length).toBe(1)
+            expect(result2.items.length).toBe(2)
         })
     })
 

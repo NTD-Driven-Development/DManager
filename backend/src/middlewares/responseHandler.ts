@@ -10,7 +10,7 @@ export default (
 ) => {
     if (handle instanceof HttpResponse) {
         res.customMessage = handle.message as string
-        res.status(handle.statusCode).json(handle)
+        return res.status(handle.statusCode).json(handle)
     }
     return next(handle)
 }
