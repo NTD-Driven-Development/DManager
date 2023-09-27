@@ -155,7 +155,7 @@ export default (sequelize: any, DataTypes: any) => {
                 comment: "生日",
             },
             avatar: {
-                type: DataTypes.TEXT('long'),
+                type: DataTypes.TEXT("long"),
                 allowNull: true,
                 comment: "頭像",
             },
@@ -182,7 +182,9 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.DATE,
                 allowNull: true,
                 comment: "建立時間",
-                defaultValue: moment().toDate(),
+                defaultValue: () => {
+                    return moment().toDate()
+                },
             },
             created_by: {
                 type: DataTypes.INTEGER,

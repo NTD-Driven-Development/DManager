@@ -18,7 +18,6 @@ export default (schema: AnySchema) =>
             req.params = params
             return next()
         } catch (error: any) {
-            const err =  new ValidationException(error.message)
-            next(err)
+            next(new ValidationException(error.message))
         }
     }

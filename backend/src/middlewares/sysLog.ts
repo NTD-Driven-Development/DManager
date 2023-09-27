@@ -33,7 +33,9 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                     _.startsWith(full_path, "/api/auth/changePassword"):
                 case _.eq(method, "POST") &&
                     _.startsWith(full_path, "/api/auth/resetPassword"):
-                case _.eq(method, "GET"):
+                case _.eq(method, "GET") &&
+                    // 匯出需要被記錄路由
+                    !_.startsWith(full_path, "/api/exports"):
                 case res.statusCode != 200 && res.statusCode != 201:
                     return
                 default:

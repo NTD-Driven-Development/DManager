@@ -75,21 +75,21 @@ describe("Acceptance test for UserController.", () => {
             // given
             const invalidPayload = [
                 {
-                    name: "test_e2e",
-                    email: "test_e2egmail.com",
-                    sid: "S1234567890test_e2e",
+                    name: "ATDD_user",
+                    email: "ATDD_usergmail.com",
+                    sid: "S1234567890ATDD_user",
                     role_ids: [RoleEnum.檢視者],
                 },
                 {
-                    name: "test_e2e",
-                    email: "test_e2e@gmail.com",
-                    sid: "S1234567890test_e2e",
+                    name: "ATDD_user",
+                    email: "ATDD_user@gmail.com",
+                    sid: "S1234567890ATDD_user",
                     role_ids: [],
                 },
                 {
                     name: "",
-                    email: "test_e2e@gmail.com",
-                    sid: "S1234567890test_e2e",
+                    email: "ATDD_user@gmail.com",
+                    sid: "S1234567890ATDD_user",
                 },
                 {},
             ]

@@ -199,8 +199,8 @@ export default new (class BoarderService {
     }
 
     public async getBoarderRoles(query: {
-        project_id: string | number
-        search: string
+        project_id?: string | number
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<BoarderRoleModel>> {
@@ -312,7 +312,7 @@ export default new (class BoarderService {
     }
 
     public async getBoarderStatuses(query?: {
-        search: string
+        search?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<BoarderStatusModel>> {

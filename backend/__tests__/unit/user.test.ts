@@ -522,9 +522,7 @@ describe("Unit test for UserService.", () => {
             // given
             const payload1 = {
                 search: "測試1",
-                start_times: [
-                    "2021-01-01T00:00:00.000Z",
-                ],
+                start_times: "2021-01-01T00:00:00+08:00,",
             }
             const payload2 = {
                 search: "測試2",
@@ -534,8 +532,8 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserDutyDao, "findAll").mockResolvedValue(
                 testUserDutyFactory(
                     2,
-                    new Date("2021-01-01T00:00:00.000Z"),
-                    new Date("2021-01-02T00:00:00.000Z")
+                    new Date("2021-01-01T00:00:00+08:00"),
+                    new Date("2021-01-02T00:00:00+08:00")
                 ) as any
             )
             const result1 = await UserService.getUserDuties(payload1)

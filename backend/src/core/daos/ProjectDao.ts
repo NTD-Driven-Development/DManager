@@ -108,7 +108,6 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
     public async createProjectBunk(
         data: ProjectBunkModel
     ): Promise<ProjectBunkModel> {
-        data.created_at = moment().toDate()
         return await Db.project_bunk.create(data)
     }
 

@@ -223,10 +223,11 @@ export default new (class AuthService {
         return refresh_token
     }
 
-    public async login(
-        user: UserModel,
-        req: IRequest,
-    ): Promise<AuthResult> {
+    private getBearerToken(req: IRequest): string {
+        return _.split(req.headers?.authorization as string, " ")[1] as string
+    }
+
+    public async login(user: UserModel, req: IRequest): Promise<AuthResult> {
         const userid = user.id as number
         const access_token = await this.signJwtById(userid)
         const refresh_token = await this.setRefreshToken(
@@ -265,10 +266,7 @@ export default new (class AuthService {
         req: IRequest,
         res: Response
     ): Promise<AuthResult> {
-        const access_token = _.split(
-            req.headers?.authorization as string,
-            " "
-        )[1] as string
+        const access_token = this.getBearerToken(req)
         const refresh_token = req.cookies?.refresh_token as string
 
         // if token is empty
