@@ -26,7 +26,10 @@ export class BoarderRolePaginator extends ApiPaginator<BoarderRole, BoarderRoleP
     }
 
     withQuery = <K extends keyof BoarderRolePaginationQueries, V extends BoarderRolePaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'project_id') {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
         else if (key === 'search') {
@@ -34,8 +37,9 @@ export class BoarderRolePaginator extends ApiPaginator<BoarderRole, BoarderRoleP
         }
     }
 
-    protected projectIdHandler = _.throttle(this.setQuery, 800);
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected projectIdHandler = _.debounce(this.setQuery, 500);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class BoarderRoleCaller extends ApiCaller<BoarderRole> {

@@ -126,17 +126,19 @@
     boarderPaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
     boarderPaginator?.bind('search', toRef(values, 'search'));
 
+    queryStringInspecter(boarderPaginator?.queries);
 
     onMounted(() => {
-        Promise.all([])
+        Promise.all([
+            boarderPaginator?.wait(),
+        ])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute.value.query;
 
+            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
             boarderPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
-
-            queryStringInspecter(boarderPaginator.queries, { deep: true });
         });
     });
 </script>

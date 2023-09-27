@@ -30,7 +30,7 @@ export class ExportCaller extends ApiCaller<ExportItem[], ExportCallerQueries> {
         }
     }
 
-    protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected projectIdHandler = _.debounce(this.setQuery, 500);
 }
 
 type Boarder = Model.Boarder & {

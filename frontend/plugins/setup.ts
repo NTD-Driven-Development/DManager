@@ -26,13 +26,17 @@ export default defineNuxtPlugin(() => {
                     resolve(response);
                 }
                 else {
-                    return reject(error);
+                    reject(error);
                 }
             }
             catch (refreshError) {
-                authStore.clearAccessToken();
-                
-                return reject(refreshError);
+                if (refreshError instanceof AxiosError) {
+                    if (refreshError.response && refreshError.response.status == 401) {
+                        authStore.clearAccessToken();
+                    }
+
+                    reject(refreshError);
+                }
             }
         });
     });

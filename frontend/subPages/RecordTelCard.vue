@@ -9,8 +9,7 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64">
-            <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
-            @change=""/>
+            <Input name="search" placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"/>
         </div>
         <!-- 列表 -->
         <div class="w-full overflow-auto bg-white">
@@ -43,8 +42,10 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useRecordsStore } from '~/stores/records';
     import { TelCardLogPaginator } from '~/composables/api/telCard';
     import _ from 'lodash';
 
@@ -65,10 +66,39 @@
 
     const props = defineProps<Props>();
 
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+    const recordsStore = useRecordsStore();
+    const { selectedRecordType } = storeToRefs(recordsStore);
+
     const recordTelCardDeletePopUp = ref();
 
     const telCardLogPaginator = new TelCardLogPaginator({ immediate: false });
     const { data: telCardLogList } = telCardLogPaginator;
 
+    const queries = computed(() => ({
+        recordType: selectedRecordType.value,
+        ...telCardLogPaginator?.queries?.value,
+    }));
+
     telCardLogPaginator?.bind('project_id', toRef(props, 'projectId'), { immediate: !_.isNaN(props?.projectId) });
+    telCardLogPaginator.bind('search', toRef(values, 'search'));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            telCardLogPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import * as Model from '~/src/model';
-import { UserRole } from '~/src/enum';
 import axios from "axios";
 import _ from 'lodash';
 

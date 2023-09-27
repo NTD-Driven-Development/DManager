@@ -19,7 +19,7 @@
         <div class="flex flex-col gap-1">
             <div class="text-sm">選擇項目：</div>
             <Select name="selectedProjectId" class="shadow border text-xs"
-            :options="projectList" option-key="id" option-value="name" ></Select>
+            :options="projectList" option-key="id" option-value="name"></Select>
         </div>
         <!-- 內容 -->
         <component :is="componentList[selectedRecordType]" :project-id="values?.selectedProjectId ?? NaN"></component>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
+    import { useRecordsStore } from '~/stores/records';
     import { ProjectsCaller } from '~/composables/api/share';
     import RecordPoint from '~/subPages/RecordPoint.vue';
     import RecordTelCard from '~/subPages/RecordTelCard.vue';
@@ -39,18 +40,21 @@
 
     const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
 
-    const selectedRecordType = ref(0);
+    const recordsStore = useRecordsStore();
+    const { selectedRecordType } = storeToRefs(recordsStore);
     const projectsCaller = new ProjectsCaller()
-    .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
 
-    const queries = computed(() => {
-        const v1 = selectedRecordType?.value;
+    onMounted(() => {
+        Promise.all([
+            projectsCaller.wait(),
+        ])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
 
-        return {
-            recordType: v1,
-        }
+            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
+
+            selectedRecordType.value = ([0, 1].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0) as 0 | 1;
+        });
     });
-
-    queryStringInspecter(queries, { immediate: true });
 </script>
