@@ -26,7 +26,10 @@ export class BoarderPaginator extends ApiPaginator<Boarder, BoarderPaginationQue
     }
 
     withQuery = <K extends keyof BoarderPaginationQueries, V extends BoarderPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'project_id') {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
         else if (key === 'search') {
@@ -34,8 +37,9 @@ export class BoarderPaginator extends ApiPaginator<Boarder, BoarderPaginationQue
         }
     }
 
-    protected projectIdHandler = _.throttle(this.setQuery, 1);
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected projectIdHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class BoarderCaller extends ApiCaller<Boarder> {

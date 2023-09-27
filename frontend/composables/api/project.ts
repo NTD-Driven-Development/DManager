@@ -37,9 +37,9 @@ export class ProjectPaginator extends ApiPaginator<Project, ProjectPaginationQue
         }
     }
 
-    protected offsetHandler = _.throttle(this.setQuery, 1);
-    protected limitHandler = _.throttle(this.setQuery, 1);
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected limitHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class ProjectCaller extends ApiCaller<Project> {

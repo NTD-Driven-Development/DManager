@@ -70,7 +70,7 @@ export class BoardersCaller extends ApiCaller<Boarder[], BoardersQueries> {
         }
     };
 
-    protected projectIdHandler = _.throttle(this.setQuery, 800);
+    protected projectIdHandler = _.debounce(this.setQuery, 500);
 }
 
 export class UsersCaller extends ApiCaller<User[]> {
@@ -176,9 +176,9 @@ export class BoarderRolesCaller extends ApiCaller<BoarderRole[], BoarderRolesQue
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
-    };
-
-    protected projectIdHandler = _.throttle(this.setQuery, 800);
+    }
+    
+    protected projectIdHandler = _.debounce(this.setQuery, 500);
 }
 
 export class PointRulesCaller extends ApiCaller<PointRule[]> {

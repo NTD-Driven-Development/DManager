@@ -16,19 +16,9 @@ export const useUrl = (options?: UrlOptions): string => {
     return url;
 }
 
-export const useTransform = <T, O>(ref: Ref<T>, transformer: (value: T) => O) => computed(() => {
-    return transformer(ref.value);
-});
-
 export const prefixInteger = (value: string | number, length: number) => {
     const num = parseInt(`${value}`);
     return (Array(length).join('0') + num).slice(-length);
-}
-
-export const addComma = (n: number | string) => {
-    if (_.isNaN(+n)) return;
-
-    return n?.toLocaleString();
 }
 
 export const showParseError = (notifier: InstanceType<typeof ToastNotifier> | undefined = undefined, error: any) => {
@@ -184,19 +174,19 @@ export const toQueryString = <T extends object>(value: T) => {
     });
 }
 
-export const queryStringInspecter = <T extends object>(ref: Ref<T>, options?: WatchOptions) => {
-    const stopHandler = watch(() => ref.value, (n) => {
+export const queryStringInspecter = <T extends object>(ref: Ref<T>, options: WatchOptions = { deep: true, immediate: false }) => {
+    const stopHandler = watch(() => ref.value, async (n) => {
         const router = useRouter();
-        const queries = toQueryString(n);
+        const query = toQueryString(n);
 
-        router.replace({
-            query: queries,
-        });
+        
+        setTimeout(() => {
+            router.replace({
+                query: query,
+            });
+        }, 100);
+
     }, options);
-
-    onBeforeRouteLeave(() => {
-        stopHandler();
-    });
 
     return stopHandler;
 }

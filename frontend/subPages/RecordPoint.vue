@@ -9,8 +9,7 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64">
-            <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
-            @change=""/>
+            <Input name="search" placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"/>
         </div>
         <!-- 列表 -->
         <div class="w-full overflow-auto bg-white">
@@ -48,8 +47,10 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useRecordsStore } from '~/stores/records';
     import { PointLogPaginator } from '~/composables/api/point';
     import _ from 'lodash';
     
@@ -71,10 +72,41 @@
 
     const props = defineProps<Props>();
 
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+    const recordsStore = useRecordsStore();
+    const { selectedRecordType } = storeToRefs(recordsStore);
+
     const recordPointDeletePopUp = ref();
 
     const pointLogPaginator = new PointLogPaginator({ immediate: false });
     const { data: pointLogList } = pointLogPaginator;
 
     pointLogPaginator?.bind('project_id', toRef(props, 'projectId'), { immediate: !_.isNaN(props?.projectId) });
+    pointLogPaginator.bind('search', toRef(values, 'search'));
+
+    const queries = computed(() => ({
+        recordType: selectedRecordType.value,
+        ...pointLogPaginator?.queries?.value,
+    }));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            console.log(query?.offset ? +query?.offset : 1);
+            
+            pointLogPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

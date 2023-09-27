@@ -26,12 +26,16 @@ export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> 
     }
 
     withQuery = <K extends keyof ClassPaginationQueries, V extends ClassPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'search') {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'search') {
             this.searchHandler(key, value);
         }
     }
 
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class ClassCaller extends ApiCaller<Class> {

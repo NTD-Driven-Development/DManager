@@ -26,11 +26,16 @@ export class UserPaginator extends ApiPaginator<User, UserPaginationQueries> {
     }
 
     withQuery = <K extends keyof UserPaginationQueries, V extends UserPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'search') {
+        if (key === 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'search') {
             this.searchHandler(key, value);
         }
     }
-    protected searchHandler = _.throttle(this.setQuery, 800);
+
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class UserCaller extends ApiCaller<User> {
@@ -80,7 +85,10 @@ export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPagination
     }
 
      withQuery = <K extends keyof UserDutyPaginationQueries, V extends UserDutyPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'search') {
+        if (key === 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'search') {
             this.searchHandler(key, value);
         }
         else if (key === 'start_times') {
@@ -88,8 +96,9 @@ export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPagination
         }
     }
 
-    protected searchHandler = _.throttle(this.setQuery, 800);
-    protected startTimesHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
+    protected startTimesHandler = _.debounce(this.setQuery, 500);
 }
 
 export class UserDutyCaller extends ApiCaller<UserDuty> {

@@ -79,6 +79,7 @@
     }
 
     const schema = yup.object().shape({
+        bunk: yup.string().required(),
         tel_card_contacter_id: yup.number().required(),
         contacted_at: yup.date().required(),
         remark: yup.string().nullable(),
@@ -104,8 +105,6 @@
 
         if (!bunkOrAccessCard) 
             return null;
-        console.log(boaders);
-        
 
         return boaders?.find(({ project_bunk: v, access_card }) => 
             (v?.floor == bunkOrAccessCard?.floor && v?.room_type == bunkOrAccessCard?.room_type && v?.room_no == bunkOrAccessCard?.room_no && v?.bed == bunkOrAccessCard?.bed)
@@ -114,7 +113,7 @@
     });
 
     const onSubmit = handleSubmit(async (data) => {
-        try {            
+        try {
             await createTelCardLog({
                 project_id: props?.projectId,
                 boarder_id: boarder?.value?.id!,

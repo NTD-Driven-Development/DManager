@@ -8,7 +8,7 @@ const PREFIX = '/api/points';
 export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPaginationQueries> {
     constructor(options?: Options) {
         super(options);
-        this._queries.value.limit = 20;
+        this._queries.value.limit = 2;
         this.startQueriesWatcher();
     }
 
@@ -26,7 +26,10 @@ export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPagination
     }
 
     withQuery = <K extends keyof PointLogPaginationQueries, V extends PointLogPaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'project_id') {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
         else if (key === 'search') {
@@ -34,8 +37,9 @@ export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPagination
         }
     }
 
-    protected projectIdHandler = _.throttle(this.setQuery, 800);
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected projectIdHandler = _.debounce(this.setQuery, 500);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginationQueries> {
@@ -59,12 +63,16 @@ export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginat
     }
 
     withQuery = <K extends keyof PointRulePaginationQueries, V extends PointRulePaginationQueries[K]>(key: K, value: V) => {
-        if (key === 'search') {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'search') {
             this.searchHandler(key, value);
         }
     }
 
-    protected searchHandler = _.throttle(this.setQuery, 800);
+    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class PointLogCaller extends ApiCaller<PointLog> {
