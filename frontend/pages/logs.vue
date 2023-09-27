@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `操作記錄 - Dormiday` }}</Title>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
         <!-- 內容 -->
         <div class="flex flex-col gap-3">
@@ -17,7 +18,7 @@
                     </template>
                     <template #使用者名稱="{ data }">{{ checkValueEmpty(data?.user_name) }}</template>
                     <template #詳情="{ data }">{{ checkValueEmpty(data?.detail) }}</template>
-                    <template #時間戳="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
+                    <template #操作時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                 </OrderTable>
             </div>
             <Paginator :api-paginator="logPaginator"></Paginator>
@@ -34,7 +35,7 @@
         { title: '使用者ID', values: ['user_id'] },
         { title: '使用者名稱', values: ['user_name'] },
         { title: '詳情', values: ['detail'] },
-        { title: '時間戳', values: ['created_at'] },
+        { title: '操作時間', values: ['created_at'] },
     ]
 
     const logPaginator = new LogPaginator();

@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `記事管理 - Dormiday` }}</Title>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
         <!-- 選擇項目 -->
         <div class="flex flex-col gap-1">

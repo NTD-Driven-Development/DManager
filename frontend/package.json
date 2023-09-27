@@ -24,7 +24,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "@vuepic/vue-datepicker": "^6.1.0",
-    "axios": "^1.4.0",
+    "axios": "^1.5.1",
     "axios-mock-adapter": "^1.21.5",
     "csv": "^6.3.3",
     "date-fns": "^2.30.0",

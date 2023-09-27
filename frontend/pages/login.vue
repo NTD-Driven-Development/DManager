@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `後台登入 - Dormiday` }}</Title>
     <div class="fixed flex flex-col items-center justify-center min-h-full w-full min-w-[320px] gap-3 p-3 sm:p-7 lg:py-10 xl:py-14 bg-gray-100">
         <div class="text-xl font-bold">後台登入</div>
         <div class="flex flex-col w-full max-w-sm rounded-lg bg-white overflow-hidden">

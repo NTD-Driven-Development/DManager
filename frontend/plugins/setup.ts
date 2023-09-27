@@ -1,4 +1,5 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { config } from 'process';
 import { useAuthStore } from '~/stores/auth';
 
 export default defineNuxtPlugin(() => {
@@ -11,33 +12,34 @@ export default defineNuxtPlugin(() => {
     });
 
     axios.interceptors.response.use((response) => response, async (error: AxiosError) => {
-        return new Promise(async (resolve, reject) => {
-            const authStore = useAuthStore();
-            const config = error.config!;
+        const authStore = useAuthStore();
+        const { transformResponse, ...originConfig } = error.config!;
 
-            try {
+        try {
+            if (error.response && error.response.status == 401) {
+                await authStore.refresh(); // 嘗試刷新token
+
+                const config: AxiosRequestConfig = {
+                    ...originConfig,
+                };
+
+                const response = await axios(config);
+                console.log(response.config.transformResponse);
+                return response;
+            }
+            else {
+                return error;
+            }
+        }
+        catch (error) {
+            if (error instanceof AxiosError) {
                 if (error.response && error.response.status == 401) {
-                    await authStore.refresh(); // 嘗試刷新token
+                    authStore.clearAccessToken();
+                }
 
-                    config.headers.Authorization = authStore.getAccessToken();
-                    const response = await axios(config);
-                    response.data = JSON.parse(response?.data);
-                    
-                    resolve(response);
-                }
-                else {
-                    reject(error);
-                }
+                return error;
             }
-            catch (refreshError) {
-                if (refreshError instanceof AxiosError) {
-                    if (refreshError.response && refreshError.response.status == 401) {
-                        authStore.clearAccessToken();
-                    }
-
-                    reject(refreshError);
-                }
-            }
-        });
+            return error;
+        }
     });
 })

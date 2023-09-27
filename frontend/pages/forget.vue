@@ -1,6 +1,7 @@
 <template>
+    <Title>{{ `忘記密碼 - Dormiday` }}</Title>
     <div class="fixed flex flex-col items-center justify-center min-h-full w-full min-w-[320px] gap-3 p-3 sm:p-7 lg:py-10 xl:py-14 bg-gray-100">
-        <div class="text-xl font-bold">重設密碼</div>
+        <div class="text-xl font-bold">忘記密碼</div>
         <div class="flex flex-col w-full max-w-md rounded-lg bg-white overflow-hidden">
             <form class="flex flex-col w-full gap-3 p-6">
                 <div class="pb-2">

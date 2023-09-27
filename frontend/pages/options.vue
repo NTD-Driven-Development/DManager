@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `選單管理 - Dormiday` }}</Title>
     <div class="flex flex-col min-h-full gap-2 p-3 sm:p-7 lg:py-10 bg-gray-50">
         <!-- 選擇選項種類 -->
         <div class="flex flex-col gap-1">

@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `人數概況表 - Dormiday` }}</Title>
     <div class="fixed flex flex-col gap-3 p-3 w-full min-w-full max-w-full h-full min-h-full max-h-full"
     @mousemove="onMouseMove">
         <div class="absolute flex flex-col w-fit gap-3 p-3 bg-black/60 boarder shadow rounded" v-show="isSettingVisable">

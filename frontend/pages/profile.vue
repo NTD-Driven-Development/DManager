@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `個人資料 - Dormiday` }}</Title>
     <div class="flex justify-center p-4 font-GenJyuuGothic min-h-full sm:p-8 xl:p-12 bg-gray-50">
         <div class="grid grid-cols-12 gap-3 h-fit w-full max-w-4xl">
             <!-- 個人資訊 -->

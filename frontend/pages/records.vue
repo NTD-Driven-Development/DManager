@@ -1,4 +1,5 @@
 <template>
+    <Title>{{ `紀錄管理 - Dormiday` }}</Title>
     <div class="flex flex-col min-h-full gap-3 p-3 sm:p-7 lg:py-10 lg:gap-5 bg-gray-50">
         <!-- Tabs -->
         <div class="flex flex-col w-full gap-5 sm:gap-7 lg:gap-8 bg-white">
