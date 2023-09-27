@@ -21,7 +21,6 @@ router.post("/verifyForget", AuthController.verifyForgetPasswordToken)
 // 重設密碼
 router.patch("/resetPassword", AuthController.resetPassword)
 
-// router.use()
 router
     .use(jwtAuth("jwt"))
     // 檢查 Token 是否有效

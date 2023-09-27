@@ -80,7 +80,7 @@ export default (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             user_id: {
-                type: DataTypes.STRING(255),
+                type: DataTypes.INTEGER,
                 allowNull: true,
             },
             user_name: {
@@ -111,7 +111,9 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.DATE,
                 allowNull: true,
                 comment: "建立時間",
-                defaultValue: moment().toDate(),
+                defaultValue: () => {
+                    return moment().toDate()
+                },
             },
         },
         {

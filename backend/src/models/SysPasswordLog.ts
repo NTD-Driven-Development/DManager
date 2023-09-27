@@ -95,7 +95,9 @@ export default (sequelize: any, DataTypes: any) => {
                 type: DataTypes.DATE,
                 allowNull: true,
                 comment: "建立時間",
-                defaultValue: moment().toDate(),
+                defaultValue: () => {
+                    return moment().toDate()
+                },
             },
         },
         {

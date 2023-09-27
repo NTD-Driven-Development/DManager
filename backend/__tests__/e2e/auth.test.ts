@@ -10,10 +10,10 @@ describe("AuthController", () => {
     const orgPassword = "test123456"
     const hashPassword = strings.hash(orgPassword)
     const fakeUser = {
-        email: "testerE2e@gmail.com",
+        email: "ATDD_auth@gmail.com",
         is_admin: false,
         password: hashPassword,
-        name: "testerE2e",
+        name: "ATDD_auth",
     }
 
     afterEach(async () => {

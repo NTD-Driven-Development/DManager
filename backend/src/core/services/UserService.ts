@@ -177,7 +177,7 @@ export default new (class UserService {
 
     public async getUserDuties(query?: {
         search?: string
-        start_times?: string[]
+        start_times?: string
         offset?: number
         limit?: number
     }): Promise<IPaginationResultDto<UserDutyModel>> {
@@ -189,10 +189,11 @@ export default new (class UserService {
             })
         }
 
-        if (query?.start_times && query?.start_times?.length !== 0) {
+        if (query?.start_times) {
+            const start_times = _.split(query.start_times, ",")
             user_duties = _.filter(user_duties, (item) => {
                 // filter to date
-                return _.map(query.start_times, (start_time) => {
+                return _.map(start_times, (start_time) => {
                     return (
                         moment(item.start_time).format("YYYY-MM-DD") ===
                             moment(start_time).format("YYYY-MM-DD") ||
