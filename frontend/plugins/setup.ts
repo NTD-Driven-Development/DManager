@@ -24,7 +24,6 @@ export default defineNuxtPlugin(() => {
                 };
 
                 const response = await axios(config);
-                console.log(response.config.transformResponse);
                 return response;
             }
             else {
