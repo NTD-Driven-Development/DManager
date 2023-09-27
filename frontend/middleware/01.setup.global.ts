@@ -2,11 +2,13 @@ import { pathToRegexp } from 'path-to-regexp';
 import { useAuthStore } from '~/stores/auth';
 
 // 如有cookie 則嘗試登入user
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {    
     const authStore = useAuthStore();
     const regexp = pathToRegexp(exceptRouteList);
 
     if (process.server) return;
+
+    if (to.path == from.path) return;
 
     if (exceptRouteList?.length && regexp.test(to.path)) {
         return;
