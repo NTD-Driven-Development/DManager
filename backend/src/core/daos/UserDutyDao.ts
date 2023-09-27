@@ -29,6 +29,7 @@ export default new (class UserDutyDao extends BaseDao {
                     required: false,
                 },
             ],
+            order: [["id", "DESC"]],
         })
     }
 
