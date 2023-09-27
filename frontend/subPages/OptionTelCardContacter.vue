@@ -9,8 +9,7 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64 border">
-            <input placeholder="搜尋名稱" class="text-xs w-full rounded"
-            @change=""/>
+            <Input name="search" placeholder="搜尋名稱" class="text-xs w-full rounded"/>
         </div>
         <!-- 列表 -->
         <div class="w-full overflow-auto bg-white">
