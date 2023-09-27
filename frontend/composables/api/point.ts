@@ -8,7 +8,7 @@ const PREFIX = '/api/points';
 export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPaginationQueries> {
     constructor(options?: Options) {
         super(options);
-        this._queries.value.limit = 2;
+        this._queries.value.limit = 20;
         this.startQueriesWatcher();
     }
 

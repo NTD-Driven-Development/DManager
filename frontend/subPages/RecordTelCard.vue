@@ -74,7 +74,7 @@
 
     const recordTelCardDeletePopUp = ref();
 
-    const telCardLogPaginator = new TelCardLogPaginator({ immediate: false });
+    const telCardLogPaginator = new TelCardLogPaginator({ immediate: false, debounceTime: 500 });
     const { data: telCardLogList } = telCardLogPaginator;
 
     const queries = computed(() => ({

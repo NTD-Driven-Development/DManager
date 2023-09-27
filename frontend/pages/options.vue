@@ -7,12 +7,13 @@
             :options="optionTypeList" option-key="id" option-value="name" :init-value="0"></Select>
         </div>
         <!-- 列表 -->
-        <component :is="componentList[values?.selectedOptionType ?? 0]"></component>
+        <component :is="componentList[selectedOptionType ?? 0]"></component>
     </div>
 </template>
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
+    import { useOptionsStore } from '~/stores/options';
     import _ from 'lodash';
     import OptionBoarderStatus from '~/subPages/OptionBoarderStatus.vue';
     import OptionBoarderRole from '~/subPages/OptionBoarderRole.vue';
@@ -35,5 +36,21 @@
         OptionTelCardContacter,
     ]
 
-    const { values } = useForm<{ selectedOptionType?: number }>();
+    const { values, setFieldValue } = useForm<{ selectedOptionType?: number }>();
+
+    const optionsStore = useOptionsStore();
+    const { selectedOptionType } = storeToRefs(optionsStore);
+
+    watch(() => values.selectedOptionType, (n) => {
+        selectedOptionType.value = n ?? 0;
+    })
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('selectedOptionType', ([0, 1, 2, 3, 4].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0));
+        });
+    });
 </script>

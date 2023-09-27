@@ -230,6 +230,6 @@ interface UserPaginationQueries extends PaginationQueries {
 }
 
 interface UserDutyPaginationQueries extends PaginationQueries {
-    search: string,
-    start_times: string[],
+    search?: string,
+    start_times?: string[],
 }

@@ -9,8 +9,7 @@
         </div>
         <!-- 搜尋 -->
         <div class="w-full lg:w-64 border">
-            <input placeholder="搜尋名稱" class="text-xs w-full rounded"
-            @change=""/>
+            <Input name="search" placeholder="搜尋名稱" class="text-xs w-full rounded"/>
         </div>
         <!-- 列表 -->
         <div class="w-full overflow-auto bg-white">
@@ -39,8 +38,10 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useOptionsStore } from '~/stores/options';
     import { ClassPaginator } from '~/composables/api/class';
 
     const headers = [
@@ -52,9 +53,39 @@
         { title: '操作', values: [] }
     ]
 
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+    const recordsStore = useOptionsStore();
+    const { selectedOptionType } = storeToRefs(recordsStore);
+
     const optionClassEditPopUp = ref();
     const optionClassDeletePopUp = ref();
 
-    const classPaginator = new ClassPaginator();
+    const classPaginator = new ClassPaginator({ immediate: false, debounceTime: 500 });
     const { data: classList } = classPaginator;
+
+    classPaginator.bind('search', toRef(values, 'search'));
+
+    const queries = computed(() => ({
+        recordType: selectedOptionType.value,
+        ...classPaginator?.queries?.value,
+    }));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            classPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

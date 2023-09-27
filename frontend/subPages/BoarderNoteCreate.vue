@@ -95,6 +95,7 @@
 
             toastNotifier?.success('新增成功');
             emits('onCreated');
+            setFieldValue('bunk', undefined);
             setFieldValue('title', undefined);
             setFieldValue('description', undefined);
         }

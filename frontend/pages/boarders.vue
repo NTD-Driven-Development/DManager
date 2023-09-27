@@ -25,8 +25,8 @@
             <!-- 列表 -->
             <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
                 <TransitionGroup
-                enter-active-class="transition-all duration-1000"
-                leave-active-class="transition-all duration-1000"
+                enter-active-class="transition-all duration-300"
+                leave-active-class="transition-all duration-300"
                 enter-from-class="opacity-0 -translate-x-48"
                 leave-to-class="opacity-0 -translate-x-48">
                     <Detail v-for="it, index in boarderList" :key="index" class="bg-white">
@@ -130,7 +130,7 @@
 
     onMounted(() => {
         Promise.all([
-            boarderPaginator?.wait(),
+            projectsCaller?.wait(),
         ])
         .then(() => {
             const query = useRouter().currentRoute.value.query;

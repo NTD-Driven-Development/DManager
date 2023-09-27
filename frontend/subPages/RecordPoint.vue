@@ -80,7 +80,7 @@
 
     const recordPointDeletePopUp = ref();
 
-    const pointLogPaginator = new PointLogPaginator({ immediate: false });
+    const pointLogPaginator = new PointLogPaginator({ immediate: false, debounceTime: 500 });
     const { data: pointLogList } = pointLogPaginator;
 
     pointLogPaginator?.bind('project_id', toRef(props, 'projectId'), { immediate: !_.isNaN(props?.projectId) });
@@ -100,8 +100,6 @@
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
-            console.log(query?.offset ? +query?.offset : 1);
-            
             pointLogPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
         });
     });

@@ -28,9 +28,13 @@ export class ExportCaller extends ApiCaller<ExportItem[], ExportCallerQueries> {
         if (key === 'project_id') {
             this.projectIdHandler(key, value);
         }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
+        }
     }
 
     protected projectIdHandler = _.debounce(this.setQuery, 500);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 type Boarder = Model.Boarder & {
@@ -56,4 +60,5 @@ export interface ExportItem {
 
 interface ExportCallerQueries extends Queries {
     project_id?: number,
+    search?: string,
 }

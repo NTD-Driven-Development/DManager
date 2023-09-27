@@ -39,8 +39,10 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useOptionsStore } from '~/stores/options';
     import { TelCardContacterPaginator } from '~/composables/api/telCard';
 
     const headers = [
@@ -52,9 +54,39 @@
         { title: '操作', values: [] }
     ]
 
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+    const recordsStore = useOptionsStore();
+    const { selectedOptionType } = storeToRefs(recordsStore);
+
     const optionTelCardContacterEditPopUp = ref();
     const optionTelCardContacterDeletePopUp = ref();
 
-    const telCardContacterPaginator = new TelCardContacterPaginator();
+    const telCardContacterPaginator = new TelCardContacterPaginator({ immediate: false, debounceTime: 500 });
     const { data: TelCardContacterList } = telCardContacterPaginator;
+
+    telCardContacterPaginator.bind('search', toRef(values, 'search'));
+
+    const queries = computed(() => ({
+        recordType: selectedOptionType.value,
+        ...telCardContacterPaginator?.queries?.value,
+    }));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            telCardContacterPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

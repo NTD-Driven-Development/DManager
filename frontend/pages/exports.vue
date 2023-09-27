@@ -24,14 +24,13 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"/>
             </div>
             <!-- 列表 -->
             <div class="flex flex-col gap-2">
                 <TransitionGroup
-                enter-active-class="transition-all duration-1000"
-                leave-active-class="transition-all duration-1000"
+                enter-active-class="transition-all duration-300"
+                leave-active-class="transition-all duration-300"
                 enter-from-class="opacity-0 -translate-x-48"
                 leave-to-class="opacity-0 -translate-x-48">
                     <Detail v-for="it, index in exportItemList" :key="index" class="bg-white">
@@ -67,7 +66,10 @@
     import { ExportCaller } from '~/composables/api/export';
     import _ from 'lodash';
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number,
+        search?: string,
+    }>();
 
     const exportBoarderPopUp = ref();
     const exportAreaPopUp = ref();
@@ -75,8 +77,23 @@
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const exportPaginator = new ExportCaller({ immediate: false });
-    const { data: exportItemList } = exportPaginator;
+    const exportCaller = new ExportCaller({ immediate: false, debounceTime: 500 });
+    const { data: exportItemList } = exportCaller;
 
-    exportPaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
+    exportCaller?.bind('project_id', toRef(values, 'selectedProjectId'));
+    exportCaller?.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(exportCaller?.queries);
+
+    onMounted(() => {
+        Promise.all([
+            projectsCaller?.wait(),
+        ])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+        });
+    });
 </script>

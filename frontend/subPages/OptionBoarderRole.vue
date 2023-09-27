@@ -48,6 +48,7 @@
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useOptionsStore } from '~/stores/options';
     import { ProjectsCaller } from '~/composables/api/share';
     import { BoarderRolePaginator } from '~/composables/api/boarderRole';
 
@@ -60,7 +61,12 @@
         { title: '操作', values: [] }
     ]
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number,
+        search?: string,
+    }>();
+    const recordsStore = useOptionsStore();
+    const { selectedOptionType } = storeToRefs(recordsStore);
 
     const optionBoarderRoleEditPopUp = ref();
     const optionBoarderRoleDeletePopUp = ref();
@@ -68,8 +74,31 @@
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const boarderRolePaginator = new BoarderRolePaginator({ immediate: false });
+    const boarderRolePaginator = new BoarderRolePaginator({ immediate: false, debounceTime: 500 });
     const { data: boarderRoleList } = boarderRolePaginator;
     
     boarderRolePaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
+    boarderRolePaginator.bind('search', toRef(values, 'search'));
+
+    const queries = computed(() => ({
+        recordType: selectedOptionType.value,
+        ...boarderRolePaginator?.queries?.value,
+    }));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            boarderRolePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

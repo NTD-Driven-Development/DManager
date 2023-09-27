@@ -43,6 +43,8 @@
 <script setup lang="ts">
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useForm } from 'vee-validate';
+    import { useOptionsStore } from '~/stores/options';
     import { PointRulePaginator } from '~/composables/api/point';
 
     const headers = [
@@ -56,9 +58,39 @@
         { title: '操作', values: [] }
     ]
 
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+    const recordsStore = useOptionsStore();
+    const { selectedOptionType } = storeToRefs(recordsStore);
+
     const optionPointRuleEditPopUp = ref();
     const optionPointRuleDeletePopUp = ref();
 
-    const pointRulePaginator = new PointRulePaginator();
+    const pointRulePaginator = new PointRulePaginator({ immediate: false, debounceTime: 500 });
     const { data: PointRuleList } = pointRulePaginator;
+
+    pointRulePaginator.bind('search', toRef(values, 'search'));
+
+    const queries = computed(() => ({
+        recordType: selectedOptionType.value,
+        ...pointRulePaginator?.queries?.value,
+    }));
+
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            pointRulePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
+
+    onUnmounted(() => {
+        stopHandler();
+    });
 </script>

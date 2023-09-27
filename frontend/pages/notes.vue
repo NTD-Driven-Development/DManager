@@ -19,8 +19,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋樓寢床、姓名" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋樓寢床、姓名、標題、敘述" class="text-xs w-full rounded border"/>
             </div>
              <!-- 列表 -->
             <div class="w-full overflow-auto bg-white">
@@ -76,16 +75,35 @@
         { title: '操作', values: [] }
     ]
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number,
+        search?: string,
+    }>();
 
     const boarderNoteEditPopUp = ref();
     const boarderNoteDeletePopUp = ref();
 
     const projectsCaller = new ProjectsCaller()
-    .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const boarderNotePaginator = new BoarderNotePaginator({ immediate: false });
+    const boarderNotePaginator = new BoarderNotePaginator({ immediate: false, debounceTime: 500 });
     const { data: boarderNoteList } = boarderNotePaginator;
     
     boarderNotePaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
+    boarderNotePaginator?.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(boarderNotePaginator?.queries);
+
+    onMounted(() => {
+        Promise.all([
+            projectsCaller?.wait(),
+        ])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            boarderNotePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
 </script>

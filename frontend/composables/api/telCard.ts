@@ -42,9 +42,9 @@ export class TelCardLogPaginator extends ApiPaginator<TelCardLog, TelCardLogPagi
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
-export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter> {
-    constructor() {
-        super();
+export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter, TelCardContacterPaginationQueries> {
+    constructor(options?: Options) {
+        super(options);
         this.startQueriesWatcher();
     }
 
@@ -60,6 +60,14 @@ export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter> {
 
         return axios.get(`${PREFIX}/contacter?${searchParams}`);
     }
+
+    withQuery = <K extends keyof TelCardContacterPaginationQueries, V extends TelCardContacterPaginationQueries[K]>(key: K, value: V) => {
+        if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+    }
+
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class TelCardLogCaller extends ApiCaller<TelCardLog> {
@@ -195,5 +203,9 @@ type UpdateTelCardContacterFormData = BaseTelCardContacterFormData & {
 
 interface TelCardLogPaginationQueries extends PaginationQueries {
     project_id?: number,
+    search?: string,
+}
+
+interface TelCardContacterPaginationQueries extends PaginationQueries {
     search?: string,
 }

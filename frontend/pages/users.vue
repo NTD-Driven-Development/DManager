@@ -13,8 +13,7 @@
             </div>
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋姓名、學號、電子郵件" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋姓名、學號、電子郵件" class="text-xs w-full rounded border"/>
             </div>
              <!-- 列表 -->
             <div class="w-full overflow-auto bg-white">
@@ -52,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
     import { UserPaginator } from '~/composables/api/user';
@@ -70,9 +70,29 @@
         { title: '操作', values: ['is_admin'] }
     ]
 
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number,
+        search?: string,
+    }>();
+
     const userEditPopUp = ref();
     const userDeletePopUp = ref();
 
-    const userPaginator = new UserPaginator();
+    const userPaginator = new UserPaginator({ immediate: false, debounceTime: 500 });
     const { data: userList } = userPaginator;
+
+    userPaginator?.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(userPaginator?.queries);
+
+    onMounted(() => {
+        Promise.all([])
+        .then(() => {
+            const query = useRouter().currentRoute.value.query;
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+
+            userPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+        });
+    });
 </script>
