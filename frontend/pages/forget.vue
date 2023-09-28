@@ -21,7 +21,8 @@
                 </div>
                 <div class="flex items-center gap-2 whitespace-nowrap" v-if="step == 2">
                     <div>新密碼：</div>
-                    <Input name="password" type="password" placeholder="請輸入密碼" class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500"/>
+                    <Input name="password" type="password" placeholder="請輸入密碼" class="flex-1 min-w-0 p-2 text-sm border rounded outline-gray-500"
+                    @keyup.enter="sendResetPassWord()"/>
                     <Icon icon="ic:baseline-check-circle" class="text-green-500" :class="[{ 'invisible': ![3].includes(step) }]"></Icon>
                 </div>
             </form>

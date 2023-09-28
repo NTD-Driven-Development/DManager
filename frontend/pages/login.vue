@@ -37,7 +37,7 @@
     const toastNotifier = inject(ToastNotifierKey);
 
     const onSubmit = handleSubmit(async (data) => {
-        try {            
+        try {    
             await login({
                 email: data?.email,
                 password: data?.password,

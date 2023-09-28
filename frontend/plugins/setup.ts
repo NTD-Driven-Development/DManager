@@ -22,12 +22,12 @@ export default defineNuxtPlugin(() => {
                 const config: AxiosRequestConfig = {
                     ...originConfig,
                 };
-
+                
                 const response = await axios(config);
                 return response;
             }
             else {
-                return error;
+                throw error;
             }
         }
         catch (error) {
@@ -36,9 +36,9 @@ export default defineNuxtPlugin(() => {
                     authStore.clearAccessToken();
                 }
 
-                return error;
+                throw error;
             }
-            return error;
+            throw error;
         }
     });
 })

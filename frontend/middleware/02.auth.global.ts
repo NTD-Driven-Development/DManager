@@ -2,7 +2,7 @@ import { pathToRegexp } from 'path-to-regexp';
 import { useAuthStore } from '~/stores/auth';
 
 const LOGIN_PATH = '/login';
-const REDIRECT_PATH = '/dashboard';
+const REDIRECT_PATH = '/boarders';
 
 // 驗證是否已登入
 export default defineNuxtRouteMiddleware(async (to, from) => {
@@ -11,13 +11,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const regexp = pathToRegexp(exceptRouteList);
 
     if (process.server) return;
-
-    if (['/'].includes(to.path)) {
-        return navigateTo({
-            path: '/dashboard',
-            replace: true,
-        });
-    }
 
     // 如果前往的路由不需登入 則直接導向預期畫面
     if (exceptRouteList?.length && regexp.test(to.path)) {
