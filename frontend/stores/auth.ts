@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import * as Model from '~/src/model';
 import axios from "axios";
 import _ from 'lodash';
+import { UserRole } from '#imports';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const PREFIX = '/api/auth';
@@ -17,6 +18,10 @@ axiosRefreshTokenInstance.interceptors.request.use((config) => {
 
 export const useAuthStore = defineStore('auth', () => {
     const authUser = ref<User | null>(null);
+
+    function hasAnyRole(roles: UserRole[]) {
+        return !!_.intersection(roles, authUser.value?.roles?.map((v) => v?.id)).length;
+    }
 
     async function login(formData: LoginFormData) {
         try {
@@ -159,7 +164,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     return { 
-        authUser, login, logout, refresh, session, 
+        authUser, hasAnyRole, login, logout, refresh, session, 
         forget, verifyForget, resetPassword, changePassword,
         getAccessToken, clearAccessToken 
     };

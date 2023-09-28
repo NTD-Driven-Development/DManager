@@ -3,8 +3,10 @@
         <!-- 操作 -->
         <div class="flex flex-col gap-2 lg:flex-row">
             <RecordTelCardCreate :project-id="props?.projectId" class="grow-[1] lg:basis-1"
-            @on-created="telCardLogPaginator?.reload()"></RecordTelCardCreate>
-            <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
+            @on-created="telCardLogPaginator?.reload()"
+            v-if="authStore?.hasAnyRole([UserRole.Editor])"></RecordTelCardCreate>
+            <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5"
+            v-if="false">
             </div>
         </div>
         <!-- 搜尋 -->
@@ -45,6 +47,7 @@
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useAuthStore } from '~/stores/auth';
     import { useRecordsStore } from '~/stores/records';
     import { TelCardLogPaginator } from '~/composables/api/telCard';
     import _ from 'lodash';
@@ -69,6 +72,7 @@
     const { setFieldValue, values } = useForm<{
         search?: string,
     }>();
+    const authStore = useAuthStore();
     const recordsStore = useRecordsStore();
     const { selectedRecordType } = storeToRefs(recordsStore);
 

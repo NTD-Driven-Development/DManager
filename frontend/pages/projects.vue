@@ -5,10 +5,12 @@
         <div class="flex flex-col gap-3 lg:gap-4">
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
-                <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"></ProjectCreate>
+                <ProjectCreate class="grow-[1] lg:basis-1" @on-created="projectPaginator?.reload()"
+                v-if="authStore?.hasAnyRole([UserRole.Editor])"></ProjectCreate>
                 <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <button class="py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()">匯入項目</button>
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="projectImportPopUp?.show()"
+                        v-if="authStore?.hasAnyRole([UserRole.Editor])">匯入項目</button>
                         <button class="py-2 text-white bg-gray-600 rounded" @click="projectExportPopUp?.show()">匯出項目</button>
                     </div>
                 </div>
@@ -55,12 +57,14 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
+    import { useAuthStore } from '~/stores/auth';
     import { ProjectPaginator } from '~/composables/api/project';
     import _ from 'lodash';
 
     const { setFieldValue, values } = useForm<{
         search?: string,
     }>();
+    const authStore = useAuthStore();
 
     const projectImportPopUp = ref();
     const projectExportPopUp = ref();

@@ -12,10 +12,13 @@
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
                 <BoarderCreate :project-id="values?.selectedProjectId ?? NaN" class="grow-[1] lg:basis-1"
-                @on-created="boarderPaginator?.reload()"></BoarderCreate>
-                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
+                @on-created="boarderPaginator?.reload()"
+                v-if="authStore?.hasAnyRole([UserRole.Editor])"></BoarderCreate>
+                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5"
+                v-if="authStore?.hasAnyRole([UserRole.Editor])">
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <button class="py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)">交換床位</button>
+                        <button class="py-2 text-white bg-gray-600 rounded" @click="boarderSwapPopUp?.show(values?.selectedProjectId)"
+                        v-if="authStore?.hasAnyRole([UserRole.Editor])">交換床位</button>
                     </div>
                 </div>
             </div>
@@ -105,6 +108,7 @@
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
     import { format } from 'date-fns';
+    import { useAuthStore } from '~/stores/auth';
     import { BoarderPaginator } from '~/composables/api/boarder';
     import { ProjectsCaller } from '~/composables/api/share';
     import _ from 'lodash';
@@ -113,13 +117,13 @@
         selectedProjectId?: number,
         search?: string,
     }>();
+    const authStore = useAuthStore();
 
     const boarderSwapPopUp = ref();
     const boarderEditPopUp = ref();
     const boarderDeletePopUp = ref();
 
-    const projectsCaller = new ProjectsCaller()
-    .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
+    const projectsCaller = new ProjectsCaller();
     const { data: projectList } = projectsCaller;
     const boarderPaginator = new BoarderPaginator({ immediate: false, debounceTime: 500 });
     const { data: boarderList } = boarderPaginator;
@@ -136,7 +140,7 @@
         .then(() => {
             const query = useRouter().currentRoute.value.query;
 
-            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
+            setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.length ? projectList?.value?.[0].id : undefined);
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
             boarderPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);

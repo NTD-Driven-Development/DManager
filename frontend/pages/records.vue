@@ -39,7 +39,9 @@
         RecordTelCard,
     ]
 
-    const { setFieldValue, values } = useForm<{ selectedProjectId?: number }>();
+    const { setFieldValue, values } = useForm<{
+        selectedProjectId?: number
+    }>();
 
     const recordsStore = useRecordsStore();
     const { selectedRecordType } = storeToRefs(recordsStore);

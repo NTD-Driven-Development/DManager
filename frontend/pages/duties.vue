@@ -6,10 +6,10 @@
             <!-- 操作 -->
             <div class="flex flex-col gap-2 lg:flex-row">
                 <UserDutyCreate class="grow-[1] lg:basis-1"
-                @on-created="userDutyPaginator?.reload()"></UserDutyCreate>
-                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    </div>
+                @on-created="userDutyPaginator?.reload()"
+                v-if="authStore?.hasAnyRole([UserRole.Editor])"></UserDutyCreate>
+                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5"
+                v-if="false">
                 </div>
             </div>
             <!-- 搜尋 -->
@@ -52,7 +52,8 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
-    import { format, formatISO, set } from 'date-fns';
+    import { format, set } from 'date-fns';
+    import { useAuthStore } from '~/stores/auth';
     import { UserDutyPaginator } from '~/composables/api/user';
     import VueDatePicker from '@vuepic/vue-datepicker';
     import _ from 'lodash';
@@ -72,6 +73,7 @@
         selectedProjectId?: number,
         search?: string,
     }>();
+    const authStore = useAuthStore();
 
     const userDutyDeletePopUp = ref();
     const selectedDateList = ref();
