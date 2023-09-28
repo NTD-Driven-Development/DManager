@@ -2,11 +2,13 @@ import { Express, Request, Response, Router } from "express"
 import ProjectController from "../../core/controllers/ProjectController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得所有項目
     .get("", ProjectController.getProjects)
     // 取得單筆項目資料

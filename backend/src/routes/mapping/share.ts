@@ -1,11 +1,13 @@
 import { Express, Request, Response, Router } from "express"
 import ShareController from "../../core/controllers/ShareController"
 import jwtAuth from "../../middlewares/jwtAuth"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得樓區室床
     .get("/bunks", ShareController.getBunks)
     // 取得班級

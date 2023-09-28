@@ -3,6 +3,7 @@ import AuthController from "../../core/controllers/AuthController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
 import loginSchema from "../../core/validations/auth/loginSchema"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
@@ -23,6 +24,7 @@ router.patch("/resetPassword", AuthController.resetPassword)
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 檢查 Token 是否有效
     .get("/check", AuthController.healthCheck)
     // 登出

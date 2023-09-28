@@ -2,11 +2,13 @@ import { Express, Request, Response, Router } from "express"
 import NoteController from "../../core/controllers/NoteController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得住宿生記事列表
     .get("/boarder", NoteController.getBoarderNotes)
     // 取得單筆住宿生記事

@@ -3,11 +3,13 @@ import UserController from "../../core/controllers/UserController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
 import createUserSchema from "../../core/validations/users/createUserSchema"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得輪值列表
     .get("/duty", UserController.getUserDuties)
     // 取得單筆輪值

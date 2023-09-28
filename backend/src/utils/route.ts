@@ -63,7 +63,6 @@ function getUrlParams(urlPath: string, urlPattern: string) {
             continue
         }
     }
-
     return mappedData
 }
 

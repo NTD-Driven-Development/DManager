@@ -4,11 +4,13 @@ import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
 import sysLog from "../../middlewares/sysLog"
 import sysErrorLog from "../../middlewares/sysErrorLog"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得加扣點紀錄
     .get("/log", PointController.getPointLogs)
     // 取得單筆加扣點紀錄

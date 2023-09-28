@@ -2,11 +2,13 @@ import { Express, Request, Response, Router } from "express"
 import TelCardController from "../../core/controllers/TelCardController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得住宿生電話卡紀錄
     .get("/log", TelCardController.getTelCardLogs)
     // 取得單筆住宿生電話卡紀錄

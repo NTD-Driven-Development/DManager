@@ -2,11 +2,13 @@ import { Express, Request, Response, Router } from "express"
 import BoarderController from "../../core/controllers/BoarderController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得住宿生
     .get("", BoarderController.getBoarders)
     // 取得單筆住宿生

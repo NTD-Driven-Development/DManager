@@ -56,6 +56,10 @@ export default new (class AuthDao extends BaseDao {
                         {
                             model: Db.permission,
                             attributes: ["id", "path", "method"],
+                            through: {
+                                attributes: [],
+                                where: { is_actived: true },
+                            },
                             where: { is_actived: true },
                             as: "permissions",
                             required: false,

@@ -1,0 +1,1622 @@
+[
+    {
+        "id": 1,
+        "role_id": 1,
+        "permission_id": 1,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 2,
+        "role_id": 1,
+        "permission_id": 2,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 3,
+        "role_id": 1,
+        "permission_id": 3,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 4,
+        "role_id": 1,
+        "permission_id": 4,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 5,
+        "role_id": 1,
+        "permission_id": 5,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 6,
+        "role_id": 1,
+        "permission_id": 6,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 7,
+        "role_id": 1,
+        "permission_id": 7,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 8,
+        "role_id": 1,
+        "permission_id": 8,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 9,
+        "role_id": 1,
+        "permission_id": 9,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 10,
+        "role_id": 1,
+        "permission_id": 10,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 11,
+        "role_id": 1,
+        "permission_id": 11,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 12,
+        "role_id": 1,
+        "permission_id": 12,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 13,
+        "role_id": 1,
+        "permission_id": 13,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 14,
+        "role_id": 1,
+        "permission_id": 14,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 15,
+        "role_id": 1,
+        "permission_id": 15,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 16,
+        "role_id": 1,
+        "permission_id": 16,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 17,
+        "role_id": 1,
+        "permission_id": 17,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 18,
+        "role_id": 1,
+        "permission_id": 18,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 19,
+        "role_id": 1,
+        "permission_id": 19,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 20,
+        "role_id": 1,
+        "permission_id": 20,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 21,
+        "role_id": 1,
+        "permission_id": 21,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 22,
+        "role_id": 1,
+        "permission_id": 22,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 23,
+        "role_id": 1,
+        "permission_id": 23,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 24,
+        "role_id": 1,
+        "permission_id": 24,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 25,
+        "role_id": 1,
+        "permission_id": 25,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 26,
+        "role_id": 1,
+        "permission_id": 26,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 27,
+        "role_id": 1,
+        "permission_id": 27,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 28,
+        "role_id": 1,
+        "permission_id": 28,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 29,
+        "role_id": 1,
+        "permission_id": 29,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 30,
+        "role_id": 1,
+        "permission_id": 30,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 31,
+        "role_id": 1,
+        "permission_id": 31,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 32,
+        "role_id": 1,
+        "permission_id": 32,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 33,
+        "role_id": 1,
+        "permission_id": 33,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 34,
+        "role_id": 1,
+        "permission_id": 34,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 35,
+        "role_id": 1,
+        "permission_id": 35,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 36,
+        "role_id": 1,
+        "permission_id": 36,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 37,
+        "role_id": 1,
+        "permission_id": 37,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 38,
+        "role_id": 1,
+        "permission_id": 38,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 39,
+        "role_id": 1,
+        "permission_id": 39,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 40,
+        "role_id": 1,
+        "permission_id": 40,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 41,
+        "role_id": 1,
+        "permission_id": 41,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 42,
+        "role_id": 1,
+        "permission_id": 42,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 43,
+        "role_id": 1,
+        "permission_id": 43,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 44,
+        "role_id": 1,
+        "permission_id": 44,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 45,
+        "role_id": 1,
+        "permission_id": 45,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 46,
+        "role_id": 1,
+        "permission_id": 46,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 47,
+        "role_id": 1,
+        "permission_id": 47,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 48,
+        "role_id": 1,
+        "permission_id": 48,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 49,
+        "role_id": 1,
+        "permission_id": 49,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 50,
+        "role_id": 1,
+        "permission_id": 50,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 51,
+        "role_id": 1,
+        "permission_id": 51,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 52,
+        "role_id": 1,
+        "permission_id": 52,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 53,
+        "role_id": 1,
+        "permission_id": 53,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 54,
+        "role_id": 1,
+        "permission_id": 54,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 55,
+        "role_id": 1,
+        "permission_id": 55,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 56,
+        "role_id": 1,
+        "permission_id": 56,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 57,
+        "role_id": 1,
+        "permission_id": 57,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 58,
+        "role_id": 1,
+        "permission_id": 58,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 59,
+        "role_id": 1,
+        "permission_id": 59,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 60,
+        "role_id": 1,
+        "permission_id": 60,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 61,
+        "role_id": 1,
+        "permission_id": 61,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 62,
+        "role_id": 1,
+        "permission_id": 62,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 63,
+        "role_id": 1,
+        "permission_id": 63,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 64,
+        "role_id": 1,
+        "permission_id": 64,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 65,
+        "role_id": 1,
+        "permission_id": 65,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 66,
+        "role_id": 1,
+        "permission_id": 66,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 67,
+        "role_id": 1,
+        "permission_id": 67,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 68,
+        "role_id": 1,
+        "permission_id": 68,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 69,
+        "role_id": 1,
+        "permission_id": 69,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 70,
+        "role_id": 1,
+        "permission_id": 70,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 71,
+        "role_id": 1,
+        "permission_id": 71,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 72,
+        "role_id": 1,
+        "permission_id": 72,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 73,
+        "role_id": 1,
+        "permission_id": 73,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 74,
+        "role_id": 1,
+        "permission_id": 74,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 75,
+        "role_id": 1,
+        "permission_id": 75,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 76,
+        "role_id": 1,
+        "permission_id": 76,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 77,
+        "role_id": 1,
+        "permission_id": 77,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 78,
+        "role_id": 1,
+        "permission_id": 78,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 79,
+        "role_id": 1,
+        "permission_id": 79,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 80,
+        "role_id": 1,
+        "permission_id": 80,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 81,
+        "role_id": 1,
+        "permission_id": 81,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 82,
+        "role_id": 2,
+        "permission_id": 1,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 83,
+        "role_id": 2,
+        "permission_id": 2,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 84,
+        "role_id": 2,
+        "permission_id": 3,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 85,
+        "role_id": 2,
+        "permission_id": 4,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 86,
+        "role_id": 2,
+        "permission_id": 5,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 87,
+        "role_id": 2,
+        "permission_id": 6,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 88,
+        "role_id": 2,
+        "permission_id": 7,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 89,
+        "role_id": 2,
+        "permission_id": 8,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 90,
+        "role_id": 2,
+        "permission_id": 9,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 91,
+        "role_id": 2,
+        "permission_id": 10,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 92,
+        "role_id": 2,
+        "permission_id": 11,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 93,
+        "role_id": 2,
+        "permission_id": 12,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 94,
+        "role_id": 2,
+        "permission_id": 13,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 95,
+        "role_id": 2,
+        "permission_id": 14,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 96,
+        "role_id": 2,
+        "permission_id": 15,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 97,
+        "role_id": 2,
+        "permission_id": 16,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 98,
+        "role_id": 2,
+        "permission_id": 17,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 99,
+        "role_id": 2,
+        "permission_id": 18,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 100,
+        "role_id": 2,
+        "permission_id": 19,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 101,
+        "role_id": 2,
+        "permission_id": 20,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 102,
+        "role_id": 2,
+        "permission_id": 21,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 103,
+        "role_id": 2,
+        "permission_id": 22,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 104,
+        "role_id": 2,
+        "permission_id": 23,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 105,
+        "role_id": 2,
+        "permission_id": 24,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 106,
+        "role_id": 2,
+        "permission_id": 25,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 107,
+        "role_id": 2,
+        "permission_id": 26,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 108,
+        "role_id": 2,
+        "permission_id": 27,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 109,
+        "role_id": 2,
+        "permission_id": 28,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 110,
+        "role_id": 2,
+        "permission_id": 29,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 111,
+        "role_id": 2,
+        "permission_id": 30,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 112,
+        "role_id": 2,
+        "permission_id": 31,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 113,
+        "role_id": 2,
+        "permission_id": 32,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 114,
+        "role_id": 2,
+        "permission_id": 33,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 115,
+        "role_id": 2,
+        "permission_id": 34,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 116,
+        "role_id": 2,
+        "permission_id": 35,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 117,
+        "role_id": 2,
+        "permission_id": 36,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 118,
+        "role_id": 2,
+        "permission_id": 37,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 119,
+        "role_id": 2,
+        "permission_id": 38,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 120,
+        "role_id": 2,
+        "permission_id": 39,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 121,
+        "role_id": 2,
+        "permission_id": 40,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 122,
+        "role_id": 2,
+        "permission_id": 41,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 123,
+        "role_id": 2,
+        "permission_id": 42,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 124,
+        "role_id": 2,
+        "permission_id": 43,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 125,
+        "role_id": 2,
+        "permission_id": 44,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 126,
+        "role_id": 2,
+        "permission_id": 45,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 127,
+        "role_id": 2,
+        "permission_id": 46,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 128,
+        "role_id": 2,
+        "permission_id": 47,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 129,
+        "role_id": 2,
+        "permission_id": 48,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 130,
+        "role_id": 2,
+        "permission_id": 49,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 131,
+        "role_id": 2,
+        "permission_id": 50,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 132,
+        "role_id": 2,
+        "permission_id": 51,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 133,
+        "role_id": 2,
+        "permission_id": 52,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 134,
+        "role_id": 2,
+        "permission_id": 53,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 135,
+        "role_id": 2,
+        "permission_id": 54,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 136,
+        "role_id": 2,
+        "permission_id": 55,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 137,
+        "role_id": 2,
+        "permission_id": 56,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 138,
+        "role_id": 2,
+        "permission_id": 57,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 139,
+        "role_id": 2,
+        "permission_id": 58,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 140,
+        "role_id": 2,
+        "permission_id": 59,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 141,
+        "role_id": 2,
+        "permission_id": 60,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 142,
+        "role_id": 2,
+        "permission_id": 61,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 143,
+        "role_id": 2,
+        "permission_id": 62,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 144,
+        "role_id": 2,
+        "permission_id": 63,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 145,
+        "role_id": 2,
+        "permission_id": 64,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 146,
+        "role_id": 2,
+        "permission_id": 65,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 147,
+        "role_id": 2,
+        "permission_id": 66,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 148,
+        "role_id": 2,
+        "permission_id": 67,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 149,
+        "role_id": 2,
+        "permission_id": 68,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 150,
+        "role_id": 2,
+        "permission_id": 69,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 151,
+        "role_id": 2,
+        "permission_id": 70,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 152,
+        "role_id": 2,
+        "permission_id": 71,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 153,
+        "role_id": 2,
+        "permission_id": 72,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 154,
+        "role_id": 2,
+        "permission_id": 73,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 155,
+        "role_id": 2,
+        "permission_id": 74,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 156,
+        "role_id": 2,
+        "permission_id": 75,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 157,
+        "role_id": 2,
+        "permission_id": 76,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 158,
+        "role_id": 2,
+        "permission_id": 77,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 159,
+        "role_id": 2,
+        "permission_id": 78,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 160,
+        "role_id": 2,
+        "permission_id": 79,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 161,
+        "role_id": 2,
+        "permission_id": 80,
+        "is_actived": 1,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    },
+    {
+        "id": 162,
+        "role_id": 2,
+        "permission_id": 81,
+        "is_actived": 0,
+        "created_at": null,
+        "created_by": null,
+        "updated_at": null,
+        "updated_by": null
+    }
+]

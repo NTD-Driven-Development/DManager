@@ -2,11 +2,13 @@ import { Express, Request, Response, Router } from "express"
 import ClassController from "../../core/controllers/ClassController"
 import jwtAuth from "../../middlewares/jwtAuth"
 import validate from "../../middlewares/validateRequest"
+import permission from "../../middlewares/permission"
 
 const router = Router()
 
 router
     .use(jwtAuth("jwt"))
+    .use(permission)
     // 取得班級列表
     .get("", ClassController.getClasses)
     // 取得單筆班級
