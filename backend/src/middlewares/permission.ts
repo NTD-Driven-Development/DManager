@@ -16,7 +16,7 @@ export default (req: IRequest, res: IResponse, next: NextFunction) => {
         const fn = match(permission?.path, { decode: decodeURIComponent })
         return fn(clearUrl) && req.method == permission?.method
     })
-    console.log(123)
+
     if (!checkPermission) {
         return next(new HttpException("權限不足", 403))
     }
