@@ -38,7 +38,8 @@
                     <template #更新者="{ data }">{{ checkValueEmpty(data?.updater?.name) }}</template>
                     <template #操作="{ id }">
                         <div class="flex gap-2 text-base">
-                            <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="userDutyDeletePopUp?.show(id)"></Icon>
+                            <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="userDutyDeletePopUp?.show(id)"
+                            v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
                         </div>
                     </template>
                 </OrderTable>

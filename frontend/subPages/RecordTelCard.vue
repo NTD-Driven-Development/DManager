@@ -33,7 +33,8 @@
                 <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
                 <template #操作="{ id }">
                     <div class="flex gap-2 text-base">
-                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="recordTelCardDeletePopUp?.show(id)"></Icon>
+                        <Icon icon="ic:round-delete" class="cursor-pointer text-red-600" @click="recordTelCardDeletePopUp?.show(id)"
+                        v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
                     </div>
                 </template>
             </OrderTable>

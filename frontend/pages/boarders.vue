@@ -41,8 +41,10 @@
                                     <span>{{ it?.name }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer text-sky-600" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(values?.selectedProjectId, it?.id)"></Icon>
-                                    <Icon icon="ic:round-delete" class="w-5 h-5 duration-300 cursor-pointer text-red-600" @mousedown.stop @mouseup.stop="boarderDeletePopUp?.show(it?.id)"></Icon>
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer text-sky-600" @mousedown.stop @mouseup.stop="boarderEditPopUp?.show(values?.selectedProjectId, it?.id)"
+                                    v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
+                                    <Icon icon="ic:round-delete" class="w-5 h-5 duration-300 cursor-pointer text-red-600" @mousedown.stop @mouseup.stop="boarderDeletePopUp?.show(it?.id)"
+                                    v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
                                     <Icon icon="ic:round-keyboard-arrow-down" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
                             </div>

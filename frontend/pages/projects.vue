@@ -33,7 +33,8 @@
                                     <span>{{ it?.name }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"></Icon>
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"
+                                    v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
                                     <Icon icon="ic:round-keyboard-arrow-down" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
                             </div>
