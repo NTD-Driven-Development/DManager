@@ -157,10 +157,9 @@ describe("Unit Test for AuthService", () => {
             const fakeAccessToken = "signedToken"
             const fakeRefreshToken = "signedRefreshToken"
             // when
-            jest.spyOn(AuthDao, "getUserAuthInfoByEmail").mockResolvedValue({
+            jest.spyOn(AuthDao, "getUserInfoByEmail").mockResolvedValue({
                 id: 1,
                 email: "abc@gmail.com",
-                roles: null,
             } as any)
             jest.spyOn(AuthDao, "getUserAuthInfoById").mockResolvedValue({
                 id: 1,
@@ -195,7 +194,7 @@ describe("Unit Test for AuthService", () => {
             expect(result).toHaveProperty("refresh_token")
             expect(result.access_token).toEqual("Bearer " + fakeAccessToken)
             expect(result.refresh_token).toEqual(fakeRefreshToken)
-            expect(AuthDao.getUserAuthInfoByEmail).toBeCalledTimes(1)
+            expect(AuthDao.getUserInfoByEmail).toBeCalledTimes(1)
             expect(AuthDao.getUserAuthInfoById).toBeCalledTimes(1)
             expect(strings.hash).toBeCalledTimes(1)
             expect(LogDao.findSysPasswordLogByVerifiedToken).toBeCalledTimes(1)
@@ -313,33 +312,6 @@ describe("Unit Test for AuthService", () => {
             expect(AuthDao.getUserInfoByEmail).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
-        })
-    })
-
-    describe("取得個人資料", () => {
-        it("取得個人資料成功，應回傳使用者資料", async () => {
-            // given
-            const payload = {
-                email: "",
-            }
-            // when
-            jest.spyOn(AuthDao, "getUserAuthInfoById").mockResolvedValue({
-                id: 1,
-                email: "",
-                remark: "",
-                name: "",
-                roles: [],
-            } as any)
-            const result = await AuthService.getUserAuthInfoById(1)
-            // then
-            expect(result).toHaveProperty("id")
-            expect(result).toHaveProperty("email")
-            expect(result).toHaveProperty("name")
-            expect(result).toHaveProperty("remark")
-            expect(result).toHaveProperty("is_admin")
-            expect(result).toHaveProperty("is_actived")
-            expect(result).toHaveProperty("roles")
-            expect(result).toHaveProperty("permissions")
         })
     })
 })

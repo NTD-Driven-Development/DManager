@@ -13,6 +13,9 @@ export const mockUser = {
     email: "forTest123@gmail.com",
     name: "E2eTest",
     is_admin: true,
+    is_actived: true,
+    roles: [] as any,
+    permissions: [] as any,
 } as RequestUser
 
 export const mockBeforeLoginHeader = {

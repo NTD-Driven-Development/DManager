@@ -76,15 +76,15 @@ export default new (class AuthService {
             { email: sysPasswordLog.email } as any,
             "重設密碼成功"
         )
-        const user = await this.getUserAuthInfoByEmail(sysPasswordLog.email)
-        const access_token = await this.signJwtById(user.id)
+        const user = await AuthDao.getUserInfoByEmail(sysPasswordLog.email)
+        const access_token = await this.signJwtById(user.id as number)
         const refresh_token = await this.setRefreshToken(
             user.id as number,
             RefreshTokenType.登入,
             req
         )
         return {
-            access_token: "Bearer " + access_token,
+            access_token: this.toBearerToken(access_token),
             refresh_token: refresh_token,
         }
     }
@@ -238,9 +238,13 @@ export default new (class AuthService {
             req
         )
         return {
-            access_token: "Bearer " + access_token,
+            access_token: this.toBearerToken(access_token),
             refresh_token: refresh_token,
         }
+    }
+
+    private toBearerToken(access_token: string): string {
+        return "Bearer " + access_token
     }
 
     public async logout(res: Response): Promise<void> {
@@ -296,7 +300,7 @@ export default new (class AuthService {
             req
         )
         return {
-            access_token: "Bearer " + access_token_new,
+            access_token: this.toBearerToken(access_token_new),
             refresh_token: refresh_token_new,
         }
     }

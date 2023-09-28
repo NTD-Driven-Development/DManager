@@ -138,8 +138,8 @@ describe("AuthController", () => {
         })
     })
 
-    describe("取得個人資訊", () => {
-        it("成功取得個人資訊", async () => {
+    describe("權限檢查", () => {
+        it("攜帶 access_token, 檢查成功，並回傳 access_token payload.", async () => {
             // given
             // when
             const res = await App.get("/api/auth/check").send()
@@ -153,7 +153,6 @@ describe("AuthController", () => {
             expect(data).toHaveProperty("is_actived")
             expect(data).toHaveProperty("roles")
             expect(data).toHaveProperty("permissions")
-            expect(data).toHaveProperty("remark")
         })
     })
 })

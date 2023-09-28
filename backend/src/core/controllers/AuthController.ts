@@ -85,11 +85,7 @@ export default new (class AuthController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const user = req.user as RequestUser
-            const data = await AuthService.getUserAuthInfoById(
-                user.id as number
-            )
-            next(HttpResponse.success(data, "權限檢查"))
+            next(HttpResponse.success(req.user, "權限檢查"))
         } catch (error: any) {
             next(error)
         }
