@@ -13,7 +13,7 @@ describe("Unit test for UserService.", () => {
     })
     const hashedPwd = "passwordhashed"
 
-    const fakeUser = {
+    const generalUser = {
         id: 1,
         email: "abc@gmail.com",
         name: "測試",
@@ -24,7 +24,7 @@ describe("Unit test for UserService.", () => {
         created_at: new Date(),
     } as any
 
-    const fakeUserDuty = {
+    const generalUserDuty = {
         id: 1,
         user_id: 1,
         start_time: new Date("2021-01-01 00:00:00"),
@@ -65,12 +65,12 @@ describe("Unit test for UserService.", () => {
                 deleted_at: null,
             } as any,
         ])
-        jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
+        jest.spyOn(UserDao, "create").mockResolvedValue(generalUser)
         jest.spyOn(strings, "hash").mockReturnValue(hashedPwd)
         jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
             true as any
         )
-        return await UserService.createUser(payload, fakeUser)
+        return await UserService.createUser(payload, generalUser)
     }
 
     async function whenCreateSameEmailUser(payload: any) {
@@ -81,13 +81,13 @@ describe("Unit test for UserService.", () => {
                 deleted_at: null,
             } as any,
         ])
-        jest.spyOn(UserDao, "create").mockResolvedValue(fakeUser)
-        return await UserService.createUser(payload, fakeUser)
+        jest.spyOn(UserDao, "create").mockResolvedValue(generalUser)
+        return await UserService.createUser(payload, generalUser)
     }
 
-    function givenUpdateUserPayload() {
+    function givenUpdateUserPayload(id: number) {
         return {
-            id: 1,
+            id: id,
             sid: "0",
             name: "測試修改",
             remark: "測試修改",
@@ -116,7 +116,6 @@ describe("Unit test for UserService.", () => {
                 })
             }
         }
-        console.log(result)
         return result
     }
 
@@ -129,7 +128,7 @@ describe("Unit test for UserService.", () => {
             const createdResult = await whenCreateUser(payload)
 
             // then
-            expect(createdResult).toBe(fakeUser)
+            expect(createdResult).toBe(generalUser)
             expect(strings.hash).toBeCalledTimes(1)
             expect(strings.hash).toBeCalledWith(payload.sid)
             expect(UserDao.create).toBeCalledTimes(1)
@@ -141,7 +140,7 @@ describe("Unit test for UserService.", () => {
                 password: hashedPwd,
                 is_admin: false,
                 is_actived: true,
-                created_by: fakeUser.id,
+                created_by: generalUser.id,
             })
         })
 
@@ -160,7 +159,7 @@ describe("Unit test for UserService.", () => {
     describe("更新使用者資料", () => {
         it("給予 id、學號、姓、備註，角色清單，更新一位使用者資料。", async () => {
             // given
-            const payload = givenUpdateUserPayload()
+            const payload = givenUpdateUserPayload(1)
 
             // when
             jest.spyOn(UserDao, "update").mockResolvedValue({
@@ -174,7 +173,7 @@ describe("Unit test for UserService.", () => {
             )
             const updatedResult = await UserService.updateUser(
                 payload,
-                fakeUser
+                generalUser
             )
 
             // then
@@ -187,14 +186,14 @@ describe("Unit test for UserService.", () => {
                 sid: payload.sid,
                 name: payload.name,
                 remark: payload.remark,
-                updated_by: fakeUser.id,
+                updated_by: generalUser.id,
             })
         })
 
         it("若修改時發生外鍵關聯錯誤，應擲出「資料錯誤」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "資料錯誤"
-            const payload = givenUpdateUserPayload()
+            const payload = givenUpdateUserPayload(1)
             jest.spyOn(UserDao, "update").mockResolvedValue({
                 affectedRows: 1,
             } as any)
@@ -204,7 +203,7 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockRejectedValue(
                 new ForeignKeyConstraintError({})
             )
-            const result = UserService.updateUser(payload, fakeUser)
+            const result = UserService.updateUser(payload, generalUser)
             // then
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
@@ -213,15 +212,35 @@ describe("Unit test for UserService.", () => {
         it("若更新資料無異動，應拋出「查無資料」，設定狀態碼 400。", async () => {
             // given
             const errorMessage: string = "查無資料"
-            const payload = givenUpdateUserPayload()
+            const payload = givenUpdateUserPayload(1)
             jest.spyOn(UserDao, "update").mockResolvedValue({
                 affectedRows: 0,
             } as any)
-            const result = UserService.updateUser(payload, fakeUser)
+            const result = UserService.updateUser(payload, generalUser)
             // then
             expect(UserDao.update).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+
+        it("如果不是 admin，就不能修改其他使用者", async () => {
+            // given
+            const errorMessage: string = "權限不足"
+            const payload = givenUpdateUserPayload(generalUser?.id + 123456789 as any)
+            // when
+            jest.spyOn(UserDao, "update").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "deleteByUserId").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            jest.spyOn(UserRoleDao, "bulkCreateUserRole").mockResolvedValue(
+                true as any
+            )
+            const result = UserService.updateUser(payload, generalUser)
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 403)
         })
     })
 
@@ -233,11 +252,11 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserDao, "delete").mockResolvedValue({
                 affectedRows: 1,
             } as any)
-            const deleteResult = await UserService.deleteUser(user_id, fakeUser)
+            const deleteResult = await UserService.deleteUser(user_id, generalUser)
             // then
             expect(deleteResult).toBe(true)
             expect(UserDao.delete).toBeCalledTimes(1)
-            expect(UserDao.delete).toBeCalledWith(user_id, fakeUser.id)
+            expect(UserDao.delete).toBeCalledWith(user_id, generalUser.id)
         })
 
         it("若刪除資料無異動，應拋出「查無資料」，設定狀態碼 400。", async () => {
@@ -247,11 +266,25 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserDao, "delete").mockResolvedValue({
                 affectedRows: 0,
             } as any)
-            const result = UserService.deleteUser(user_id, fakeUser)
+            const result = UserService.deleteUser(user_id, generalUser)
             // then
             expect(UserDao.delete).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
             await expect(result).rejects.toHaveProperty("statusCode", 400)
+        })
+
+        it("如果不是 admin，就不能刪除其他使用者", async () => {
+            // given
+            const errorMessage: string = "權限不足"
+            const user_id = generalUser.id + 123456789
+            // when
+            jest.spyOn(UserDao, "delete").mockResolvedValue({
+                affectedRows: 1,
+            } as any)
+            const result = UserService.deleteUser(user_id, generalUser)
+            // then
+            await expect(result).rejects.toThrow(errorMessage)
+            await expect(result).rejects.toHaveProperty("statusCode", 403)
         })
     })
 
@@ -262,7 +295,7 @@ describe("Unit test for UserService.", () => {
                 offset: 1,
                 limit: 1,
             }
-            const fakeResult = [fakeUser, fakeUser]
+            const fakeResult = [generalUser, generalUser]
             // when
             jest.spyOn(UserDao, "findAll").mockResolvedValue(fakeResult as any)
             const result = await UserService.getUsers(payload)
@@ -327,11 +360,11 @@ describe("Unit test for UserService.", () => {
             const user_id = 1
             // when
             jest.spyOn(UserDao, "findOneById").mockResolvedValue(
-                fakeUser as any
+                generalUser as any
             )
             const result = await UserService.getUserById(user_id)
             // then
-            expect(result).toEqual(fakeUser)
+            expect(result).toEqual(generalUser)
             expect(UserDao.findOneById).toBeCalledTimes(1)
         })
 
@@ -365,7 +398,7 @@ describe("Unit test for UserService.", () => {
             } as any)
             const result = await UserService.createUserDuty(
                 payload as any,
-                fakeUser
+                generalUser
             )
             // then
             expect(result).toHaveProperty("id", 1)
@@ -383,7 +416,7 @@ describe("Unit test for UserService.", () => {
                 end_time: new Date(),
             }
             // when
-            const result = UserService.createUserDuty(payload as any, fakeUser)
+            const result = UserService.createUserDuty(payload as any, generalUser)
             // then
             await expect(result).rejects.toThrow("權限不足")
             await expect(result).rejects.toHaveProperty("statusCode", 403)
@@ -400,10 +433,10 @@ describe("Unit test for UserService.", () => {
                 end_time: new Date(),
             }
             // when
-            jest.spyOn(UserDutyDao, "update").mockResolvedValue(fakeUser as any)
+            jest.spyOn(UserDutyDao, "update").mockResolvedValue(generalUser as any)
             const result = await UserService.updateUserDuty(
                 payload as any,
-                fakeUser
+                generalUser
             )
             // then
             expect(result).toEqual(true)
@@ -419,7 +452,7 @@ describe("Unit test for UserService.", () => {
                 end_time: new Date(),
             }
             // when
-            const result = UserService.updateUserDuty(payload as any, fakeUser)
+            const result = UserService.updateUserDuty(payload as any, generalUser)
             // then
             await expect(result).rejects.toThrow("權限不足")
             await expect(result).rejects.toHaveProperty("statusCode", 403)
@@ -437,7 +470,7 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserDutyDao, "update").mockResolvedValue({
                 affectedRows: 0,
             } as any)
-            const result = UserService.updateUserDuty(payload as any, fakeUser)
+            const result = UserService.updateUserDuty(payload as any, generalUser)
             // then
             expect(UserDutyDao.update).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
@@ -452,12 +485,12 @@ describe("Unit test for UserService.", () => {
             // when
             jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue({
                 id: 1,
-                user_id: fakeUser.id,
+                user_id: generalUser.id,
             } as any)
             jest.spyOn(UserDutyDao, "delete").mockResolvedValue({
                 affectedRows: 1,
             } as any)
-            const result = await UserService.deleteUserDuty(duty_id, fakeUser)
+            const result = await UserService.deleteUserDuty(duty_id, generalUser)
             // then
             expect(result).toEqual(true)
             expect(UserDutyDao.delete).toBeCalledTimes(1)
@@ -470,7 +503,7 @@ describe("Unit test for UserService.", () => {
             jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue(
                 null as any
             )
-            const result = UserService.deleteUserDuty(duty_id, fakeUser)
+            const result = UserService.deleteUserDuty(duty_id, generalUser)
             // then
             expect(UserDutyDao.findOneById).toBeCalledTimes(1)
             await expect(result).rejects.toThrow(errorMessage)
@@ -483,9 +516,9 @@ describe("Unit test for UserService.", () => {
             // when
             jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue({
                 id: 1,
-                user_id: fakeUser.id + 123456789,
+                user_id: generalUser.id + 123456789,
             } as any)
-            const result = UserService.deleteUserDuty(duty_id, fakeUser)
+            const result = UserService.deleteUserDuty(duty_id, generalUser)
             // then
             await expect(result).rejects.toThrow("權限不足")
             await expect(result).rejects.toHaveProperty("statusCode", 403)
@@ -499,7 +532,7 @@ describe("Unit test for UserService.", () => {
                 offset: 1,
                 limit: 1,
             }
-            const fakeResult = [fakeUserDuty, fakeUserDuty]
+            const fakeResult = [generalUserDuty, generalUserDuty]
             // when
             jest.spyOn(UserDutyDao, "findAll").mockResolvedValue(
                 fakeResult as any
@@ -550,11 +583,11 @@ describe("Unit test for UserService.", () => {
             const duty_id = 1
             // when
             jest.spyOn(UserDutyDao, "findOneById").mockResolvedValue(
-                fakeUserDuty as any
+                generalUserDuty as any
             )
             const result = await UserService.getUserDutyById(duty_id)
             // then
-            expect(result).toEqual(fakeUserDuty)
+            expect(result).toEqual(generalUserDuty)
             expect(UserDutyDao.findOneById).toBeCalledTimes(1)
         })
 

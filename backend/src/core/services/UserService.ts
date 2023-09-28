@@ -86,12 +86,14 @@ export default new (class UserService {
         user: RequestUser
     ): Promise<true> {
         try {
+            this.checkEffectOtherUser(user, data.id)
             const model = _.pick(data, [
                 "id",
                 "sid",
                 "name",
                 "remark",
             ]) as UserModel
+
             model.updated_by = user.id
             const result = await UserDao.update(model)
             if (result.affectedRows === 0) {
@@ -120,6 +122,7 @@ export default new (class UserService {
         id: string | number,
         user: RequestUser
     ): Promise<true> {
+        this.checkEffectOtherUser(user, id)
         const result = await UserDao.delete(id, user.id)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
@@ -127,16 +130,20 @@ export default new (class UserService {
         return true
     }
 
+    private checkEffectOtherUser(user: RequestUser, id: string | number) {
+        if (!user.is_admin) {
+            if (user.id != id) {
+                throw new HttpException("權限不足", 403)
+            }
+        }
+    }
+
     public async createUserDuty(
         payload: UserDutyModel,
         user: RequestUser
     ): Promise<UserDutyModel> {
+        this.checkEffectOtherUser(user, payload.user_id)
         payload.created_by = user.id
-        if (!user.is_admin) {
-            if (user.id !== payload.user_id) {
-                throw new HttpException("權限不足", 403)
-            }
-        }
         const result = await UserDutyDao.create(payload)
         return result
     }
@@ -145,12 +152,8 @@ export default new (class UserService {
         payload: UserDutyModel,
         user: RequestUser
     ): Promise<true> {
+        this.checkEffectOtherUser(user, payload.user_id)
         payload.updated_by = user.id
-        if (!user.is_admin) {
-            if (user.id !== payload.user_id) {
-                throw new HttpException("權限不足", 403)
-            }
-        }
         const result = await UserDutyDao.update(payload)
         if (result.affectedRows === 0) {
             throw new HttpException("查無資料", 400)
@@ -166,11 +169,7 @@ export default new (class UserService {
         if (!user_duty) {
             throw new HttpException("查無資料", 400)
         }
-        if (!user.is_admin) {
-            if (user.id !== user_duty.user_id) {
-                throw new HttpException("權限不足", 403)
-            }
-        }
+        this.checkEffectOtherUser(user, user_duty.user_id)
         await UserDutyDao.delete(id)
         return true
     }
