@@ -53,7 +53,7 @@
 
     const authStore = useAuthStore();
     const { authUser } = storeToRefs(authStore);
-    const { session } = authStore;
+    const { session, refresh } = authStore;
 
     const isEditable = ref(false);
 
@@ -77,9 +77,10 @@
                 remark: data?.remark,
                 role_ids: data?.role_ids,
             });
+            await refresh();
+            await session();
             isEditable.value = false;
             toastNotifier?.success('保存成功');
-            session();
         }
         catch (error) {
             showParseError(toastNotifier, error);

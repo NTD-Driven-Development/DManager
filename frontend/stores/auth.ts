@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
+import { UserRole } from '#imports';
 import * as Model from '~/src/model';
 import axios from "axios";
 import _ from 'lodash';
-import { UserRole } from '#imports';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const PREFIX = '/api/auth';

@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col justify-center w-full gap-0.5" v-if="!user?.is_admin">
+            <div class="flex flex-col justify-center w-full gap-0.5">
                 <div class="flex gap-0.5 shrink-0">
                     <span>備註：</span>
                 </div>
@@ -54,6 +54,7 @@
     import { UserCaller, updateUser } from '~/composables/api/user';
     import * as yup from 'yup';
     import _ from 'lodash';
+import { useAuthStore } from '~/stores/auth';
 
     interface Emits {
         (e: 'onEdited'): void;
@@ -70,6 +71,9 @@
 
     const toastNotifier = inject(ToastNotifierKey);
     const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema });
+    const authStore = useAuthStore();
+    const { authUser } = storeToRefs(authStore);
+    const { refresh, session } = authStore;
 
     const rolesCaller = new RolesCaller();
     const { data: roleList } = rolesCaller;
@@ -91,6 +95,10 @@
                 remark: data?.remark,
                 role_ids: data?.role_ids,
             });
+            if (user?.id == authUser.value?.id) {
+                await refresh();
+                await session();
+            }
 
             toastNotifier?.success('儲存成功');
             emits('onEdited');
