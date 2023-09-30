@@ -179,13 +179,9 @@ export const queryStringInspecter = <T extends object>(ref: Ref<T>, options: Wat
         const router = useRouter();
         const query = toQueryString(n);
 
-        
-        setTimeout(() => {
-            router.replace({
-                query: query,
-            });
-        }, 100);
-
+        router.replace({
+            query: query,
+        });
     }, options);
 
     return stopHandler;

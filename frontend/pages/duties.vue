@@ -90,7 +90,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRouter().currentRoute.value.query;
+            const query = useRoute().query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

@@ -55,6 +55,7 @@ export default defineNuxtConfig({
         '/notes': { ssr: false },
         '/users': { ssr: false },
         '/duties': { ssr: false },
+        '/exports': { ssr: false },
         '/options': { ssr: false },
         '/logs': { ssr: false },
     },

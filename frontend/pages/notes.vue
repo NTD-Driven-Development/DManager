@@ -103,7 +103,7 @@
             projectsCaller?.wait(),
         ])
         .then(() => {
-            const query = useRouter().currentRoute.value.query;
+            const query = useRoute().query;
 
             setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
             setFieldValue('search', query?.search ? `${query?.search}` : '');

@@ -8,13 +8,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     if (process.server) return;
 
-    if (to.path == from.path) return;
-
     if (exceptRouteList?.length && regexp.test(to.path)) {
         return;
     }
 
-    if (authStore.getAccessToken()) {
+    if (authStore.getAccessToken() && (to.fullPath == from.fullPath || to.path != from.path)) {
         await authStore.session(); // cache session to state.
     }
 })

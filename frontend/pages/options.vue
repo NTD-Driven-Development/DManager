@@ -49,7 +49,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRouter().currentRoute.value.query;
+            const query = useRoute().query;
 
             setFieldValue('selectedOptionType', ([0, 1, 2, 3, 4].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0));
         });
