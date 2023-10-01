@@ -7,7 +7,7 @@
             <div class="flex flex-col gap-2 lg:flex-row">
                 <UserCreate class="grow-[1] lg:basis-1"
                 @on-created="userPaginator?.reload()"></UserCreate>
-                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5">
+                <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5" v-if="false">
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     </div>
                 </div>
@@ -79,7 +79,7 @@
     const userEditPopUp = ref();
     const userDeletePopUp = ref();
 
-    const userPaginator = new UserPaginator({ immediate: false, debounceTime: 500 });
+    const userPaginator = new UserPaginator({ immediate: false });
     const { data: userList } = userPaginator;
 
     userPaginator?.bind('search', toRef(values, 'search'));
@@ -89,11 +89,12 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
-
-            setFieldValue('search', query?.search ? `${query?.search}` : '');
+            const query = useRouter().currentRoute?.value?.query;
 
             userPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+            userPaginator.withQuery('search', query?.search ? `${query?.search}` : '');
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
         });
     });
 </script>

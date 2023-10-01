@@ -72,7 +72,7 @@
     const optionPointRuleEditPopUp = ref();
     const optionPointRuleDeletePopUp = ref();
 
-    const pointRulePaginator = new PointRulePaginator({ immediate: false, debounceTime: 500 });
+    const pointRulePaginator = new PointRulePaginator({ immediate: false });
     const { data: PointRuleList } = pointRulePaginator;
 
     pointRulePaginator.bind('search', toRef(values, 'search'));
@@ -87,7 +87,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

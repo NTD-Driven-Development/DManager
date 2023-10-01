@@ -77,9 +77,8 @@
     const exportAreaPopUp = ref();
 
     const projectsCaller = new ProjectsCaller()
-    .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const exportCaller = new ExportCaller({ immediate: false, debounceTime: 500 });
+    const exportCaller = new ExportCaller({ immediate: false });
     const { data: exportItemList } = exportCaller;
 
     exportCaller?.bind('project_id', toRef(values, 'selectedProjectId'));
@@ -92,7 +91,10 @@
             projectsCaller?.wait(),
         ])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
+
+            exportCaller?.withQuery('project_id', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
+            exportCaller?.withQuery('search', query?.search ? `${query?.search}` : '');
 
             setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
             setFieldValue('search', query?.search ? `${query?.search}` : '');

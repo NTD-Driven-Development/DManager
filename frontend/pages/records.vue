@@ -23,7 +23,7 @@
             :options="projectList" option-key="id" option-value="name"></Select>
         </div>
         <!-- 內容 -->
-        <component :is="componentList[selectedRecordType]" :project-id="values?.selectedProjectId ?? NaN"></component>
+        <component :is="componentList[selectedRecordType]" :project-id="values?.selectedProjectId ?? NaN" v-if="isLoaded"></component>
     </div>
 </template>
 
@@ -42,9 +42,10 @@
     const { setFieldValue, values } = useForm<{
         selectedProjectId?: number
     }>();
-
     const recordsStore = useRecordsStore();
     const { selectedRecordType } = storeToRefs(recordsStore);
+
+    const isLoaded = ref(false);
     const projectsCaller = new ProjectsCaller()
     const { data: projectList } = projectsCaller;
 
@@ -53,11 +54,13 @@
             projectsCaller.wait(),
         ])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
 
             selectedRecordType.value = ([0, 1].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0) as 0 | 1;
+
+            isLoaded.value = true;
         });
     });
 </script>

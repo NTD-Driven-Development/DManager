@@ -6,6 +6,8 @@ import * as Model from "~/src/model";
 const PREFIX = '/api/classes';
 
 export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -22,7 +24,12 @@ export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> 
             });
         }
 
-        return axios.get(`${PREFIX}?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof ClassPaginationQueries, V extends ClassPaginationQueries[K]>(key: K, value: V) => {
@@ -34,7 +41,7 @@ export class ClassPaginator extends ApiPaginator<Class, ClassPaginationQueries> 
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 

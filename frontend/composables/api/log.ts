@@ -6,6 +6,8 @@ import * as Model from '~/src/model';
 const PREFIX = '/api/logs';
 
 export class LogPaginator extends ApiPaginator<any, LogPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -22,7 +24,12 @@ export class LogPaginator extends ApiPaginator<any, LogPaginationQueries> {
             });
         }
 
-        return axios.get(`${PREFIX}/operation?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/operation?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 }
 

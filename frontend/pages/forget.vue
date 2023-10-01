@@ -38,7 +38,7 @@
     import { useAuthStore } from '~/stores/auth';
     import _ from 'lodash';
 
-    const { handleSubmit, values } = useForm();
+    const { values } = useForm();
     const authStore = useAuthStore();
     const { forget, verifyForget, resetPassword } = authStore;
     const toastNotifier = inject(ToastNotifierKey);

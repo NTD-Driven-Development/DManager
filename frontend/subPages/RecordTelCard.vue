@@ -79,7 +79,7 @@
 
     const recordTelCardDeletePopUp = ref();
 
-    const telCardLogPaginator = new TelCardLogPaginator({ immediate: false, debounceTime: 500 });
+    const telCardLogPaginator = new TelCardLogPaginator({ immediate: false });
     const { data: telCardLogList } = telCardLogPaginator;
 
     const queries = computed(() => ({
@@ -95,7 +95,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

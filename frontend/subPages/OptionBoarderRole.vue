@@ -80,7 +80,7 @@
     const projectsCaller = new ProjectsCaller()
     .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
     const { data: projectList } = projectsCaller;
-    const boarderRolePaginator = new BoarderRolePaginator({ immediate: false, debounceTime: 500 });
+    const boarderRolePaginator = new BoarderRolePaginator({ immediate: false });
     const { data: boarderRoleList } = boarderRolePaginator;
     
     boarderRolePaginator?.bind('project_id', toRef(values, 'selectedProjectId'));

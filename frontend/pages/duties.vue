@@ -20,8 +20,8 @@
                 <VueDatePicker multi-dates menu-class-name="fixed z-20" locale="zh-TW"
                     input-class-name="!text-xs h-[38px] placeholder:text-gray-500" placeholder="篩選輪值日"
                     :format="(v: any[]) => v?.map((v) => format(v, 'yyyy-MM-dd'))?.join('、')"
-                    @update:model-value="(v: any[]) => selectedDateList = v?.map((v) => format(set(new Date(v), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }), `yyyy-MM-dd'T'HH:mm:ssXXX`))"
-                    :model-value="selectedDateList" :enable-time-picker="false"></VueDatePicker>
+                    @update:model-value="(v: any[]) => setFieldValue('start_times', v?.map((v) => format(set(new Date(v), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }), `yyyy-MM-dd'T'HH:mm:ssXXX`)))"
+                    :model-value="values?.start_times" :enable-time-picker="false"></VueDatePicker>
             </div>
              <!-- 列表 -->
             <div class="w-full overflow-auto bg-white">
@@ -71,30 +71,32 @@
     ]
 
     const { setFieldValue, values } = useForm<{
-        selectedProjectId?: number,
         search?: string,
+        start_times?: string[],
     }>();
     const authStore = useAuthStore();
 
     const userDutyDeletePopUp = ref();
-    const selectedDateList = ref();
 
-    const userDutyPaginator = new UserDutyPaginator({ immediate: false, debounceTime: 500 });
+    const userDutyPaginator = new UserDutyPaginator({ immediate: false });
     const { data: userDutyList } = userDutyPaginator;
     
-    userDutyPaginator?.bind('start_times', selectedDateList);
     userDutyPaginator?.bind('search', toRef(values, 'search'));
+    userDutyPaginator?.bind('start_times', toRef(values, 'start_times'));
 
     queryStringInspecter(userDutyPaginator?.queries);
 
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
-
-            setFieldValue('search', query?.search ? `${query?.search}` : '');
+            const query = useRouter().currentRoute?.value?.query;
 
             userDutyPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+            userDutyPaginator.withQuery('search', query?.search ? `${query?.search}` : '');
+            userDutyPaginator.withQuery('start_times', query?.start_times ? `${query?.start_times}`.split(',').map((v) => format(new Date(v), 'yyyy-MM-dd')) : undefined);
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+            setFieldValue('start_times', query?.start_times ? `${query?.start_times}`.split(',').map((v) => format(new Date(v), 'yyyy-MM-dd')) : undefined);
         });
     });
 </script>

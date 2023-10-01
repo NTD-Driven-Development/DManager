@@ -68,7 +68,7 @@
     const optionBoarderStatusEditPopUp = ref();
     const optionBoarderStatusDeletePopUp = ref();
 
-    const boarderStatusPaginator = new BoarderStatusPaginator({ immediate: false, debounceTime: 500 });
+    const boarderStatusPaginator = new BoarderStatusPaginator({ immediate: false });
     const { data: boarderStatusList } = boarderStatusPaginator;
 
     boarderStatusPaginator.bind('search', toRef(values, 'search'));
@@ -83,7 +83,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

@@ -6,6 +6,8 @@ import * as Model from '~/src/model';
 const PREFIX = '/api/telCards';
 
 export class TelCardLogPaginator extends ApiPaginator<TelCardLog, TelCardLogPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -22,7 +24,12 @@ export class TelCardLogPaginator extends ApiPaginator<TelCardLog, TelCardLogPagi
             });
         }
 
-        return axios.get(`${PREFIX}/log?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/log?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof TelCardLogPaginationQueries, V extends TelCardLogPaginationQueries[K]>(key: K, value: V) => {
@@ -37,12 +44,14 @@ export class TelCardLogPaginator extends ApiPaginator<TelCardLog, TelCardLogPagi
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected projectIdHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter, TelCardContacterPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this.startQueriesWatcher();
@@ -58,7 +67,12 @@ export class TelCardContacterPaginator extends ApiPaginator<TelCardContacter, Te
             });
         }
 
-        return axios.get(`${PREFIX}/contacter?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/contacter?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof TelCardContacterPaginationQueries, V extends TelCardContacterPaginationQueries[K]>(key: K, value: V) => {

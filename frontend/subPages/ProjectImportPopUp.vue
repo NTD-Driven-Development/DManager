@@ -114,10 +114,10 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { parse } from 'csv-parse/browser/esm';
     import { BoarderStatusesCaller, ClassesCaller } from '~/composables/api/share';
     import { createProject, importProject } from '~/composables/api/project';
     import * as yup from 'yup';
+    import Papa from 'papaparse';
     import _ from 'lodash';
 
     interface Emits {
@@ -306,17 +306,15 @@
     }
 
     const parseCSV = (data: string) => {
-        parse(data, {
-            columns: true,
-            skip_empty_lines: true
-        }, (err, data) => {
-            if (err) {
-                toastNotifier?.error(err.message);
-                return;
-            }
-            originData.value = data;
-            editedData.value = _.cloneDeep(data);
-        });
+        const result = Papa.parse(data, { header: true, skipEmptyLines: true });
+
+        if (result?.errors && result?.errors?.length) {
+            showParseError(toastNotifier, result.errors?.map((v) => v?.message));
+            return;
+        }
+
+        originData.value = result.data as any;
+        editedData.value = _.cloneDeep(result.data as any);
     }
 
     const show = () => {

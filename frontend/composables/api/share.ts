@@ -46,6 +46,8 @@ export class BunksCaller extends ApiCaller<Floor[]> {
 }
 
 export class BoardersCaller extends ApiCaller<Boarder[], BoardersQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this.startQueriesWatcher();
@@ -61,7 +63,12 @@ export class BoardersCaller extends ApiCaller<Boarder[], BoardersQueries> {
             });
         }
 
-        return axios.get(`${PREFIX}/boarders?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/boarders?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof BoardersQueries, V extends BoardersQueries[K]>(key: K, value: V) => {

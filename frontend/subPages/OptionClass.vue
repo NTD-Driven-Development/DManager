@@ -68,7 +68,7 @@
     const optionClassEditPopUp = ref();
     const optionClassDeletePopUp = ref();
 
-    const classPaginator = new ClassPaginator({ immediate: false, debounceTime: 500 });
+    const classPaginator = new ClassPaginator({ immediate: false });
     const { data: classList } = classPaginator;
 
     classPaginator.bind('search', toRef(values, 'search'));
@@ -83,7 +83,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

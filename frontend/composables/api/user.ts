@@ -6,6 +6,8 @@ import * as Model from '~/src/model';
 const PREFIX = '/api/users';
 
 export class UserPaginator extends ApiPaginator<User, UserPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -22,7 +24,12 @@ export class UserPaginator extends ApiPaginator<User, UserPaginationQueries> {
             });
         }
 
-        return axios.get(`${PREFIX}?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof UserPaginationQueries, V extends UserPaginationQueries[K]>(key: K, value: V) => {
@@ -34,7 +41,7 @@ export class UserPaginator extends ApiPaginator<User, UserPaginationQueries> {
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
@@ -65,6 +72,8 @@ export class UserCaller extends ApiCaller<User> {
 }
 
 export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -81,7 +90,12 @@ export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPagination
             });
         }
 
-        return axios.get(`${PREFIX}/duty?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/duty?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
      withQuery = <K extends keyof UserDutyPaginationQueries, V extends UserDutyPaginationQueries[K]>(key: K, value: V) => {
@@ -96,7 +110,7 @@ export class UserDutyPaginator extends ApiPaginator<UserDuty, UserDutyPagination
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
     protected startTimesHandler = _.debounce(this.setQuery, 500);
 }

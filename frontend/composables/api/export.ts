@@ -6,6 +6,8 @@ import _ from 'lodash';
 const PREFIX = '/api/exports';
 
 export class ExportCaller extends ApiCaller<ExportItem[], ExportCallerQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this.startQueriesWatcher();
@@ -21,7 +23,12 @@ export class ExportCaller extends ApiCaller<ExportItem[], ExportCallerQueries> {
             });
         }
 
-        return axios.get(`${PREFIX}/pointsCheck?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/pointsCheck?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof ExportCallerQueries, V extends ExportCallerQueries[K]>(key: K, value: V) => {

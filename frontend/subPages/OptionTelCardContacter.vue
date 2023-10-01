@@ -68,7 +68,7 @@
     const optionTelCardContacterEditPopUp = ref();
     const optionTelCardContacterDeletePopUp = ref();
 
-    const telCardContacterPaginator = new TelCardContacterPaginator({ immediate: false, debounceTime: 500 });
+    const telCardContacterPaginator = new TelCardContacterPaginator({ immediate: false });
     const { data: TelCardContacterList } = telCardContacterPaginator;
 
     telCardContacterPaginator.bind('search', toRef(values, 'search'));
@@ -83,7 +83,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 

@@ -37,7 +37,9 @@
         OptionTelCardContacter,
     ]
 
-    const { values, setFieldValue } = useForm<{ selectedOptionType?: number }>();
+    const { values, setFieldValue } = useForm<{
+        selectedOptionType?: number
+    }>();
 
     const optionsStore = useOptionsStore();
     const { selectedOptionType } = storeToRefs(optionsStore);
@@ -49,7 +51,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('selectedOptionType', ([0, 1, 2, 3, 4].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0));
         });

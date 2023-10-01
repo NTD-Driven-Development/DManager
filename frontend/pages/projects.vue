@@ -33,7 +33,7 @@
                                     <span>{{ it?.name }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"
+                                    <Icon icon="ic:round-mode-edit" class="w-5 h-5 duration-300 cursor-pointer text-sky-600" @mousedown.stop @mouseup.stop="projectEditPopUp?.show(it?.id)"
                                     v-if="authStore?.hasAnyRole([UserRole.Editor])"></Icon>
                                     <Icon icon="ic:round-keyboard-arrow-down" class="w-6 h-6 duration-300" :class="[{ 'rotate-180': isVisable }]"></Icon>
                                 </div>
@@ -76,16 +76,17 @@
 
     projectPaginator.bind('search', toRef(values, 'search'));
 
-    queryStringInspecter(projectPaginator.queries, { deep: true });
+    queryStringInspecter(projectPaginator.queries);
 
     onMounted(() => {
         Promise.all([])
-        .then(() => {
-            const query = useRoute().query;
-
-            setFieldValue('search', query?.search ? `${query?.search}` : '');
+        .then(async () => {
+            const query = useRouter().currentRoute?.value?.query;
 
             projectPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+            projectPaginator.withQuery('search', query?.search ? `${query?.search}` : '');
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
         });
     });
 </script>

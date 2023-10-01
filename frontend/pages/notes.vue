@@ -90,7 +90,7 @@
 
     const projectsCaller = new ProjectsCaller()
     const { data: projectList } = projectsCaller;
-    const boarderNotePaginator = new BoarderNotePaginator({ immediate: false, debounceTime: 500 });
+    const boarderNotePaginator = new BoarderNotePaginator({ immediate: false });
     const { data: boarderNoteList } = boarderNotePaginator;
     
     boarderNotePaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
@@ -103,12 +103,15 @@
             projectsCaller?.wait(),
         ])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
+
+            boarderNotePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+            boarderNotePaginator.withQuery('project_id', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.length ? projectList?.value?.[0].id : undefined);
+            boarderNotePaginator.withQuery('search', query?.search ? `${query?.search}` : '');
 
             setFieldValue('selectedProjectId', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.[0].id);
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
-            boarderNotePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
         });
     });
 </script>

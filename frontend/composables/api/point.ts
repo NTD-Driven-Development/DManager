@@ -6,6 +6,8 @@ import * as Model from "~/src/model";
 const PREFIX = '/api/points';
 
 export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -22,7 +24,12 @@ export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPagination
             });
         }
 
-        return axios.get(`${PREFIX}/log?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/log?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof PointLogPaginationQueries, V extends PointLogPaginationQueries[K]>(key: K, value: V) => {
@@ -37,12 +44,14 @@ export class PointLogPaginator extends ApiPaginator<PointLog, PointLogPagination
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected projectIdHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginationQueries> {
+    abortController?: AbortController;
+
     constructor(options?: Options) {
         super(options);
         this._queries.value.limit = 20;
@@ -59,7 +68,12 @@ export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginat
             });
         }
 
-        return axios.get(`${PREFIX}/rule?${searchParams}`);
+        this.abortController && this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        return axios.get(`${PREFIX}/rule?${searchParams}`, {
+            signal: this.abortController?.signal,
+        });
     }
 
     withQuery = <K extends keyof PointRulePaginationQueries, V extends PointRulePaginationQueries[K]>(key: K, value: V) => {
@@ -71,7 +85,7 @@ export class PointRulePaginator extends ApiPaginator<PointRule, PointRulePaginat
         }
     }
 
-    protected offsetHandler = _.debounce(this.setQuery, 1);
+    protected offsetHandler = _.debounce(this.setQuery, 500);
     protected searchHandler = _.debounce(this.setQuery, 500);
 }
 

@@ -85,7 +85,7 @@
 
     const recordPointDeletePopUp = ref();
 
-    const pointLogPaginator = new PointLogPaginator({ immediate: false, debounceTime: 500 });
+    const pointLogPaginator = new PointLogPaginator({ immediate: false });
     const { data: pointLogList } = pointLogPaginator;
 
     pointLogPaginator?.bind('project_id', toRef(props, 'projectId'), { immediate: !_.isNaN(props?.projectId) });
@@ -101,7 +101,7 @@
     onMounted(() => {
         Promise.all([])
         .then(() => {
-            const query = useRoute().query;
+            const query = useRouter().currentRoute?.value?.query;
 
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
