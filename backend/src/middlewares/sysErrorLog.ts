@@ -14,7 +14,6 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                 // remove listener
                 res.removeListener("finish", afterResponse)
                 res.removeListener("close", afterResponse)
-                console.log("sysErrorLog")
                 await Db.sequelize.transaction(
                     {
                         // 避免 insert Deadlock
@@ -29,7 +28,7 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                         await LogService.saveSysErrorLog(
                             req,
                             res.statusCode,
-                            res?.customMessage
+                            res?.logMessage
                         )
                     }
                 )

@@ -61,11 +61,16 @@ describe("Acceptance test for ClassController.", () => {
             const payload = {
                 name: "ATDD_Class",
             }
+            const payload2 = {
+                name: "ATDD_Class2",
+            }
             // when
             const res = await App.post("/api/classes").send(payload)
+            const res2 = await App.post("/api/classes").send(payload2)
             // then
             testClass = res.body?.data
             expect(res.status).toBe(201)
+            expect(res2.status).toBe(201)
             expect(testClass?.name).toBe(payload.name)
             expect(testClass?.created_by).toBe(mockUser.id)
         })
@@ -99,8 +104,8 @@ describe("Acceptance test for ClassController.", () => {
         it("若編輯班級名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
             const payload = {
-                id: -1,
-                name: "ATDD_Class(ed)",
+                id: testClass?.id,
+                name: "ATDD_Class2",
             }
             // when
             const res = await App.put("/api/classes").send(payload)
@@ -116,7 +121,7 @@ describe("Acceptance test for ClassController.", () => {
             const res = await App.delete(`/api/classes/${id}`)
             // then
             expect(res.status).toBe(200)
-            expect(await ClassDao.findOneById(id)).toBeNull()
+            expect(await ClassDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.class.findOne({ where: { id: id } })).deleted_by
             ).toBe(mockUser.id)

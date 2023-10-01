@@ -5,6 +5,8 @@ import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import route from "../../utils/route"
+import log from "../../utils/log"
+import { Transaction } from "sequelize"
 
 export default new (class BoarderRoleController {
     public async getBoarderRoles(
@@ -42,11 +44,13 @@ export default new (class BoarderRoleController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
+            res.operationName = "新增住宿生角色"
             const data = await BoarderService.createBoarderRole(
                 req.body as any,
                 req.user as RequestUser
             )
-            next(HttpResponse.success(data, "建立住宿生角色", 201))
+            res.logMessage = log.logFormatJson(res.operationName, data)
+            next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
         }
@@ -59,11 +63,22 @@ export default new (class BoarderRoleController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await BoarderService.updateBoarderRole(
-                req.body as any,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "修改住宿生角色"))
+            res.operationName = "修改住宿生角色"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeUpdateData =
+                    await BoarderService.getBoarderRoleById(req.body?.id)
+                const data = await BoarderService.updateBoarderRole(
+                    req.body as any,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeUpdateData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }
@@ -76,11 +91,22 @@ export default new (class BoarderRoleController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await BoarderService.deleteBoarderRole(
-                req.params.id,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "刪除住宿生角色"))
+            res.operationName = "刪除住宿生角色"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeDeleteData =
+                    await BoarderService.getBoarderRoleById(req.params.id)
+                const data = await BoarderService.deleteBoarderRole(
+                    req.params.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeDeleteData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }

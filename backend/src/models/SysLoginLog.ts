@@ -12,6 +12,8 @@ export interface SysLoginLogModel {
     status: boolean
     detail?: string
     created_at?: Date
+    dataValues?: SysLoginLogModel
+    _previousDataValues?: SysLoginLogModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

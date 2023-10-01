@@ -10,7 +10,10 @@ export default (
     res: IResponse,
     next: NextFunction
 ) => {
-    res.customMessage = err?.message
+    res.logMessage = JSON.stringify({
+        operationName: res?.operationName,
+        errorMessage: err?.message,
+    })
     if (err instanceof HttpException) {
         const response: HttpResponse = HttpResponse.failure(
             err.message,

@@ -15,6 +15,8 @@ export interface TelCardContacterModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: TelCardContacterModel
+    _previousDataValues?: TelCardContacterModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

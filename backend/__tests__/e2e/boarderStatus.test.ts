@@ -48,13 +48,18 @@ describe("Acceptance test for BoarderStatusController.", () => {
         it("建立住宿生狀態", async () => {
             // given
             const payload = {
-                name: "E2eTest",
+                name: "ATDD_boarderStatus",
+            }
+            const payload2 = {
+                name: "ATDD_boarderStatus2",
             }
             // when
             const res = await App.post("/api/boarderStatuses").send(payload)
+            const res2 = await App.post("/api/boarderStatuses").send(payload2)
             // then
             testBoarderStatus = res.body?.data
             expect(res.status).toBe(201)
+            expect(res2.status).toBe(201)
             expect(testBoarderStatus?.name).toBe(payload.name)
             expect(testBoarderStatus?.created_by).toBe(mockUser.id)
         })
@@ -62,7 +67,7 @@ describe("Acceptance test for BoarderStatusController.", () => {
         it("不可重複建立", async () => {
             // given
             const payload = {
-                name: "E2eTest",
+                name: "ATDD_boarderStatus",
             }
             // when
             const response = await App.post("/api/boarderStatuses").send(
@@ -76,7 +81,7 @@ describe("Acceptance test for BoarderStatusController.", () => {
             // given
             const payload = {
                 id: testBoarderStatus?.id,
-                name: "E2eTest(Edited)",
+                name: "ATDD_boarderStatus(ed)",
             }
             // when
             const res = await App.put("/api/boarderStatuses").send(payload)
@@ -90,8 +95,8 @@ describe("Acceptance test for BoarderStatusController.", () => {
         it("若編輯住宿生狀態名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
             const payload = {
-                id: -1,
-                name: "E2eTest(Edited)",
+                id: testBoarderStatus?.id,
+                name: "ATDD_boarderStatus2",
             }
             // when
             const res = await App.put("/api/boarderStatuses").send(payload)
@@ -107,7 +112,7 @@ describe("Acceptance test for BoarderStatusController.", () => {
             const res = await App.delete(`/api/boarderStatuses/${id}`)
             // then
             expect(res.status).toBe(200)
-            expect(await BoarderStatusDao.findOneById(id)).toBeNull()
+            expect(await BoarderStatusDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.boarder_status.findOne({ where: { id: id } }))
                     .deleted_by

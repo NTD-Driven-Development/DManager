@@ -63,11 +63,14 @@ describe("Acceptance test for PointController.", () => {
         it("建立加扣點規則", async () => {
             // given
             const payload = givenCreatePointRulePayload("2")
+            const payload2 = givenCreatePointRulePayload("3")
             // when
             const res = await App.post("/api/points/rule").send(payload)
+            const res2 = await App.post("/api/points/rule").send(payload2)
             // then
             testPointRule = res.body?.data
             expect(res.status).toBe(201)
+            expect(res2.status).toBe(201)
             expect(payload).toEqual({
                 code: testPointRule?.code,
                 reason: testPointRule?.reason,
@@ -107,9 +110,9 @@ describe("Acceptance test for PointController.", () => {
         it("若編輯代碼已存在應回應 400", async () => {
             // given
             const payload = {
-                id: -1,
-                code: "ATDD_point(ed)",
-                reason: "ATDD_point(ed)",
+                id: testPointRule?.id,
+                code: "ATDD_point3",
+                reason: "ATDD_point3",
                 point: 5,
             }
             // when
@@ -126,7 +129,7 @@ describe("Acceptance test for PointController.", () => {
             const res = await App.delete(`/api/points/rule/${id}`)
             // then
             expect(res.status).toBe(200)
-            expect(await PointRuleDao.findOneById(id)).toBeNull()
+            expect(await PointRuleDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.point_rule.findOne({ where: { id: id } })).deleted_by
             ).toBe(mockUser.id)
@@ -152,7 +155,7 @@ describe("Acceptance test for PointController.", () => {
                     boarder_status_id: 1,
                 })
                 testPointRule = await PointRuleDao.create(
-                    givenCreatePointRulePayload("3")
+                    givenCreatePointRulePayload("4")
                 )
                 await PointLogDao.create({
                     boarder_id: testBoarder.id,
@@ -231,7 +234,7 @@ describe("Acceptance test for PointController.", () => {
             // then
             expect(res.status).toBe(200)
             const result = await PointLogDao.findOneById(id)
-            expect(result).toBeNull()
+            expect(result).toBeFalsy()
         })
     })
 })

@@ -9,7 +9,6 @@ export default (
     next: NextFunction
 ) => {
     if (handle instanceof HttpResponse) {
-        res.customMessage = handle.message as string
         return res.status(handle.statusCode).json(handle)
     }
     return next(handle)

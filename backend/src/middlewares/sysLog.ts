@@ -56,7 +56,7 @@ export default async (req: IRequest, res: IResponse, next: NextFunction) => {
                             await LogService.saveSysLog(
                                 req,
                                 res.statusCode,
-                                res?.customMessage
+                                res?.logMessage
                             )
                         }
                     )

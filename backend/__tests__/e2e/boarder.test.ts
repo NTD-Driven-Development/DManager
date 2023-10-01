@@ -192,7 +192,7 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             testProject = response.body?.data
             expect(response.status).toBe(201)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("預先匯入資料", async () => {
@@ -204,7 +204,7 @@ describe("Acceptance test for BoarderController.", () => {
             )
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("取得住宿生資訊", async () => {
@@ -219,7 +219,7 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(data?.items?.length ?? 0).toBeGreaterThan(0)
             _.forEach(data?.items, (item) => {
                 expect(item).toHaveProperty("id")
@@ -242,7 +242,7 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(data?.items?.length ?? 0).toBeLessThanOrEqual(payload.limit)
         })
 
@@ -263,7 +263,7 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             const result = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(boarder_role_ids.length).toEqual(
                 result.boarder_roles?.length
             )
@@ -290,8 +290,8 @@ describe("Acceptance test for BoarderController.", () => {
             // then
             const expectResult = await BoarderDao.findOneById(boarder_id)
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
-            expect(expectResult).toBeNull()
+            expect(response.body?.error).toBeFalsy()
+            expect(expectResult).toBeFalsy()
             expect(
                 (await Db.boarder.findOne({ where: { id: boarder_id } }))
                     .deleted_by
@@ -320,7 +320,7 @@ describe("Acceptance test for BoarderController.", () => {
             const response = await App.post(`/api/boarders`).send(payload)
             // then
             expect(response.status).toBe(201)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
     })
 
@@ -347,7 +347,7 @@ describe("Acceptance test for BoarderController.", () => {
             )
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("取得該項目之住宿生身分別", async () => {
@@ -443,7 +443,7 @@ describe("Acceptance test for BoarderController.", () => {
             const response = await App.get(`/api/boarders`).query(payload)
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
     })
 })

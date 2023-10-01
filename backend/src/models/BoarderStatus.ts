@@ -15,6 +15,8 @@ export interface BoarderStatusModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: BoarderStatusModel
+    _previousDataValues?: BoarderStatusModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

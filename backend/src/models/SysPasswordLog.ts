@@ -14,6 +14,8 @@ export interface SysPasswordLogModel {
     verified_token?: string
     verified_at?: Date
     created_at?: Date
+    dataValues?: SysPasswordLogModel
+    _previousDataValues?: SysPasswordLogModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

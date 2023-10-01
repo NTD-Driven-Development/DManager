@@ -15,6 +15,8 @@ export interface PermissionModel {
     updated_by?: number
     creator?: UserModel
     updater?: UserModel
+    dataValues?: PermissionModel
+    _previousDataValues?: PermissionModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

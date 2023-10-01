@@ -36,7 +36,7 @@ describe("Acceptance test for UserController.", () => {
             const data = response.body?.data
             testUser = res1.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(response.body?.data).toHaveProperty("items")
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
             _.forEach(data?.items, (item) => {
@@ -52,7 +52,7 @@ describe("Acceptance test for UserController.", () => {
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(data?.id).toBe(user_id)
             expect(data).toHaveProperty("roles")
         })
@@ -98,7 +98,7 @@ describe("Acceptance test for UserController.", () => {
                 const response = await App.post("/api/users").send(payload)
                 // then
                 expect(response.status).toBe(400)
-                expect(response.body?.error).not.toBeNull()
+                expect(response.body?.error).not.toBeFalsy()
             }
         })
 
@@ -110,7 +110,7 @@ describe("Acceptance test for UserController.", () => {
             // then
             createdUser = response.body?.data
             expect(response.status).toBe(201)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(createdUser?.name).toBe(payload.name)
             expect(createdUser?.email).toBe(payload.email)
             expect(createdUser?.sid).toBe(payload.sid)
@@ -140,7 +140,7 @@ describe("Acceptance test for UserController.", () => {
             // then
             expect(response.status).toBe(200)
             const result = await UserDao.findOneById(createdUser?.id)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(result.sid).toBe(payload.sid)
             expect(result.name).toBe(payload.name)
         })
@@ -153,8 +153,8 @@ describe("Acceptance test for UserController.", () => {
             // then
             expect(response.status).toBe(200)
             const result = await UserDao.findOneById(user_id)
-            expect(response.body?.error).toBeNull()
-            expect(result).toBeNull()
+            expect(response.body?.error).toBeFalsy()
+            expect(result).toBeFalsy()
         })
     })
 
@@ -194,7 +194,7 @@ describe("Acceptance test for UserController.", () => {
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(data?.items.length).toBeLessThanOrEqual(payload.limit)
             expect(data?.items[0]).toHaveProperty("user")
             expect(data?.items[0]).toHaveProperty("creator")
@@ -209,7 +209,7 @@ describe("Acceptance test for UserController.", () => {
             // then
             const data = response.body?.data
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(data?.id).toBe(duty_id)
             expect(data).toHaveProperty("user")
             expect(data).toHaveProperty("creator")
@@ -238,7 +238,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.post("/api/users/duty").send(payload)
             // then
             expect(response.status).toBe(201)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             testDuty = response.body?.data
         })
 
@@ -254,7 +254,7 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.put("/api/users/duty").send(payload)
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             const result = await UserDutyDao.findOneById(testDuty.id)
             expect(new Date(result?.start_time)).toEqual(
                 new Date(payload.start_time)
@@ -274,9 +274,9 @@ describe("Acceptance test for UserController.", () => {
             const response = await App.delete("/api/users/duty/" + payload.id)
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             const result = await UserDutyDao.findOneById(testDuty.id)
-            expect(result).toBeNull()
+            expect(result).toBeFalsy()
         })
     })
 })

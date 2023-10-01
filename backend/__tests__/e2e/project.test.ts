@@ -12,10 +12,10 @@ describe("Acceptance test for ProjectController.", () => {
         }
     }
 
-    function givenUpdateProjectPayload(id: number) {
+    function givenUpdateProjectPayload(id: number, concatStr: string) {
         return {
             id: id,
-            name: "ATDD_project(ed)",
+            name: `ATDD_project${concatStr}`,
             remark: "remark",
         }
     }
@@ -228,16 +228,19 @@ describe("Acceptance test for ProjectController.", () => {
         it("預先建立項目", async () => {
             // given
             const payload = givenCreateProjectPayload("3")
+            const payload2 = givenCreateProjectPayload("3_other")
             // when
             const response = await App.post("/api/projects").send(payload)
+            const response2 = await App.post("/api/projects").send(payload2)
             // then
             testProject = response.body?.data
             expect(response.status).toBe(201)
+            expect(response2.status).toBe(201)
         })
 
         it("更新項目", async () => {
             // given
-            const payload = givenUpdateProjectPayload(testProject.id)
+            const payload = givenUpdateProjectPayload(testProject.id, "_edit")
             // when
             const response = await App.put("/api/projects").send(payload)
             // then
@@ -250,7 +253,10 @@ describe("Acceptance test for ProjectController.", () => {
 
         it("若更新項目名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
-            const payload = givenUpdateProjectPayload(-1)
+            const payload = givenUpdateProjectPayload(
+                testProject?.id,
+                "3_other"
+            )
             // when
             const response = await App.put("/api/projects").send(payload)
             // then
@@ -279,7 +285,7 @@ describe("Acceptance test for ProjectController.", () => {
             const response = await App.delete(`/api/projects/${id}`)
             // then
             expect(response.status).toBe(200)
-            expect(await ProjectDao.findOneById(id)).toBeNull()
+            expect(await ProjectDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.project.findOne({ where: { id: id } })).deleted_by
             ).toBe(mockUser.id)
@@ -317,7 +323,7 @@ describe("Acceptance test for ProjectController.", () => {
             )
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("確認已匯入該項目住宿生資訊", async () => {
@@ -419,7 +425,7 @@ describe("Acceptance test for ProjectController.", () => {
             )
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("取得該項目床位資料", async () => {
@@ -455,7 +461,7 @@ describe("Acceptance test for ProjectController.", () => {
             ).send(payload)
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("確認交換後的床位", async () => {

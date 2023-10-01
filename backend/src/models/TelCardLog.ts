@@ -17,6 +17,8 @@ export interface TelCardLogModel {
     updater?: UserModel
     deleter?: UserModel
     boarder?: BoarderModel
+    dataValues?: TelCardLogModel
+    _previousDataValues?: TelCardLogModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

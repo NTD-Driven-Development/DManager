@@ -381,6 +381,7 @@ describe("Unit test for ProjectService.", () => {
             origin_boarder_id: "123",
             swap_bunk_id: 2,
             swap_boarder_id: "456",
+            updated_by: fakeUser.id,
         }
     }
     async function whenSwapBunk(payload: any) {

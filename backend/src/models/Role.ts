@@ -16,6 +16,8 @@ export interface RoleModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: RoleModel
+    _previousDataValues?: RoleModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

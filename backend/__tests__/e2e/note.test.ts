@@ -4,6 +4,7 @@ import Db from "../../src/models"
 import _ from "lodash"
 import BoarderNoteDao from "../../src/core/daos/BoarderNoteDao"
 import BoarderDao from "../../src/core/daos/BoarderDao"
+import strings from "../../src/utils/strings"
 
 describe("Acceptance test for NoteController.", () => {
     function givenCreateProjectPayload(concatStr: string) {
@@ -293,12 +294,7 @@ describe("Acceptance test for NoteController.", () => {
                 limit: 20,
                 project_id: testProject.id,
                 search:
-                    "" +
-                    boarder?.project_bunk?.floor +
-                    boarder?.project_bunk?.room_type +
-                    boarder?.project_bunk?.room_no +
-                    "-" +
-                    boarder?.project_bunk?.bed,
+                    strings.formatBunkString(boarder?.project_bunk as any)
             }
             // when
             const isAllItemPassing3 =
@@ -383,7 +379,7 @@ describe("Acceptance test for NoteController.", () => {
             // then
             expect(res.status).toBe(200)
             const result = await BoarderNoteDao.findOneById(id)
-            expect(result).toBeNull()
+            expect(result).toBeFalsy()
         })
     })
 })

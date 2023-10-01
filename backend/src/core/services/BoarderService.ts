@@ -17,6 +17,7 @@ import CreateBoarderDto from "../importDtos/boarders/CreateBoarderDto"
 import { ProjectBunkModel } from "../../models/ProjectBunk"
 import { BoarderMappingRoleModel } from "../../models/BoarderMappingRole"
 import { v4 } from "uuid"
+import strings from "../../utils/strings"
 
 export default new (class BoarderService {
     public async getBoarders(query: {
@@ -35,12 +36,9 @@ export default new (class BoarderService {
                     _.includes(item?.name, query.search) ||
                     _.includes(item?.class?.name, query.search) ||
                     _.includes(
-                        "" +
-                            item?.project_bunk?.floor +
-                            item?.project_bunk?.room_type +
-                            item?.project_bunk?.room_no +
-                            "-" +
-                            item?.project_bunk?.bed,
+                        strings.formatBunkString(
+                            item?.project_bunk as ProjectBunkModel
+                        ),
                         query.search
                     )
                 )
@@ -139,7 +137,7 @@ export default new (class BoarderService {
                 )
 
             await ProjectDao.createProjectBunk(projectBunk)
-            return true
+            return this.getBoarderById(boarder.id)
         } catch (error: any) {
             if (error instanceof ForeignKeyConstraintError) {
                 throw new HttpException("此項目不存在", 400)

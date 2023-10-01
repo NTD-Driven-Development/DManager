@@ -19,6 +19,8 @@ export interface BoarderNoteModel {
     updater?: UserModel
     deleter?: UserModel
     boarder?: BoarderModel
+    dataValues?: BoarderNoteModel
+    _previousDataValues?: BoarderNoteModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

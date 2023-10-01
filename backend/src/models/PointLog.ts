@@ -15,6 +15,8 @@ export interface PointLogModel {
     created_by?: number
     creator?: UserModel
     boarder?: BoarderModel
+    dataValues?: PointLogModel
+    _previousDataValues?: PointLogModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

@@ -5,6 +5,8 @@ import IPaginationResultDto from "../exportDtos/PaginationResultDto"
 import BoarderNoteDao from "../daos/BoarderNoteDao"
 import { BoarderNoteModel } from "../../models/BoarderNote"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import strings from "../../utils/strings"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
 
 export default new (class BoarderNoteService {
     public async getBoarderNotes(query?: {
@@ -23,13 +25,9 @@ export default new (class BoarderNoteService {
         }
         if (query?.search) {
             data = _.filter(data, (item) => {
-                const bunk =
-                    "" +
-                    item.boarder?.project_bunk?.floor +
-                    item.boarder?.project_bunk?.room_type +
-                    item.boarder?.project_bunk?.room_no +
-                    "-" +
-                    item.boarder?.project_bunk?.bed
+                const bunk = strings.formatBunkString(
+                    item?.boarder?.project_bunk as ProjectBunkModel
+                )
                 return (
                     _.includes(item.boarder?.name, query.search) ||
                     _.includes(item.title, query.search) ||
@@ -44,11 +42,11 @@ export default new (class BoarderNoteService {
     public async getBoarderNoteById(
         id: string | number
     ): Promise<BoarderNoteModel> {
-        const data = await BoarderNoteDao.findOneById(id as number)
-        if (!data) {
+        const result = await BoarderNoteDao.findOneById(id as number)
+        if (!result) {
             throw new HttpException("查無資料", 400)
         }
-        return data
+        return result
     }
 
     public async createBoarderNote(

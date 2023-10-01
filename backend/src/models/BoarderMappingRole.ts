@@ -13,6 +13,8 @@ export interface BoarderMappingRoleModel {
     updated_by?: number
     creator?: UserModel
     updater?: UserModel
+    dataValues?: BoarderMappingRoleModel
+    _previousDataValues?: BoarderMappingRoleModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

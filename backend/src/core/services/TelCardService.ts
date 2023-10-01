@@ -7,6 +7,8 @@ import TelCardLogDao from "../daos/TelCardLogDao"
 import { TelCardContacterModel } from "../../models/TelCardContacter"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { TelCardLogModel } from "../../models/TelCardLog"
+import strings from "../../utils/strings"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
 
 export default new (class TelCardService {
     public async getTelCardContacters(query?: {
@@ -26,11 +28,11 @@ export default new (class TelCardService {
     public async getTelCardContacterById(
         id: string | number
     ): Promise<TelCardContacterModel> {
-        const data = await TelCardContacterDao.findOneById(id as number)
-        if (!data) {
+        const result = await TelCardContacterDao.findOneById(id as number)
+        if (!result) {
             throw new HttpException("查無資料", 400)
         }
-        return data
+        return result
     }
 
     public async createTelCardContacter(
@@ -113,13 +115,9 @@ export default new (class TelCardService {
         }
         if (query?.search) {
             result = _.filter(result, (item) => {
-                const bunk =
-                    "" +
-                    item.boarder?.project_bunk?.floor +
-                    item.boarder?.project_bunk?.room_type +
-                    item.boarder?.project_bunk?.room_no +
-                    "-" +
-                    item.boarder?.project_bunk?.bed
+                const bunk = strings.formatBunkString(
+                    item?.boarder?.project_bunk as ProjectBunkModel
+                )
                 return (
                     _.includes(item.boarder?.name, query.search) ||
                     _.includes(bunk, query.search)

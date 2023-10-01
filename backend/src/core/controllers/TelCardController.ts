@@ -5,6 +5,8 @@ import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import route from "../../utils/route"
+import log from "../../utils/log"
+import { Transaction } from "sequelize"
 
 export default new (class TelCardController {
     public async getTelCardContacters(
@@ -46,11 +48,13 @@ export default new (class TelCardController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
+            res.operationName = "建立電話卡聯絡人"
             const data = await TelCardService.createTelCardContacter(
                 req.body as any,
                 req.user as RequestUser
             )
-            next(HttpResponse.success(data, "建立電話卡聯絡人", 201))
+            res.logMessage = log.logFormatJson(res.operationName, data)
+            next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
         }
@@ -63,11 +67,22 @@ export default new (class TelCardController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await TelCardService.updateTelCardContacter(
-                req.body as any,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "修改電話卡聯絡人"))
+            res.operationName = "修改電話卡聯絡人"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeUpdateData =
+                    await TelCardService.getTelCardContacterById(req.body?.id)
+                const data = await TelCardService.updateTelCardContacter(
+                    req.body as any,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeUpdateData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }
@@ -80,11 +95,22 @@ export default new (class TelCardController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await TelCardService.deleteTelCardContacter(
-                req.params.id,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "刪除電話卡聯絡人"))
+            res.operationName = "刪除電話卡聯絡人"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeDeleteData =
+                    await TelCardService.getTelCardContacterById(req.params.id)
+                const data = await TelCardService.deleteTelCardContacter(
+                    req.params.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeDeleteData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }
@@ -125,11 +151,13 @@ export default new (class TelCardController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
+            res.operationName = "建立住宿生電話卡紀錄"
             const data = await TelCardService.createTelCardLog(
                 req.body as any,
                 req.user as RequestUser
             )
-            next(HttpResponse.success(data, "建立住宿生電話卡紀錄", 201))
+            res.logMessage = log.logFormatJson(res.operationName, data)
+            next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
         }
@@ -142,11 +170,23 @@ export default new (class TelCardController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await TelCardService.deleteTelCardLog(
-                req.params.id,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "刪除住宿生電話卡紀錄"))
+            res.operationName = "刪除住宿生電話卡紀錄"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeDeleteData = await TelCardService.getTelCardLogById(
+                    req.params.id
+                )
+                const data = await TelCardService.deleteTelCardLog(
+                    req.params.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeDeleteData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }

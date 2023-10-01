@@ -80,11 +80,14 @@ describe("Acceptance test for TelCardController.", () => {
         it("建立電話卡聯絡人", async () => {
             // given
             const payload = givenCreateTelCardContacterPayload("3")
+            const payload2 = givenCreateTelCardContacterPayload("4")
             // when
             const res = await App.post("/api/telCards/contacter").send(payload)
+            const res2 = await App.post("/api/telCards/contacter").send(payload2)
             // then
             testTelCardContacter = res.body?.data
             expect(res.status).toBe(201)
+            expect(res2.status).toBe(201)
             expect(testTelCardContacter?.name).toBe(payload.name)
             expect(testTelCardContacter?.created_by).toBe(mockUser.id)
         })
@@ -118,8 +121,8 @@ describe("Acceptance test for TelCardController.", () => {
         it("若電話卡聯絡人名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
             const payload = {
-                id: -1,
-                name: "ATDD_(ed)",
+                id: testTelCardContacter?.id,
+                name: "ATDD_tel4",
             }
             // when
             const res = await App.put("/api/telCards/contacter").send(payload)
@@ -135,7 +138,7 @@ describe("Acceptance test for TelCardController.", () => {
             const res = await App.delete(`/api/telCards/contacter/${id}`)
             // then
             expect(res.status).toBe(200)
-            expect(await TelCardContacterDao.findOneById(id)).toBeNull()
+            expect(await TelCardContacterDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.tel_card_contacter.findOne({ where: { id: id } }))
                     .deleted_by
@@ -159,7 +162,7 @@ describe("Acceptance test for TelCardController.", () => {
                 boarder_status_id: 1,
             })
             const testTelCardContacter = await TelCardContacterDao.create(
-                givenCreateTelCardContacterPayload("4")
+                givenCreateTelCardContacterPayload("5")
             )
             testTelCardLog = await Db.tel_card_log.create(
                 givenCreateTelCardLogPayload(
@@ -231,7 +234,7 @@ describe("Acceptance test for TelCardController.", () => {
             // then
             expect(res.status).toBe(200)
             const result = await TelCardLogDao.findOneById(id)
-            expect(result).toBeNull()
+            expect(result).toBeFalsy()
         })
     })
 })

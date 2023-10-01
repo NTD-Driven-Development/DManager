@@ -18,6 +18,7 @@ import FindOneProjectResultDto from "../exportDtos/project/FindOneProjectResultD
 import PaginationResultDto from "../exportDtos/PaginationResultDto"
 import { withPagination } from "../../utils/pagination"
 import RequestUser from "../exportDtos/auth/RequestUser"
+import strings from "../../utils/strings"
 
 export default new (class ProjectService {
     public async getProjects(query?: {
@@ -60,6 +61,29 @@ export default new (class ProjectService {
         }
         const result = this.convertToFindOneProjectResultDto(project)
         return result
+    }
+
+    public async getSwapBunkBoardersEventMessage(payload: {
+        project_id: number
+        origin_boarder_id: string
+        swap_boarder_id: string
+    }): Promise<{}> {
+        const boarders = await BoarderDao.findBoardersByProjectId(payload.project_id)
+        const origin_boarder = _.find(boarders, {
+            id: payload.origin_boarder_id,
+        }) as BoarderModel
+        const origin_boarder_bunk = strings.formatBunkString(
+            origin_boarder?.project_bunk as ProjectBunkModel
+        )
+        const swap_boarder = _.find(boarders, {
+            id: payload.swap_boarder_id,
+        }) as BoarderModel
+        const swap_boarder_bunk = strings.formatBunkString(
+            swap_boarder?.project_bunk as ProjectBunkModel
+        )
+        return {
+            message: `【${origin_boarder.name} ${origin_boarder_bunk}】與【${swap_boarder.name} ${swap_boarder_bunk}】交換床位`,
+        }
     }
 
     public async createProject(
@@ -249,6 +273,7 @@ export default new (class ProjectService {
         try {
             const params = {
                 project_id,
+                updated_by: user.id,
                 ...payload,
             }
             const result = await ProjectDao.swapBunk(params)

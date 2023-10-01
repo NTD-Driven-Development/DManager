@@ -18,6 +18,8 @@ export interface BoarderContacterModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: BoarderContacterModel
+    _previousDataValues?: BoarderContacterModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

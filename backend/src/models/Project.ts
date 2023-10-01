@@ -16,6 +16,8 @@ export interface ProjectModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: ProjectModel
+    _previousDataValues?: ProjectModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

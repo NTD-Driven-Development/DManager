@@ -4,6 +4,8 @@ import ExportDao from "../daos/ExportDao"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import { BoarderModel } from "../../models/Boarder"
 import ExportBoarderPointAndTelCardLogsDto from "../exportDtos/export/ExportBoarderPointAndTelCardLogsDto"
+import strings from "../../utils/strings"
+import { ProjectBunkModel } from "../../models/ProjectBunk"
 
 export default new (class ExportService {
     private async convertBoarderPointAndTelCardLogsToExport(
@@ -28,7 +30,7 @@ export default new (class ExportService {
     }
 
     public async getBoarderPointAndTelCardLogs(query?: {
-        project_id: number | string
+        project_id?: number | string
         search?: string
     }): Promise<ExportBoarderPointAndTelCardLogsDto[]> {
         let data = await ExportDao.getBoarderPointAndTelCardLogs()
@@ -37,13 +39,9 @@ export default new (class ExportService {
         }
         if (query?.search) {
             data = _.filter(data, (item) => {
-                const bunk =
-                    "" +
-                    item?.project_bunk?.floor +
-                    item?.project_bunk?.room_type +
-                    item?.project_bunk?.room_no +
-                    "-" +
-                    item?.project_bunk?.bed
+                const bunk = strings.formatBunkString(
+                    item?.project_bunk as ProjectBunkModel
+                )
                 return (
                     _.includes(item?.name, query.search) ||
                     _.includes(bunk, query.search)
@@ -53,7 +51,7 @@ export default new (class ExportService {
         const formatData = await this.convertBoarderPointAndTelCardLogsToExport(
             data
         )
-        
+
         // sort by bunk
         const result = _.sortBy(formatData, [
             (item) => item?.boarder?.project_bunk?.floor,

@@ -22,11 +22,11 @@ export default new (class ClassService {
     }
 
     public async getClassById(id: string | number): Promise<ClassModel> {
-        const data = await ClassDao.findOneById(id as number)
-        if (!data) {
+        const result = await ClassDao.findOneById(id as number)
+        if (!result) {
             throw new HttpException("查無資料", 400)
         }
-        return data
+        return result
     }
 
     public async createClass(

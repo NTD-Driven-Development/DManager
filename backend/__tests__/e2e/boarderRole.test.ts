@@ -161,7 +161,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
             )
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
         })
 
         it("取得住宿生身分列表", async () => {
@@ -225,7 +225,7 @@ describe("Acceptance test for BoarderRoleController.", () => {
         it("預先建立項目", async () => {
             // given
             const payload = {
-                name: "E2E住宿生身分測試",
+                name: "ATDD_boarderRole",
             }
             // when
             const response = await App.post("/api/projects").send(payload)
@@ -238,13 +238,19 @@ describe("Acceptance test for BoarderRoleController.", () => {
             // given
             const payload = {
                 project_id: testProject.id,
-                name: "E2E住宿生身分測試",
+                name: "ATDD_boarderRole",
+            }
+            const payload2 = {
+                project_id: testProject.id,
+                name: "ATDD_boarderRole2",
             }
             // when
-            const response = await App.post("/api/boarderRoles").send(payload)
+            const res = await App.post("/api/boarderRoles").send(payload)
+            const res2 = await App.post("/api/boarderRoles").send(payload2)
             // then
-            testBoarderRole = response.body?.data
-            expect(response.status).toBe(201)
+            testBoarderRole = res.body?.data
+            expect(res.status).toBe(201)
+            expect(res2.status).toBe(201)
             expect(testBoarderRole?.name).toEqual(payload.name)
             expect(testBoarderRole?.created_by).toEqual(mockUser.id)
         })
@@ -253,13 +259,13 @@ describe("Acceptance test for BoarderRoleController.", () => {
             // given
             const payload = {
                 project_id: testProject.id,
-                name: "E2E住宿生身分測試",
+                name: "ATDD_boarderRole",
             }
             // when
             const response = await App.post("/api/boarderRoles").send(payload)
             // then
             expect(response.status).toBe(400)
-            expect(response.body?.error).not.toBeNull()
+            expect(response.body?.error).not.toBeFalsy()
         })
 
         it("編輯住宿生身分", async () => {
@@ -267,14 +273,14 @@ describe("Acceptance test for BoarderRoleController.", () => {
             const payload = {
                 id: testBoarderRole.id,
                 project_id: testProject.id,
-                name: "E2E住宿生身分測試(已編輯)",
+                name: "ATDD_boarderRole_ed",
             }
             // when
             const response = await App.put("/api/boarderRoles").send(payload)
             // then
             const result = await BoarderRoleDao.findOneById(payload.id)
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
+            expect(response.body?.error).toBeFalsy()
             expect(result.name).toBe(payload.name)
             expect(result.updated_by).toBe(mockUser.id)
         })
@@ -282,9 +288,9 @@ describe("Acceptance test for BoarderRoleController.", () => {
         it("若編輯住宿生身分名稱已存在，回應 400 「名稱已存在」", async () => {
             // given
             const payload = {
-                id: -1,
+                id: testProject?.id,
                 project_id: testProject.id,
-                name: "E2E住宿生身分測試(已編輯)",
+                name: "ATDD_boarderRole2",
             }
             // when
             const response = await App.put("/api/boarderRoles").send(payload)
@@ -300,8 +306,8 @@ describe("Acceptance test for BoarderRoleController.", () => {
             const response = await App.delete(`/api/boarderRoles/${id}`)
             // then
             expect(response.status).toBe(200)
-            expect(response.body?.error).toBeNull()
-            expect(await BoarderRoleDao.findOneById(id)).toBeNull()
+            expect(response.body?.error).toBeFalsy()
+            expect(await BoarderRoleDao.findOneById(id)).toBeFalsy()
             expect(
                 (await Db.boarder_role.findOne({ where: { id: id } }))
                     .deleted_by

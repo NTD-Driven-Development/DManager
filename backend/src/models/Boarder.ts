@@ -38,6 +38,8 @@ export interface BoarderModel {
     boarder_roles?: BoarderRoleModel[]
     point_logs?: PointLogModel[]
     tel_card_logs?: TelCardLogModel[]
+    dataValues?: BoarderModel
+    _previousDataValues?: BoarderModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

@@ -18,6 +18,8 @@ export interface SysLogModel {
     body?: string
     detail?: string
     created_at?: Date
+    dataValues?: SysLogModel
+    _previousDataValues?: SysLogModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

@@ -6,7 +6,7 @@ import { UserModel } from "../../models/User"
 
 export default new (class UserDao extends BaseDao implements Core.IDao {
     public async findAll(): Promise<UserModel[]> {
-        const users = await Db.user.findAll({
+        return await Db.user.findAll({
             include: [
                 {
                     model: Db.role,
@@ -33,11 +33,10 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
             attributes: { exclude: ["password"] },
             where: { deleted_at: null },
         })
-        return users
     }
 
     public async findOneById(id: string | number): Promise<UserModel> {
-        const user = await Db.user.findOne({
+        return await Db.user.findOne({
             include: [
                 {
                     model: Db.role,
@@ -64,7 +63,6 @@ export default new (class UserDao extends BaseDao implements Core.IDao {
             attributes: { exclude: ["password"] },
             where: { id: id, deleted_at: null },
         })
-        return user
     }
 
     public async create(user: UserModel): Promise<UserModel> {

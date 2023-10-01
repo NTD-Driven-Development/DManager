@@ -18,6 +18,8 @@ export interface PointRuleModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: PointRuleModel
+    _previousDataValues?: PointRuleModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

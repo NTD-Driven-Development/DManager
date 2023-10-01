@@ -13,7 +13,7 @@ export interface IFindOneProjectResult extends ProjectModel {
 
 export default new (class ProjectDao extends BaseDao implements Core.IDao {
     public async findAll(): Promise<ProjectModel[]> {
-        const projects = await Db.project.findAll({
+        return await Db.project.findAll({
             include: [
                 {
                     model: Db.user,
@@ -31,13 +31,12 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
             where: { deleted_at: null },
             order: [["id", "DESC"]],
         })
-        return projects
     }
 
     public async findOneById(
         id: string | number
     ): Promise<IFindOneProjectResult> {
-        const project = await Db.project.findOne({
+        return await Db.project.findOne({
             include: [
                 {
                     model: Db.project_bunk,
@@ -66,7 +65,6 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
             ],
             where: { id: id, deleted_at: null },
         })
-        return project
     }
 
     public async create(project: ProjectModel): Promise<ProjectModel> {
@@ -116,7 +114,8 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
         origin_bunk_id: number
         origin_boarder_id: string
         swap_bunk_id: number
-        swap_boarder_id: string
+        swap_boarder_id: string,
+        updated_by: number
     }): Promise<Core.IExecuteResult> {
         return await this.executeResult(
             Db.sequelize.query(
@@ -126,7 +125,8 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
                     WHEN id = :ORIGIN_BUNK_ID THEN :swap_BOARDER_ID 
                     WHEN id = :swap_BUNK_ID THEN :ORIGIN_BOARDER_ID 
                 END,
-                updated_at = :UPDATED_AT
+                updated_at = :UPDATED_AT,
+                updated_by = :UPDATED_BY
                 WHERE id IN (:ORIGIN_BUNK_ID, :swap_BUNK_ID)
                 AND project_id = :PROJECT_ID
             `,
@@ -138,6 +138,7 @@ export default new (class ProjectDao extends BaseDao implements Core.IDao {
                         ORIGIN_BOARDER_ID: data.origin_boarder_id,
                         PROJECT_ID: data.project_id,
                         UPDATED_AT: moment().toDate(),
+                        UPDATED_BY: data.updated_by
                     },
                 }
             )

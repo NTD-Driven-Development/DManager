@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt"
 import _ from "lodash"
+import { ProjectBunkModel } from "../models/ProjectBunk"
+import { BunkModel } from "../models/Bunk"
 
 const random = (len: number, _mapStr: string | null): string => {
     const mapStr =
@@ -35,6 +37,10 @@ const generateAvatarURL = (
     return `https://ui-avatars.com/api/?name=${name}&background=${background}&color=${fontColor}`
 }
 
+const formatBunkString = (bunk: ProjectBunkModel | BunkModel): string => {
+    return bunk?.floor + bunk?.room_type + bunk?.room_no + "-" + bunk?.bed
+}
+
 export default {
     random,
     hash,
@@ -42,4 +48,5 @@ export default {
     toBase64,
     fromBase64,
     generateAvatarURL,
+    formatBunkString
 }

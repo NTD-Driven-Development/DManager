@@ -20,6 +20,8 @@ export interface UserModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: UserModel
+    _previousDataValues?: UserModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

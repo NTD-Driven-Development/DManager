@@ -5,6 +5,8 @@ import HttpResponse from "../../utils/httpResponse"
 import Db from "../../models"
 import RequestUser from "../exportDtos/auth/RequestUser"
 import route from "../../utils/route"
+import log from "../../utils/log"
+import { Transaction } from "sequelize"
 
 export default new (class BoarderStatusController {
     public async getBoarderStatuses(
@@ -45,11 +47,13 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
+            res.operationName = "新增住宿生狀態"
             const data = await BoarderService.createBoarderStatus(
                 req.body as any,
                 req.user as RequestUser
             )
-            next(HttpResponse.success(data, "建立住宿生狀態", 201))
+            res.logMessage = log.logFormatJson(res.operationName, data)
+            next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
         }
@@ -62,11 +66,22 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await BoarderService.updateBoarderStatus(
-                req.body as any,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "修改住宿生狀態"))
+            res.operationName = "修改住宿生狀態"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeUpdateData =
+                    await BoarderService.getBoarderStatusById(req.body?.id)
+                const data = await BoarderService.updateBoarderStatus(
+                    req.body as any,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeUpdateData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }
@@ -79,11 +94,22 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            const data = await BoarderService.deleteBoarderStatus(
-                req.params.id,
-                req.user as RequestUser
-            )
-            next(HttpResponse.success(data, "刪除住宿生狀態"))
+            res.operationName = "刪除住宿生狀態"
+            await Db.sequelize.transaction(async (t: Transaction) => {
+                const beforeDeleteData =
+                    await BoarderService.getBoarderStatusById(req.params?.id)
+                const data = await BoarderService.deleteBoarderStatus(
+                    req.params?.id,
+                    req.user as RequestUser
+                )
+                t.afterCommit(() => {
+                    res.logMessage = log.logFormatJson(
+                        res.operationName,
+                        beforeDeleteData
+                    )
+                    next(HttpResponse.success(data))
+                })
+            })
         } catch (error: any) {
             next(error)
         }

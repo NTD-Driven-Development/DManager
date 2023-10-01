@@ -18,6 +18,8 @@ export interface ProjectBunkModel {
     updated_by?: number
     creator?: UserModel
     updater?: UserModel
+    dataValues?: ProjectBunkModel
+    _previousDataValues?: ProjectBunkModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

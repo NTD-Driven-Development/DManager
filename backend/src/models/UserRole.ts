@@ -13,6 +13,8 @@ export interface UserRoleModel {
     updated_by?: number
     creator?: UserModel
     updater?: UserModel
+    dataValues?: UserRoleModel
+    _previousDataValues?: UserRoleModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

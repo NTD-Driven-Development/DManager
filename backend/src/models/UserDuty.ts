@@ -15,6 +15,8 @@ export interface UserDutyModel {
     creator?: UserModel
     updater?: UserModel
     user?: UserModel
+    dataValues?: UserDutyModel
+    _previousDataValues?: UserDutyModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

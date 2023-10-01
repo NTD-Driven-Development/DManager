@@ -18,6 +18,8 @@ export interface BunkModel {
     creator?: UserModel
     updater?: UserModel
     deleter?: UserModel
+    dataValues?: BunkModel
+    _previousDataValues?: BunkModel
 }
 
 export default (sequelize: any, DataTypes: any) => {

@@ -496,6 +496,7 @@ describe("Unit test for BoarderService.", () => {
                 id: 1,
             },
         ] as any as Promise<any>)
+        jest.spyOn(BoarderDao, "findOneById").mockResolvedValue(fakeBoarder as any)
         return await BoarderService.createBoarder(payload, fakeUser)
     }
     async function whenCreateProjectBunkNotFoundProject(payload: any) {
@@ -668,7 +669,7 @@ describe("Unit test for BoarderService.", () => {
                 )
 
                 // then
-                expect(createdResult).toBe(true)
+                expect(createdResult).toBe(fakeBoarder)
                 expect(BoarderDao.create).toBeCalledWith({
                     id: uuid.v4(),
                     name: payload.name,

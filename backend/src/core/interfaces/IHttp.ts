@@ -2,7 +2,8 @@ import { Request, Response } from "express"
 import RequestUser from "../exportDtos/auth/RequestUser"
 
 export interface IResponse extends Response {
-    customMessage?: string
+    logMessage?: string
+    operationName?: string
 }
 
 export interface IRequest extends Request {
