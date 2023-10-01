@@ -44,14 +44,13 @@ export default new (class BoarderController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "新增住宿生"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const data = await BoarderService.createBoarder(
                     req.body as any,
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(res.operationName, data)
+                    res.logMessage = log.logFormatJson(data)
                     next(HttpResponse.success(data, null, 201))
                 })
             })
@@ -67,7 +66,6 @@ export default new (class BoarderController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改住宿生"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await BoarderService.getBoarderById(
                     req.body?.id
@@ -77,11 +75,8 @@ export default new (class BoarderController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData,
-                    )
-                    next(HttpResponse.success(data, res.operationName))
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
+                    next(HttpResponse.success(data))
                 })
             })
         } catch (error: any) {
@@ -96,7 +91,6 @@ export default new (class BoarderController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除住宿生"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await BoarderService.getBoarderById(
                     req.params?.id
@@ -106,10 +100,7 @@ export default new (class BoarderController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })

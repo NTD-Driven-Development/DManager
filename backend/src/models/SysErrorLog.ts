@@ -17,6 +17,7 @@ export interface SysErrorLogModel {
     params?: string
     body?: string
     detail?: string
+    operation_name?: string
     created_at?: Date
     dataValues?: SysErrorLogModel
     _previousDataValues?: SysErrorLogModel
@@ -41,6 +42,7 @@ export default (sequelize: any, DataTypes: any) => {
         params?: string
         body?: string
         detail?: string
+        operation_name?: string
         created_at?: Date
 
         /**
@@ -110,6 +112,10 @@ export default (sequelize: any, DataTypes: any) => {
             },
             detail: {
                 type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            operation_name: {
+                type: DataTypes.STRING(100),
                 allowNull: true,
             },
             created_at: {

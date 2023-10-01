@@ -47,12 +47,11 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "新增住宿生狀態"
             const data = await BoarderService.createBoarderStatus(
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(res.operationName, data)
+            res.logMessage = log.logFormatJson(data)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -66,7 +65,6 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改住宿生狀態"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData =
                     await BoarderService.getBoarderStatusById(req.body?.id)
@@ -75,10 +73,7 @@ export default new (class BoarderStatusController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -94,7 +89,6 @@ export default new (class BoarderStatusController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除住宿生狀態"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData =
                     await BoarderService.getBoarderStatusById(req.params?.id)
@@ -103,10 +97,7 @@ export default new (class BoarderStatusController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })

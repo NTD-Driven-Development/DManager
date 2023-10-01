@@ -14,11 +14,10 @@ export default new (class ExportController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "匯出住宿生加扣點及電話卡紀錄"
             const data = await ExportService.getBoarderPointAndTelCardLogs(
                 req.query as any
             )
-            res.logMessage = log.logFormatJson(res.operationName, req.query)
+            res.logMessage = log.logFormatJson(req.query)
             next(HttpResponse.success(data))
         } catch (error: any) {
             next(error)

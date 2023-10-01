@@ -3,7 +3,6 @@ import RequestUser from "../exportDtos/auth/RequestUser"
 
 export interface IResponse extends Response {
     logMessage?: string
-    operationName?: string
 }
 
 export interface IRequest extends Request {

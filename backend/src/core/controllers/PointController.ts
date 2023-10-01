@@ -44,12 +44,11 @@ export default new (class PointController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "建立加扣點規則"
             const data = await PointService.createPointRule(
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(res.operationName, data)
+            res.logMessage = log.logFormatJson(data)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -63,7 +62,6 @@ export default new (class PointController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改加扣點規則"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await PointService.getPointRuleById(
                     req.body?.id
@@ -73,10 +71,7 @@ export default new (class PointController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -92,7 +87,6 @@ export default new (class PointController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除加扣點規則"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await PointService.getPointRuleById(
                     req.params?.id
@@ -102,10 +96,7 @@ export default new (class PointController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -149,12 +140,11 @@ export default new (class PointController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "建立住宿生加扣點紀錄"
             const data = await PointService.createPointLog(
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(res.operationName, data)
+            res.logMessage = log.logFormatJson(data)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -168,7 +158,6 @@ export default new (class PointController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除住宿生加扣點紀錄"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await PointService.getPointLogById(
                     req.params.id
@@ -178,10 +167,7 @@ export default new (class PointController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })

@@ -46,12 +46,11 @@ export default new (class ProjectController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "建立項目"
             const data = await ProjectService.createProject(
                 req.body,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(res.operationName, data)
+            res.logMessage = log.logFormatJson(data)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -65,7 +64,6 @@ export default new (class ProjectController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改項目"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await ProjectService.getProjectById(
                     req.body?.id
@@ -75,10 +73,7 @@ export default new (class ProjectController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -94,7 +89,6 @@ export default new (class ProjectController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除項目"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await ProjectService.getProjectById(
                     req.params.id
@@ -104,10 +98,7 @@ export default new (class ProjectController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -123,7 +114,6 @@ export default new (class ProjectController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "匯入項目"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeImportData = await ProjectService.getProjectById(
                     req.body?.project_id
@@ -133,10 +123,7 @@ export default new (class ProjectController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeImportData
-                    )
+                    res.logMessage = log.logFormatJson(beforeImportData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -148,7 +135,6 @@ export default new (class ProjectController {
     public async swapBunk(req: IRequest, res: IResponse, next: NextFunction) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "交換床位"
             const project_id = req.params.id
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeSwapData =
@@ -162,10 +148,7 @@ export default new (class ProjectController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeSwapData
-                    )
+                    res.logMessage = log.logFormatJson(beforeSwapData)
                     next(HttpResponse.success(data))
                 })
             })

@@ -36,14 +36,13 @@ export default new (class UserController {
     public async createUser(req: IRequest, res: IResponse, next: NextFunction) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "建立使用者"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const data = await UserService.createUser(
                     req.body,
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(res.operationName, data)
+                    res.logMessage = log.logFormatJson(data)
                     next(HttpResponse.success(data, null, 201))
                 })
             })
@@ -55,7 +54,6 @@ export default new (class UserController {
     public async updateUser(req: IRequest, res: IResponse, next: NextFunction) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改使用者"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await UserService.getUserById(
                     req.body?.id
@@ -65,10 +63,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data, "修改使用者"))
                 })
             })
@@ -80,7 +75,6 @@ export default new (class UserController {
     public async deleteUser(req: IRequest, res: IResponse, next: NextFunction) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除使用者"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await UserService.getUserById(
                     req.params.id
@@ -90,7 +84,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    log.logFormatJson(res.operationName, beforeDeleteData)
+                    log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(null))
                 })
             })
@@ -106,14 +100,13 @@ export default new (class UserController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "建立輪值"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const data = await UserService.createUserDuty(
                     req.body,
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(res.operationName, data)
+                    res.logMessage = log.logFormatJson(data)
                     next(HttpResponse.success(data, null, 201))
                 })
             })
@@ -129,7 +122,6 @@ export default new (class UserController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改輪值"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await UserService.getUserDutyById(
                     req.body?.id
@@ -139,10 +131,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -158,7 +147,6 @@ export default new (class UserController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除輪值"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await UserService.getUserDutyById(
                     req.params.id
@@ -168,7 +156,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    log.logFormatJson(res.operationName, beforeDeleteData)
+                    log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(null))
                 })
             })

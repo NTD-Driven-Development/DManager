@@ -44,12 +44,11 @@ export default new (class NoteController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "新增住宿生記事"
             const data = await NoteService.createBoarderNote(
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(res.operationName, data)
+            res.logMessage = log.logFormatJson(data)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -63,7 +62,6 @@ export default new (class NoteController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "修改住宿生記事"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeUpdateData = await NoteService.getBoarderNoteById(
                     req.body?.id
@@ -73,10 +71,7 @@ export default new (class NoteController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeUpdateData
-                    )
+                    res.logMessage = log.logFormatJson(beforeUpdateData)
                     next(HttpResponse.success(data))
                 })
             })
@@ -92,7 +87,6 @@ export default new (class NoteController {
     ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
-            res.operationName = "刪除住宿生記事"
             await Db.sequelize.transaction(async (t: Transaction) => {
                 const beforeDeleteData = await NoteService.getBoarderNoteById(
                     req.params.id
@@ -102,10 +96,7 @@ export default new (class NoteController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(
-                        res.operationName,
-                        beforeDeleteData
-                    )
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(data))
                 })
             })

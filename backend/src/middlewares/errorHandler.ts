@@ -11,7 +11,6 @@ export default (
     next: NextFunction
 ) => {
     res.logMessage = JSON.stringify({
-        operationName: res?.operationName,
         errorMessage: err?.message,
     })
     if (err instanceof HttpException) {

@@ -5,7 +5,11 @@ import HttpResponse from "../../utils/httpResponse"
 import route from "../../utils/route"
 
 export default new (class ShareController {
-    public async getOperationLogs(req: IRequest, res: IResponse, next: NextFunction) {
+    public async getOperationLogs(
+        req: IRequest,
+        res: IResponse,
+        next: NextFunction
+    ) {
         try {
             req.routeUrl = route.getApiRouteFullPathFromRequest(req)
             const data = await LogService.getOperationLogs(req.query)

@@ -1,7 +1,6 @@
-const logFormatJson = (operationName: string | undefined, info: any) => {
+const logFormatJson = (info: any) => {
     const infoSequelizeDetail = info?.dataValues ?? info ?? {}
     const obj = {
-        operationName,
         ...infoSequelizeDetail,
     }
     return JSON.stringify(obj)
