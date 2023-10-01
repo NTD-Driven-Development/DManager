@@ -9,7 +9,7 @@ module.exports = {
             FOR EACH ROW
             BEGIN
                 IF NEW.operation_name IS NULL THEN
-                    SET NEW.operation_name = (select description from permission where path = NEW.url and method = NEW.http_method);
+                    SET NEW.operation_name = (select description from permission where path = NEW.url and method = NEW.http_method limit 1);
                 END IF;
             END;
         `);
@@ -19,7 +19,7 @@ module.exports = {
             FOR EACH ROW
             BEGIN
                 IF NEW.operation_name IS NULL THEN
-                    SET NEW.operation_name = (select description from permission where path = NEW.url and method = NEW.http_method);
+                    SET NEW.operation_name = (select description from permission where path = NEW.url and method = NEW.http_method limit 1);
                 END IF;
             END;
         `);
