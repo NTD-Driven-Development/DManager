@@ -18,7 +18,7 @@
                     <template #使用者名稱="{ data }">{{ checkValueEmpty(data?.user_name) }}</template>
                     <template #操作名稱="{ data }">{{ checkValueEmpty(data?.operation_name) }}</template>
                     <template #敘述="{ data }">
-                        <div class="flex whitespace-pre-wrap break-all min-w-[300px] max-w-[300px]">
+                        <div class="flex whitespace-pre-wrap break-all min-w-[400px] max-w-[400px]">
                             {{ checkValueEmpty(parseOperationLogDetail(data)) }}
                         </div>
                     </template>
