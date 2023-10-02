@@ -107,7 +107,7 @@ export const toStringlish = (bunk: Bunk) => {
 }
 
 export const toBunk = (stringlishBunk: string) => {
-    const regex = /^[1-9][A-E][1-7]-[1-6]$/;
+    const regex = /^[1-9][A-E][1-9]-[1-6]$/;
     
     if (stringlishBunk?.match(regex)) {
         return {
