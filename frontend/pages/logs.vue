@@ -17,7 +17,8 @@
                         </div>
                     </template>
                     <template #使用者名稱="{ data }">{{ checkValueEmpty(data?.user_name) }}</template>
-                    <template #詳情="{ data }">{{ checkValueEmpty(data?.detail) }}</template>
+                    <template #操作名稱="{ data }">{{ checkValueEmpty(data?.operation_name) }}</template>
+                    <template #敘述="{ data, id }">{{ checkValueEmpty(parseOperationLogDetail(data)) }}</template>
                     <template #操作時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                 </OrderTable>
             </div>
@@ -28,13 +29,14 @@
 
 <script setup lang="ts">
     import { format } from 'date-fns';
-    import { LogPaginator } from '~/composables/api/log';
+    import { LogPaginator, parseOperationLogDetail } from '~/composables/api/log';
     import _ from 'lodash';
 
     const headers = [
         { title: '使用者ID', values: ['user_id'] },
         { title: '使用者名稱', values: ['user_name'] },
-        { title: '詳情', values: ['detail'] },
+        { title: '操作名稱', values: ['operation_name'] },
+        { title: '敘述', values: ['url', 'http_method', 'user_id', 'user_name', 'detail'] },
         { title: '操作時間', values: ['created_at'] },
     ]
 

@@ -1,11 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import { ApiPaginator, ApiResponse, Options, PaginationQueries, PaginationResponse } from '~/core/api';
+import { mapping } from '~/src/logMapping';
 import _ from 'lodash';
 import * as Model from '~/src/model';
 
 const PREFIX = '/api/logs';
 
-export class LogPaginator extends ApiPaginator<any, LogPaginationQueries> {
+export class LogPaginator extends ApiPaginator<OperationLog, LogPaginationQueries> {
     abortController?: AbortController;
 
     constructor(options?: Options) {
@@ -14,7 +15,7 @@ export class LogPaginator extends ApiPaginator<any, LogPaginationQueries> {
         this.startQueriesWatcher();
     }
 
-    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<any>>, any>> {
+    protected define(): Promise<AxiosResponse<ApiResponse<PaginationResponse<OperationLog>>, any>> {
         const queries = this._queries.value;
         let searchParams = new URLSearchParams();
 
@@ -33,6 +34,13 @@ export class LogPaginator extends ApiPaginator<any, LogPaginationQueries> {
     }
 }
 
+export const parseOperationLogDetail = (log: Pick<OperationLog, 'url' | 'http_method' | 'user_id' | 'user_name' | 'detail'>) => {
+    const target = mapping.find((v) => v?.url == log?.url && v?.method == log?.http_method);
+    
+    return target?.template(log.user_id, log.user_name, JSON.parse(log.detail));
+}
+
+type OperationLog = Model.OperationLog & Model.CreateInfo
 
 interface LogPaginationQueries extends PaginationQueries {
 }

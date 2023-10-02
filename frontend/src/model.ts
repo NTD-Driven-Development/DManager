@@ -118,3 +118,21 @@ export interface UserDuty {
     start_time: string,
     end_time: string,
 }
+
+export interface OperationLog {
+    id: number,
+    body: string,
+    clientip: string,
+    detail: string,
+    headers: string,
+    http_method: string,
+    http_status: string,
+    operation_name: string,
+    params: string,
+    query: string,
+    serverip: string,
+    url: string,
+    user_agent: string,
+    user_id: number,
+    user_name: string,
+}
