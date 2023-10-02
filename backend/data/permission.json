@@ -870,7 +870,7 @@
     },
     {
         "id": 80,
-        "description": "匯出加扣點確認報表",
+        "description": "檢視加扣點確認報表",
         "method": "GET",
         "path": "/api/exports/pointsCheck",
         "is_actived": 1,
