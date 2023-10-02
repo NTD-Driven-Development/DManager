@@ -18,7 +18,11 @@
                     </template>
                     <template #使用者名稱="{ data }">{{ checkValueEmpty(data?.user_name) }}</template>
                     <template #操作名稱="{ data }">{{ checkValueEmpty(data?.operation_name) }}</template>
-                    <template #敘述="{ data, id }">{{ checkValueEmpty(parseOperationLogDetail(data)) }}</template>
+                    <template #敘述="{ data }">
+                        <div class="flex whitespace-pre-wrap break-all min-w-[300px] max-w-[300px]">
+                            {{ checkValueEmpty(parseOperationLogDetail(data)) }}
+                        </div>
+                    </template>
                     <template #操作時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                 </OrderTable>
             </div>
@@ -36,7 +40,7 @@
         { title: '使用者ID', values: ['user_id'] },
         { title: '使用者名稱', values: ['user_name'] },
         { title: '操作名稱', values: ['operation_name'] },
-        { title: '敘述', values: ['url', 'http_method', 'user_id', 'user_name', 'detail'] },
+        { title: '敘述', values: ['url', 'http_method', 'user_id', 'user_name', 'body', 'detail'] },
         { title: '操作時間', values: ['created_at'] },
     ]
 

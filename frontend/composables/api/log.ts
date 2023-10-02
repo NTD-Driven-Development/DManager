@@ -34,10 +34,10 @@ export class LogPaginator extends ApiPaginator<OperationLog, LogPaginationQuerie
     }
 }
 
-export const parseOperationLogDetail = (log: Pick<OperationLog, 'url' | 'http_method' | 'user_id' | 'user_name' | 'detail'>) => {
+export const parseOperationLogDetail = (log: Pick<OperationLog, 'url' | 'http_method' | 'user_id' | 'user_name' | 'body' | 'detail'>) => {
     const target = mapping.find((v) => v?.url == log?.url && v?.method == log?.http_method);
     
-    return target?.template(log.user_id, log.user_name, JSON.parse(log.detail));
+    return target?.template(log.user_id, log.user_name, JSON.parse(log.body), JSON.parse(log.detail));
 }
 
 type OperationLog = Model.OperationLog & Model.CreateInfo

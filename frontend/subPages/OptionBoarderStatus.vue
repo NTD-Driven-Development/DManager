@@ -74,7 +74,7 @@
     boarderStatusPaginator.bind('search', toRef(values, 'search'));
 
     const queries = computed(() => ({
-        recordType: selectedOptionType.value,
+        optionType: selectedOptionType.value,
         ...boarderStatusPaginator?.queries?.value,
     }));
 

@@ -8,7 +8,7 @@
             :options="optionTypeList" option-key="id" option-value="name" :init-value="0"></Select>
         </div>
         <!-- 列表 -->
-        <component :is="componentList[selectedOptionType ?? 0]"></component>
+        <component :is="componentList[selectedOptionType ?? 0]" v-if="isLoaded"></component>
     </div>
 </template>
 
@@ -40,9 +40,10 @@
     const { values, setFieldValue } = useForm<{
         selectedOptionType?: number
     }>();
-
     const optionsStore = useOptionsStore();
     const { selectedOptionType } = storeToRefs(optionsStore);
+
+    const isLoaded = ref(false);
 
     watch(() => values.selectedOptionType, (n) => {
         selectedOptionType.value = n ?? 0;
@@ -53,7 +54,11 @@
         .then(() => {
             const query = useRouter().currentRoute?.value?.query;
 
-            setFieldValue('selectedOptionType', ([0, 1, 2, 3, 4].includes(+(query?.recordType ?? 0)) ? +(query?.recordType ?? 0) : 0));
+            setFieldValue('selectedOptionType', ([0, 1, 2, 3, 4].includes(+(query?.optionType ?? 0)) ? +(query?.optionType ?? 0) : 0));
+
+            selectedOptionType.value = ([0, 1, 2, 3, 4].includes(+(query?.optionType ?? 0)) ? +(query?.optionType ?? 0) : 0) as 0 | 1;
+
+            isLoaded.value = true;
         });
     });
 </script>

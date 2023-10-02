@@ -3,12 +3,12 @@
         <!-- 選擇項目 -->
         <div class="flex flex-col gap-1">
             <div class="text-sm">選擇項目：</div>
-            <Select name="selectedProjectId" class="shadow border text-xs"
+            <Select name="project_id" class="shadow border text-xs"
             :options="projectList" option-key="id" option-value="name"></Select>
         </div>
         <!-- 操作 -->
         <div class="flex flex-col gap-2 lg:flex-row">
-            <OptionBoarderRoleCreate :project-id="values?.selectedProjectId ?? NaN" class="grow-[1] lg:basis-1"
+            <OptionBoarderRoleCreate :project-id="values?.project_id ?? NaN" class="grow-[1] lg:basis-1"
             @on-created="boarderRolePaginator?.reload()"
             v-if="authStore?.hasAnyRole([UserRole.Editor])"></OptionBoarderRoleCreate>
             <div class="flex flex-col grow-[1] bg-white h-auto border border-gray-300 rounded p-3 gap-3 text-sm lg:basis-1 lg:p-5"
@@ -67,7 +67,7 @@
     ]
 
     const { setFieldValue, values } = useForm<{
-        selectedProjectId?: number,
+        project_id?: number,
         search?: string,
     }>();
     const authStore = useAuthStore();
@@ -77,27 +77,29 @@
     const optionBoarderRoleEditPopUp = ref();
     const optionBoarderRoleDeletePopUp = ref();
 
-    const projectsCaller = new ProjectsCaller()
-    .success((v) => setFieldValue('selectedProjectId', v?.data?.[0]?.id));
+    const projectsCaller = new ProjectsCaller();
     const { data: projectList } = projectsCaller;
     const boarderRolePaginator = new BoarderRolePaginator({ immediate: false });
     const { data: boarderRoleList } = boarderRolePaginator;
     
-    boarderRolePaginator?.bind('project_id', toRef(values, 'selectedProjectId'));
+    boarderRolePaginator?.bind('project_id', toRef(values, 'project_id'));
     boarderRolePaginator.bind('search', toRef(values, 'search'));
 
     const queries = computed(() => ({
-        recordType: selectedOptionType.value,
+        optionType: selectedOptionType.value,
         ...boarderRolePaginator?.queries?.value,
     }));
 
-    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: true });
+    const stopHandler = queryStringInspecter(queries, { deep: true, immediate: false });
 
     onMounted(() => {
-        Promise.all([])
+        Promise.all([
+            projectsCaller.wait(),
+        ])
         .then(() => {
             const query = useRoute().query;
 
+            setFieldValue('project_id', +(query?.project_id ?? NaN) ? +query.project_id! : projectList?.value?.length ? projectList?.value?.[0].id : undefined);
             setFieldValue('search', query?.search ? `${query?.search}` : '');
 
             boarderRolePaginator.withQuery('offset', query?.offset ? +query?.offset : 1);

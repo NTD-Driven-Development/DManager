@@ -74,7 +74,7 @@
     telCardContacterPaginator.bind('search', toRef(values, 'search'));
 
     const queries = computed(() => ({
-        recordType: selectedOptionType.value,
+        optionType: selectedOptionType.value,
         ...telCardContacterPaginator?.queries?.value,
     }));
 
