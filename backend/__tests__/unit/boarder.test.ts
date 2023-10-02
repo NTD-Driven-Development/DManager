@@ -483,7 +483,7 @@ describe("Unit test for BoarderService.", () => {
             boarder_role_ids: [1],
         }
     }
-    async function whenCreateProjectBunk(project_id: number, payload: any) {
+    async function whenCreateBoarder(project_id: number, payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
         jest.spyOn(ProjectDao, "createProjectBunk").mockResolvedValue({
             id: 1,
@@ -496,10 +496,10 @@ describe("Unit test for BoarderService.", () => {
                 id: 1,
             },
         ] as any as Promise<any>)
-        jest.spyOn(BoarderDao, "findOneById").mockResolvedValue(fakeBoarder as any)
+        // jest.spyOn(BoarderDao, "findOneById").mockResolvedValue(fakeBoarder as any)
         return await BoarderService.createBoarder(payload, fakeUser)
     }
-    async function whenCreateProjectBunkNotFoundProject(payload: any) {
+    async function whenCreateBoarderNotFoundProject(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
         jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
             new ForeignKeyConstraintError({})
@@ -513,7 +513,7 @@ describe("Unit test for BoarderService.", () => {
 
         return await BoarderService.createBoarder(payload, fakeUser)
     }
-    async function whenCreateProjectBunkRepeat(payload: any) {
+    async function whenCreateBoarderRepeat(payload: any) {
         jest.spyOn(uuid, "v4").mockReturnValue("123456")
         jest.spyOn(ProjectDao, "createProjectBunk").mockRejectedValue(
             new UniqueConstraintError({})
@@ -663,13 +663,15 @@ describe("Unit test for BoarderService.", () => {
                 const payload = givenCreateProjectBunkPayload()
 
                 // when
-                const createdResult = await whenCreateProjectBunk(
+                const createdResult = await whenCreateBoarder(
                     project_id,
                     payload
                 )
 
                 // then
-                expect(createdResult).toBe(fakeBoarder)
+                expect(createdResult).toEqual({
+                    id: 1,
+                })
                 expect(BoarderDao.create).toBeCalledWith({
                     id: uuid.v4(),
                     name: payload.name,
@@ -705,7 +707,7 @@ describe("Unit test for BoarderService.", () => {
                 const payload = givenCreateProjectBunkPayload()
 
                 // when
-                const result = whenCreateProjectBunkNotFoundProject(payload)
+                const result = whenCreateBoarderNotFoundProject(payload)
 
                 // then
                 await expect(result).rejects.toThrow(errorMessage)
@@ -718,7 +720,7 @@ describe("Unit test for BoarderService.", () => {
                 const payload = givenCreateProjectBunkPayload()
 
                 // when
-                const result = whenCreateProjectBunkRepeat(payload)
+                const result = whenCreateBoarderRepeat(payload)
 
                 // then
                 await expect(result).rejects.toThrow(errorMessage)

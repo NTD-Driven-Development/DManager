@@ -114,7 +114,7 @@ export default new (class BoarderService {
     public async createBoarder(
         payload: CreateBoarderDto,
         user: RequestUser
-    ): Promise<any> {
+    ): Promise<BoarderModel> {
         try {
             const boarderData: BoarderModel =
                 this.convertCreateBoarderDtoToBoarderModel(payload, user.id)
@@ -137,7 +137,7 @@ export default new (class BoarderService {
                 )
 
             await ProjectDao.createProjectBunk(projectBunk)
-            return this.getBoarderById(boarder.id)
+            return boarder
         } catch (error: any) {
             if (error instanceof ForeignKeyConstraintError) {
                 throw new HttpException("此項目不存在", 400)

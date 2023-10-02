@@ -44,7 +44,10 @@ export default new (class ClassController {
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(data)
+            const afterCreateData = await ClassService.getClassById(
+                data.id as number
+            )
+            res.logMessage = log.logFormatJson(afterCreateData)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)

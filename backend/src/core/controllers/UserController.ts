@@ -41,8 +41,11 @@ export default new (class UserController {
                     req.body,
                     req.user as RequestUser
                 )
-                t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(data)
+                t.afterCommit(async () => {
+                    const afterCreateData = await UserService.getUserById(
+                        data.id as number
+                    )
+                    res.logMessage = log.logFormatJson(afterCreateData)
                     next(HttpResponse.success(data, null, 201))
                 })
             })
@@ -84,7 +87,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    log.logFormatJson(beforeDeleteData)
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(null))
                 })
             })
@@ -105,8 +108,11 @@ export default new (class UserController {
                     req.body,
                     req.user as RequestUser
                 )
-                t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(data)
+                t.afterCommit(async () => {
+                    const afterCreateData = await UserService.getUserDutyById(
+                        data.id as number
+                    )
+                    res.logMessage = log.logFormatJson(afterCreateData)
                     next(HttpResponse.success(data, null, 201))
                 })
             })
@@ -156,7 +162,7 @@ export default new (class UserController {
                     req.user as RequestUser
                 )
                 t.afterCommit(() => {
-                    log.logFormatJson(beforeDeleteData)
+                    res.logMessage = log.logFormatJson(beforeDeleteData)
                     next(HttpResponse.success(null))
                 })
             })

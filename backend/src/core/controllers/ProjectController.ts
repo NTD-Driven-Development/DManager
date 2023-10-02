@@ -50,7 +50,10 @@ export default new (class ProjectController {
                 req.body,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(data)
+            const afterCreateData = await ProjectService.getProjectById(
+                data.id as number
+            )
+            res.logMessage = log.logFormatJson(afterCreateData)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
