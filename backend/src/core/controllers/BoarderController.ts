@@ -49,8 +49,11 @@ export default new (class BoarderController {
                     req.body as any,
                     req.user as RequestUser
                 )
-                t.afterCommit(() => {
-                    res.logMessage = log.logFormatJson(data)
+                t.afterCommit(async () => {
+                    const afterCreateData = await BoarderService.getBoarderById(
+                        data.id
+                    )
+                    res.logMessage = log.logFormatJson(afterCreateData)
                     next(HttpResponse.success(data, null, 201))
                 })
             })

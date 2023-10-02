@@ -48,7 +48,10 @@ export default new (class PointController {
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(data)
+            const afterCreateData = await PointService.getPointRuleById(
+                data.id as number
+            )
+            res.logMessage = log.logFormatJson(afterCreateData)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
@@ -144,7 +147,10 @@ export default new (class PointController {
                 req.body as any,
                 req.user as RequestUser
             )
-            res.logMessage = log.logFormatJson(data)
+            const afterCreateData = await PointService.getPointLogById(
+                data.id as number
+            )
+            res.logMessage = log.logFormatJson(afterCreateData)
             next(HttpResponse.success(data, null, 201))
         } catch (error: any) {
             next(error)
