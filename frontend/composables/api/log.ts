@@ -32,6 +32,18 @@ export class LogPaginator extends ApiPaginator<OperationLog, LogPaginationQuerie
             signal: this.abortController?.signal,
         });
     }
+
+    withQuery = <K extends keyof LogPaginationQueries, V extends LogPaginationQueries[K]>(key: K, value: V) => {
+        if (key == 'offset') {
+            this.offsetHandler(key, value);
+        }
+        else if (key === 'search') {
+            this.searchHandler(key, value);
+        }
+    }
+
+    protected offsetHandler = _.debounce(this.setQuery, 500);
+    protected searchHandler = _.debounce(this.setQuery, 500);
 }
 
 export const parseOperationLogDetail = (log: Pick<OperationLog, 'url' | 'http_method' | 'user_id' | 'user_name' | 'body' | 'detail'>) => {
@@ -43,4 +55,5 @@ export const parseOperationLogDetail = (log: Pick<OperationLog, 'url' | 'http_me
 type OperationLog = Model.OperationLog & Model.CreateInfo
 
 interface LogPaginationQueries extends PaginationQueries {
+    search?: string,
 }

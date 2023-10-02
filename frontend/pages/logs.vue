@@ -5,8 +5,7 @@
         <div class="flex flex-col gap-3">
             <!-- 搜尋 -->
             <div class="w-full lg:w-64">
-                <input placeholder="搜尋使用者ID、使用者名稱、詳情" class="text-xs w-full rounded border"
-                @change=""/>
+                <Input name="search" placeholder="搜尋使用者ID、使用者名稱、操作名稱" class="text-xs w-full rounded border"/>
             </div>
              <!-- 列表 -->
             <div class="w-full overflow-auto bg-white">
@@ -32,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+    import { useForm } from 'vee-validate';
     import { format } from 'date-fns';
     import { LogPaginator, parseOperationLogDetail } from '~/composables/api/log';
     import _ from 'lodash';
@@ -44,6 +44,26 @@
         { title: '操作時間', values: ['created_at'] },
     ]
 
-    const logPaginator = new LogPaginator();
+    const { setFieldValue, values } = useForm<{
+        search?: string,
+    }>();
+
+    const logPaginator = new LogPaginator({ immediate: false });
     const { data: logList } = logPaginator;
+
+    logPaginator.bind('search', toRef(values, 'search'));
+
+    queryStringInspecter(logPaginator.queries);
+
+    onMounted(() => {
+        Promise.all([])
+        .then(async () => {
+            const query = useRouter().currentRoute?.value?.query;
+
+            logPaginator.withQuery('offset', query?.offset ? +query?.offset : 1);
+            logPaginator.withQuery('search', query?.search ? `${query?.search}` : '');
+
+            setFieldValue('search', query?.search ? `${query?.search}` : '');
+        });
+    });
 </script>
