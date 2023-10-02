@@ -74,12 +74,22 @@ export default new (class LogService {
     public async getOperationLogs(query: {
         offset?: number
         limit?: number
+        search?: string
     }): Promise<IPaginationResultDto<SysLogModel | SysErrorLogModel>> {
         const { offset, limit } = query
         // const errorLogs = await LogDao.findAllSysErrorLog()
-        const logs = await LogDao.findAllSysLog()
+        let result = await LogDao.findAllSysLog()
+        if (query?.search) {
+            result = result.filter(
+                (log) =>
+                    _.includes(log.user_id?.toString(), query.search) ||
+                    _.includes(log.user_name, query.search) ||
+                    _.includes(log.operation_name, query.search)
+            )
+        }
         // const combinedLogs = _.concat(logs, errorLogs)
         // const sortedLogs = _.sortBy(combinedLogs, ["created_at"]).reverse()
-        return withPagination(logs.length, logs, offset, limit)
+
+        return withPagination(result.length, result, offset, limit)
     }
 })()

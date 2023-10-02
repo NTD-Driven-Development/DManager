@@ -44,6 +44,19 @@ describe("Unit test for LogService", () => {
         created_at: new Date(),
     } as any
 
+    function testLogDataFactory(count: number) {
+        const result: any[] = []
+        for (let i = 1; i <= count; i++) {
+            result.push({
+                id: i,
+                user_id: i + 10,
+                user_name: `name${i}`,
+                operation_name: `operation${i}`,
+            })
+        }
+        return result
+    }
+
     afterEach(() => {
         jest.clearAllMocks()
     })
@@ -150,7 +163,7 @@ describe("Unit test for LogService", () => {
     })
 
     describe("讀取操作紀錄列表", () => {
-        it("傳入查詢條件，呼叫 LogDao 取得操作紀錄列表", async () => {
+        it("查詢第一頁，每頁一筆資料，呼叫 LogDao 取得操作紀錄列表", async () => {
             // given
             const payload = {
                 offset: 1,
@@ -178,6 +191,28 @@ describe("Unit test for LogService", () => {
                 to: 1,
                 items: [fakeLog],
             })
+        })
+
+        it("給予查詢參數 search，搜尋符合使用者id、使用者名稱、操作名稱", async () => {
+            // given
+            const payload1 = {
+                search: "11",
+            }
+            const payload2 = {
+                search: "name",
+            }
+            const payload3 = {
+                search: "operation2",
+            }
+            // when
+            jest.spyOn(LogDao, "findAllSysLog").mockResolvedValue(testLogDataFactory(3))
+            const result1 = await LogService.getOperationLogs(payload1)
+            const result2 = await LogService.getOperationLogs(payload2)
+            const result3 = await LogService.getOperationLogs(payload3)
+            // then
+            expect(result1.items.length).toBe(1)
+            expect(result2.items.length).toBe(3)
+            expect(result3.items.length).toBe(1)
         })
     })
 })

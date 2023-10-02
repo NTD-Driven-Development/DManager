@@ -82,7 +82,7 @@ export default new (class ProjectService {
             swap_boarder?.project_bunk as ProjectBunkModel
         )
         return {
-            message: `【${origin_boarder.name} ${origin_boarder_bunk}】與【${swap_boarder.name} ${swap_boarder_bunk}】交換床位`,
+            message: `${origin_boarder_bunk} ${origin_boarder.name} 與 ${swap_boarder_bunk} ${swap_boarder.name} 交換床位`,
         }
     }
 
