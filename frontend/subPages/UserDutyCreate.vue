@@ -79,7 +79,7 @@
             await Promise.all((data.dates as any[]).sort((v1, v2) => v1 > v2 ? 1 : 0).map((v: any) => createUserDuty({
                 user_id: data?.user_id,
                 start_time: v,
-                end_time: format(addDays(new Date(v), 1), 'yyyy-MM-dd'),
+                end_time: format(addDays(new Date(v), 0), 'yyyy-MM-dd'),
             })));
 
             toastNotifier?.success('新增成功');
