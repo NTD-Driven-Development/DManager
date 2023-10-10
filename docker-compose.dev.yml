@@ -14,7 +14,7 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: "password"
             MYSQL_ROOT_HOST: "%"
-            MYSQL_DATABASE: "dormiday"
+            MYSQL_DATABASE: "dmanager"
             MYSQL_PASSWORD: "password"
             MYSQL_ALLOW_EMPTY_PASSWORD: 1 
         volumes:

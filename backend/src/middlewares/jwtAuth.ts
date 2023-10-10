@@ -5,7 +5,6 @@ import HttpException from "../exceptions/HttpException"
 import { UserModel } from "../models/User"
 import RequestUser from "../core/exportDtos/auth/RequestUser"
 import { IRequest, IResponse } from "../core/interfaces/IHttp"
-import route from "../utils/route"
 
 const jwtAuth = (type: string) => {
     switch (_.toLower(type)) {

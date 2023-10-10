@@ -12,13 +12,13 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.changeColumn('sys_log', 'detail', {
-            type: Sequelize.TEXT,
-            allowNull: true,
-        });
-        await queryInterface.changeColumn('sys_error_log', 'detail', {
-            type: Sequelize.TEXT,
-            allowNull: true,
-        });
+        // await queryInterface.changeColumn('sys_log', 'detail', {
+        //     type: Sequelize.TEXT,
+        //     allowNull: true,
+        // });
+        // await queryInterface.changeColumn('sys_error_log', 'detail', {
+        //     type: Sequelize.TEXT,
+        //     allowNull: true,
+        // });
     }
 };

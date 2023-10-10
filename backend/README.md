@@ -1,4 +1,4 @@
-# Dormiday Server Startup
+# DManager Server Startup
 
 ## Setup
 
@@ -55,7 +55,7 @@ yarn start
 
 ## Test
 
-Run all test files on Dormiday Server.
+Run all test files on DManager Server.
 
 
 ```bash
