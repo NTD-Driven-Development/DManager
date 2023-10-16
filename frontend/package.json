@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "rm -rf /tmp/nitro && nuxt dev --host",
+    "dev": "rm -rf /tmp/nitro && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -16,7 +16,7 @@
     "@types/node": "^18.17.1",
     "@types/papaparse": "^5.3.8",
     "autoprefixer": "^10.4.14",
-    "nuxt": "^3.7.1",
+    "nuxt": "^3.7.4",
     "nuxt-tsconfig-relative-paths": "^1.0.6",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3"

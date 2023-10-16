@@ -26,6 +26,24 @@
                     :model-value="values.dates" :enable-time-picker="false"></VueDatePicker>
                 </div>
             </div>
+            <div class="flex justify-center w-full gap-2">
+                <div class="flex flex-col justify-center w-full gap-0.5">
+                    <div class="flex gap-0.5 shrink-0">
+                        <span>單日起始點：</span>
+                    </div>
+                    <div class="flex-1 text-black text-xs">
+                        <Input name="start" placeholder="請輸入單日起始點(0, 預設起始於當日0點)" class="w-full rounded border"/>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center w-full gap-0.5">
+                    <div class="flex gap-0.5 shrink-0">
+                        <span>單日持續：</span>
+                    </div>
+                    <div class="flex-1 text-black text-xs">
+                        <Input name="duration" placeholder="請輸入單日持續(1440, 預設持續1440分鐘)" class="w-full rounded border"/>
+                    </div>
+                </div>
+            </div>
         </form>
         <button class="flex items-center justify-center p-2 bg-gray-600 text-white" @click="onSubmit">
             新增輪值
@@ -35,7 +53,7 @@
 
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
-    import { format, addDays } from 'date-fns';
+    import { format, addMinutes } from 'date-fns';
     import { useAuthStore } from '~/stores/auth';
     import { UsersCaller } from '~/composables/api/share';
     import { createUserDuty } from '~/composables/api/user';
@@ -51,6 +69,8 @@
     const schema = yup.object().shape({
         user_id: yup.number().required(),
         dates: yup.array(yup.string()).required(),
+        start: yup.number().transform((_, val) => val === Number(val) ? val : null) .nullable(),
+        duration: yup.number().transform((_, val) => val === Number(val) ? val : null) .nullable(),
     });
 
     const emits = defineEmits<Emits>();
@@ -76,10 +96,12 @@
 
     const onSubmit = handleSubmit(async (data) => {
         try {
+            console.log(data);
+            
             await Promise.all((data.dates as any[]).sort((v1, v2) => v1 > v2 ? 1 : 0).map((v: any) => createUserDuty({
                 user_id: data?.user_id,
-                start_time: v,
-                end_time: format(addDays(new Date(v), 0), 'yyyy-MM-dd'),
+                start_time: addMinutes(new Date(v), +checkValueEmpty(data?.start, undefined, '0')).toISOString(),
+                end_time: addMinutes(new Date(v), +checkValueEmpty(data?.start, undefined, '0') + +checkValueEmpty(data?.duration, undefined, '1440')).toISOString(),
             })));
 
             toastNotifier?.success('新增成功');

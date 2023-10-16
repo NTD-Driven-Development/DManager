@@ -56,15 +56,12 @@ export default new (class UserDutyDao extends BaseDao {
                 },
             ],
             where: {
-                [Op.or]: [
+                [Op.and]: [
                     {
                         start_time: {
                             [Op.and]: [
                                 {
-                                    [Op.gte]: moment().format("YYYY-MM-DD"),
-                                    [Op.lt]: moment()
-                                        .add(1, "d")
-                                        .format("YYYY-MM-DD"),
+                                    [Op.lt]: moment(),
                                 },
                             ],
                         },
@@ -73,10 +70,7 @@ export default new (class UserDutyDao extends BaseDao {
                         end_time: {
                             [Op.and]: [
                                 {
-                                    [Op.gte]: moment().format("YYYY-MM-DD"),
-                                    [Op.lt]: moment()
-                                        .add(1, "d")
-                                        .format("YYYY-MM-DD"),
+                                    [Op.gte]: moment(),
                                 },
                             ],
                         },
