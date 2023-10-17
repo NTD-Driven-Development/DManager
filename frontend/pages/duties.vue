@@ -32,7 +32,7 @@
                         </div>
                     </template>
                     <template #輪值起="{ data }">{{ checkValueEmpty(data?.start_time, (v) => format(addHours(parseISO(v), -8), 'yyyy-MM-dd HH:mm')) }}</template>
-                    <template #輪值迄="{ data }">{{ checkValueEmpty(data?.end_time, (v) => format(addHours(parseISO(v), -8), 'yyyy-MM-dd hh:mm')) }}</template>
+                    <template #輪值迄="{ data }">{{ checkValueEmpty(data?.end_time, (v) => format(addHours(parseISO(v), -8), 'yyyy-MM-dd HH:mm')) }}</template>
                     <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                     <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
                     <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
