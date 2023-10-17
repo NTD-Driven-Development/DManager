@@ -31,7 +31,8 @@
                             {{ checkValueEmpty(data?.user?.name) }}
                         </div>
                     </template>
-                    <template #輪值日="{ data }">{{ checkValueEmpty(data?.start_time, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
+                    <template #輪值起="{ data }">{{ checkValueEmpty(data?.start_time, (v) => format(addHours(parseISO(v), -8), 'yyyy-MM-dd HH:mm')) }}</template>
+                    <template #輪值迄="{ data }">{{ checkValueEmpty(data?.end_time, (v) => format(addHours(parseISO(v), -8), 'yyyy-MM-dd hh:mm')) }}</template>
                     <template #建立時間="{ data }">{{ checkValueEmpty(data?.created_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
                     <template #建立者="{ data }">{{ checkValueEmpty(data?.creator?.name) }}</template>
                     <template #更新時間="{ data }">{{ checkValueEmpty(data?.updated_at, (v) => format(new Date(v), 'yyyy-MM-dd')) }}</template>
@@ -53,7 +54,7 @@
 <script setup lang="ts">
     import { useForm } from 'vee-validate';
     import { Icon } from '@iconify/vue';
-    import { format, set } from 'date-fns';
+    import { format, set, parseISO, addHours } from 'date-fns';
     import { useAuthStore } from '~/stores/auth';
     import { UserDutyPaginator } from '~/composables/api/user';
     import VueDatePicker from '@vuepic/vue-datepicker';
@@ -62,7 +63,8 @@
 
     const headers = [
         { title: '姓名', values: ['user'] },
-        { title: '輪值日', values: ['start_time'] },
+        { title: '輪值起', values: ['start_time'] },
+        { title: '輪值迄', values: ['end_time'] },
         { title: '建立時間', values: ['created_at'] },
         { title: '建立者', values: ['creator'] },
         { title: '更新時間', values: ['updated_at'] },
